@@ -1,3 +1,17 @@
 spring:
   application:
     name: "hotel-management"
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/hotel_management_db
+    username: root
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+application:
+  security:
+    jwt:
+      secret-key: "344dc71229be8fc466048b20963d73568147dd94683891151a15957ef4e1b589"
+      expiration: 86400
