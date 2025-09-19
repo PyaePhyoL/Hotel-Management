@@ -19,16 +19,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableJpaAuditing(dateTimeProviderRef = "auditorAware")
+@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class AuthenticationConfig {
     private final UserRepository userRepository;
+    private final ApiUserDetailService userDetailService;
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return email -> userRepository.findByEmail(email).orElseThrow(
-                () -> new UsernameNotFoundException("User not found with email: " + email)
-        );
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -42,8 +37,7 @@ public class AuthenticationConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
@@ -52,4 +46,6 @@ public class AuthenticationConfig {
     public AuditorAware<String> auditorAware() {
         return new AuditAwareImpl();
     }
+
+
 }

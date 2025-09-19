@@ -6,7 +6,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class User extends Auditable implements UserDetails {
     @Column(unique = true, nullable = false)
     private String username;
     @Column(unique = true, nullable = false)
-    private String userEmail;
+    private String email;
     private String password;
     private Role role;
     private boolean enabled;
@@ -43,22 +42,7 @@ public class User extends Auditable implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userEmail;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
+        return email;
     }
 
     @Override
