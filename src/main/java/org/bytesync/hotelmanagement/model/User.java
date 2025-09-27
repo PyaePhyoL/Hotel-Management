@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users_t")
+@Table(name = "users")
 public class User extends Auditable implements UserDetails {
 
     @Id
