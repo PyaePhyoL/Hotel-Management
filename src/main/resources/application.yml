@@ -3,12 +3,12 @@ spring:
     name: "hotel-management"
 
   datasource:
-    url: jdbc:mysql://localhost:3306/hotel_management_db
+    url: jdbc:mysql://localhost:3306/hotel_management_db?createDatabaseIfNotExist=true
     username: root
     password: admin
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
 
 application:
   security:

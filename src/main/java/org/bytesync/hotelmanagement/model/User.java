@@ -21,11 +21,12 @@ public class User extends Auditable implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(50)")
     private String username;
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(50)")
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
     private Role role;
     private boolean enabled;
 
