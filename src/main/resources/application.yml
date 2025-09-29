@@ -15,7 +15,7 @@ application:
     jwt:
       issuer : "ByteSync Solution"
       secret-key: "344dc71229be8fc466048b20963d73568147dd94683891151a15957ef4e1b589"
-      access: 60
+      access: 600
       refresh: 1440
 
 server:
