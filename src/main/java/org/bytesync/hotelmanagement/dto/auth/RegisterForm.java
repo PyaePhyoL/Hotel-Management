@@ -1,11 +1,19 @@
 package org.bytesync.hotelmanagement.dto.auth;
 
+import lombok.NonNull;
 import org.bytesync.hotelmanagement.model.Role;
 
+import java.time.LocalDate;
+
 public record RegisterForm(
-        String username,
-        String email,
+        @NonNull String name,
+        @NonNull String email,
         String password,
-        Role role
+        String position,
+        @NonNull Role role,
+        String nrc,
+        LocalDate birthDate,
+        LocalDate joinDate,
+        String address
 ) {
 }

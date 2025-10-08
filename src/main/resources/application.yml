@@ -19,4 +19,4 @@ application:
       refresh: 1440
 
 server:
-  port: 9984
+  port: 9090

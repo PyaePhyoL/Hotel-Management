@@ -22,12 +22,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("""
     select new org.bytesync.hotelmanagement.dto.auth.UserDto(
     u.id,
-    u.username,
+    u.name,
     u.email,
-    u.role,
+    u.joinDate,
+    u.position,
+    u.nrc,
+    u.birthDate,
     u.enabled
     )
     from User u
 """)
     List<UserDto> findAllDtos(Pageable pageable);
+
+    boolean existsByName(String name);
+
+    boolean existsByNrc(String nrc);
 }

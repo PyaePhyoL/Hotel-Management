@@ -1,12 +1,15 @@
 package org.bytesync.hotelmanagement.dto.auth;
 
-import org.bytesync.hotelmanagement.model.Role;
+import java.time.LocalDate;
 
 public record UserDto(
         long id,
-        String username,
+        String name,
         String email,
-        Role role,
+        LocalDate joinDate,
+        String position,
+        String nrc,
+        LocalDate birthDate,
         boolean enabled
 ) {
 }
