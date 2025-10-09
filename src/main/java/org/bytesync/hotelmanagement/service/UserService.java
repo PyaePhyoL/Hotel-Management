@@ -1,12 +1,10 @@
 package org.bytesync.hotelmanagement.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bytesync.hotelmanagement.dto.PageResult;
-import org.bytesync.hotelmanagement.dto.auth.RegisterForm;
-import org.bytesync.hotelmanagement.dto.auth.SignInForm;
-import org.bytesync.hotelmanagement.dto.auth.UserDto;
-import org.bytesync.hotelmanagement.dto.auth.UserInfo;
+import org.bytesync.hotelmanagement.dto.auth.*;
 import org.bytesync.hotelmanagement.exception.UserAlreadyExistsException;
 import org.bytesync.hotelmanagement.model.User;
 import org.bytesync.hotelmanagement.repository.UserRepository;
@@ -143,5 +141,9 @@ public class UserService {
         var user = safeCall(userRepository.findById(id), "User", id);
         userRepository.delete(user);
         return "Deleted the user " + user.getName();
+    }
+
+    public UserDetailsDto getDetails(Long userId) {
+        return safeCall(userRepository.findDetailsById(userId), "User", userId);
     }
 }

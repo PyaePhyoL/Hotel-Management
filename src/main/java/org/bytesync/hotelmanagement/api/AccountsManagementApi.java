@@ -1,7 +1,6 @@
 package org.bytesync.hotelmanagement.api;
 
 import lombok.RequiredArgsConstructor;
-import org.bytesync.hotelmanagement.dto.PageResult;
 import org.bytesync.hotelmanagement.dto.ResponseMessage;
 import org.bytesync.hotelmanagement.dto.auth.*;
 import org.bytesync.hotelmanagement.service.UserService;
@@ -29,6 +28,12 @@ public class AccountsManagementApi {
         var message = "User signed in successfully";
         var userInfo = userService.signIn(form);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), message, userInfo));
+    }
+
+    @GetMapping("/detail/{userId}")
+    public ResponseEntity<ResponseMessage> getDetailsById(@PathVariable Long userId) {
+        var userDetails = userService.getDetails(userId);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "", userDetails));
     }
 
     @PutMapping("/update/{userId}")

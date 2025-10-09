@@ -1,5 +1,6 @@
 package org.bytesync.hotelmanagement.repository;
 
+import org.bytesync.hotelmanagement.dto.auth.UserDetailsDto;
 import org.bytesync.hotelmanagement.dto.auth.UserDto;
 import org.bytesync.hotelmanagement.model.User;
 import org.springframework.data.domain.Pageable;
@@ -37,4 +38,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByName(String name);
 
     boolean existsByNrc(String nrc);
+
+    @Query("""
+    select new org.bytesync.hotelmanagement.dto.auth.UserDetailsDto(
+    u.id,
+    u.name,
+    u.email,
+    u.position,
+    u.role,
+    u.nrc,
+    u.birthDate,
+    u.joinDate,
+    u.address,
+    u.enabled
+    ) from User u
+    where u.id = :id
+""")
+    Optional<UserDetailsDto> findDetailsById(Long id);
 }
