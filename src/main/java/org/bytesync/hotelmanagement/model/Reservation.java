@@ -24,16 +24,22 @@ public class Reservation {
     private LocalDateTime checkInTime;
     private LocalDateTime checkOutTime;
     private Integer daysOfStay;
-    private Double totalAmount;
+    private Double pricePerNight;
     private StayType stayType;
-    private String staffName;
+    private String registeredStaff;
     private Integer noOfGuest;
     @ManyToOne
     private Guest guest;
     @ManyToOne
     private Room room;
+
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DailyVoucher>  dailyVouchers;
+
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Payment> paymentList = new ArrayList<>();
+
+
 
     public void addPayment(Payment payment) {
         this.paymentList.add(payment);
@@ -53,7 +59,4 @@ public class Reservation {
         NORMAL, LONG
     }
 
-    public void increaseAmount() {
-        this.totalAmount += this.room.getBasePrice() * this.noOfGuest;
-    }
 }

@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record UserInfo(
-        Long userId,
+        Integer userId,
         String userName,
         String email,
         String role,

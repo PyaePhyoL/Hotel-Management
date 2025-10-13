@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-    id BIGINT AUTO_INCREMENT,
+    id INT AUTO_INCREMENT,
     name VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(50) UNIQUE  NOT NULL,
     password VARCHAR(255),
@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS rooms (
                        no INT NOT NULL,
                        base_price DOUBLE,
+                       add_on_price DOUBLE,
                        capacity INT,
                        floor ENUM('FOURTH', 'FIFTH', 'SEVENTH', 'EIGHTH'),
                        current_status ENUM('AVAILABLE', 'NORMAL_STAY', 'LONG_STAY', 'IN_SERVICE', 'STORE'),

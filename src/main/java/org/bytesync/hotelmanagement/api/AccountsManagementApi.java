@@ -31,13 +31,13 @@ public class AccountsManagementApi {
     }
 
     @GetMapping("/detail/{userId}")
-    public ResponseEntity<ResponseMessage> getDetailsById(@PathVariable Long userId) {
+    public ResponseEntity<ResponseMessage> getDetailsById(@PathVariable int userId) {
         var userDetails = userService.getDetails(userId);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "", userDetails));
     }
 
     @PutMapping("/update/{userId}")
-    public ResponseEntity<ResponseMessage> update(@PathVariable long userId, @RequestBody RegisterForm form) {
+    public ResponseEntity<ResponseMessage> update(@PathVariable int userId, @RequestBody RegisterForm form) {
         var message = userService.update(userId, form);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), message, null));
     }
@@ -58,19 +58,19 @@ public class AccountsManagementApi {
     }
 
     @PatchMapping("/enable/{userId}")
-    public ResponseEntity<ResponseMessage>  enableUser(@PathVariable long userId) {
+    public ResponseEntity<ResponseMessage>  enableUser(@PathVariable int userId) {
         var message = userService.enable(userId);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), message, null));
     }
 
     @PatchMapping("/disable/{userId}")
-    public ResponseEntity<ResponseMessage>  disableUser(@PathVariable long userId) {
+    public ResponseEntity<ResponseMessage>  disableUser(@PathVariable int userId) {
         var message = userService.disable(userId);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), message, null));
     }
 
     @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<ResponseMessage> deleteUser(@PathVariable long userId) {
+    public ResponseEntity<ResponseMessage> deleteUser(@PathVariable int userId) {
         var message = userService.delete(userId);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), message, null));
     }

@@ -5,7 +5,7 @@ import org.bytesync.hotelmanagement.model.Role;
 import java.time.LocalDate;
 
 public record UserDetailsDto(
-        Long id,
+        Integer id,
         String name,
         String email,
         String position,

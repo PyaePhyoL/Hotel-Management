@@ -20,6 +20,7 @@ public class Room {
     @Id
     private Integer no;
     private Double basePrice;
+    private Double addOnPrice;
     private Integer capacity;
     private Floor floor;
     @Enumerated(EnumType.STRING)

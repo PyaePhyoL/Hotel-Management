@@ -9,6 +9,7 @@ import org.bytesync.hotelmanagement.exception.UserAlreadyExistsException;
 import org.bytesync.hotelmanagement.model.User;
 import org.bytesync.hotelmanagement.repository.UserRepository;
 import org.bytesync.hotelmanagement.security.SecurityTokenProvider;
+import org.bytesync.hotelmanagement.util.mapper.UserMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,18 +54,9 @@ public class UserService {
     }
 
     public String register(RegisterForm form) {
-        var user = User.builder()
-                .name(form.name())
-                .email(form.email())
-                .password(passwordEncoder.encode(form.password()))
-                .role(form.role())
-                .position(form.position())
-                .nrc(form.nrc())
-                .birthDate(form.birthDate())
-                .joinDate(form.joinDate())
-                .address(form.address())
-                .enabled(true)
-                .build();
+        var user = UserMapper.toEntity(form);
+        user.setPassword(passwordEncoder.encode(form.password()));
+
         checkUserExists(user);
 
         userRepository.saveAndFlush(user);
@@ -78,18 +70,11 @@ public class UserService {
         if(userRepository.existsByNrc(user.getNrc())) throw new UserAlreadyExistsException("NRC already exists");
     }
 
-    public String update(Long id, RegisterForm form) {
+    public String update(Integer id, RegisterForm form) {
         var user = safeCall(userRepository.findById(id), "User", id);
         ensureUserUpdateNoConflict(user, form);
 
-        user.setName(form.name());
-        user.setEmail(form.email());
-        user.setRole(form.role());
-        user.setPosition(form.position());
-        user.setNrc(form.nrc());
-        user.setBirthDate(form.birthDate());
-        user.setJoinDate(form.joinDate());
-        user.setAddress(form.address());
+        UserMapper.update(user, form);
 
         userRepository.save(user);
         return "User has been updated";
@@ -116,14 +101,14 @@ public class UserService {
     }
 
 
-    public String enable(Long id) {
+    public String enable(Integer id) {
         var user = safeCall(userRepository.findById(id), "User", id);
         user.setEnabled(true);
         userRepository.save(user);
         return "Enabled the user " + user.getName();
     }
 
-    public String disable(Long id) {
+    public String disable(Integer id) {
         var user = safeCall(userRepository.findById(id), "User", id);
         user.setEnabled(false);
         userRepository.save(user);
@@ -137,13 +122,13 @@ public class UserService {
         return new PageResult<>(users, count, page, size);
     }
 
-    public String delete(Long id) {
+    public String delete(Integer id) {
         var user = safeCall(userRepository.findById(id), "User", id);
         userRepository.delete(user);
         return "Deleted the user " + user.getName();
     }
 
-    public UserDetailsDto getDetails(Long userId) {
+    public UserDetailsDto getDetails(Integer userId) {
         return safeCall(userRepository.findDetailsById(userId), "User", userId);
     }
 }
