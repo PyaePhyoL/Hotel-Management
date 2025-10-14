@@ -1,16 +1,22 @@
 package org.bytesync.hotelmanagement.dto.auth;
 
-import lombok.NonNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import org.bytesync.hotelmanagement.model.Role;
 
 import java.time.LocalDate;
 
 public record RegisterForm(
-        @NonNull String name,
-        @NonNull String email,
+        @NotBlank(message = "Name cannot be blank")
+        String name,
+        @Email(message = "Email must be in correct format")
+        @NotBlank(message = "Email cannot be blank")
+        String email,
+        @NotBlank(message = "Password cannot be blank")
         String password,
         String position,
-        @NonNull Role role,
+        @NotBlank(message = "Role cannot be blank")
+        Role role,
         String nrc,
         LocalDate birthDate,
         LocalDate joinDate,

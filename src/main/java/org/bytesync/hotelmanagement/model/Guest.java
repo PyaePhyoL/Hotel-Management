@@ -21,11 +21,12 @@ public class Guest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    @Column(unique = true, nullable = false)
     private String email;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String phone;
-    @Column(unique = true)
-    private String nationalId;
+    @Column(unique = true, nullable = false)
+    private String nrc;
     @Column(unique = true)
     private String passport;
     private String occupation;

@@ -2,19 +2,22 @@ package org.bytesync.hotelmanagement.repository;
 
 import org.bytesync.hotelmanagement.dto.GuestDto;
 import org.bytesync.hotelmanagement.model.Guest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
-public interface GuestRepository extends JpaRepository<Guest, Long> {
+public interface GuestRepository extends JpaRepository<Guest, Integer>, JpaSpecificationExecutor<Guest> {
     boolean existsByEmail(String email);
 
     boolean existsByPassport(String passport);
 
     boolean existsByPhone(String phone);
 
-    boolean existsByNationalId(String nationalId);
+    boolean existsByNrc(String nrc);
 
     @Query("""
     select new org.bytesync.hotelmanagement.dto.GuestDto(
@@ -22,7 +25,7 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
     g.name,
     g.email,
     g.phone,
-    g.nationalId,
+    g.nrc,
     g.passport,
     g.occupation,
     g.maritalStatus,
@@ -33,4 +36,23 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
     where g.id = :id
 """)
     Optional<GuestDto> findGuestDtoById(Integer id);
+
+    @Query("""
+    select new org.bytesync.hotelmanagement.dto.GuestDto(
+    g.id,
+    g.name,
+    g.email,
+    g.phone,
+    g.nrc,
+    g.passport,
+    g.occupation,
+    g.maritalStatus,
+    g.address,
+    g.birthDate
+    )
+    from Guest g
+""")
+    List<GuestDto> findAllGuestDto(Pageable pageable);
+
+    boolean existsByName(String name);
 }

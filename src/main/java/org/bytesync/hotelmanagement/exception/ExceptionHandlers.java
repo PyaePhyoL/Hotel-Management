@@ -4,17 +4,20 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.bytesync.hotelmanagement.dto.ResponseMessage;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -61,6 +64,19 @@ public class ExceptionHandlers {
         return new ResponseMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 e.getMessage(),
+                null
+        );
+    }
+
+    @ExceptionHandler @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ResponseMessage handle(MethodArgumentNotValidException e) {
+        var errors = e.getBindingResult().getFieldErrors().stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.joining(", "));
+
+        return new ResponseMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                errors,
                 null
         );
     }

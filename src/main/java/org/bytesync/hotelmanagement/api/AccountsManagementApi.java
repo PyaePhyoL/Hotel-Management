@@ -1,5 +1,6 @@
 package org.bytesync.hotelmanagement.api;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.ResponseMessage;
 import org.bytesync.hotelmanagement.dto.auth.*;
@@ -18,7 +19,7 @@ public class AccountsManagementApi {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<ResponseMessage> register(@RequestBody RegisterForm form) {
+    public ResponseEntity<ResponseMessage> register(@Valid @RequestBody RegisterForm form) {
         var message = userService.register(form);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage(HttpStatus.CREATED.value(), message, null));
     }
