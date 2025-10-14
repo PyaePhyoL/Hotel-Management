@@ -20,5 +20,6 @@ CREATE TABLE IF NOT EXISTS rooms (
                        capacity INT,
                        floor ENUM('FOURTH', 'FIFTH', 'SEVENTH', 'EIGHTH'),
                        current_status ENUM('AVAILABLE', 'NORMAL_STAY', 'LONG_STAY', 'IN_SERVICE', 'STORE'),
+                       current_reservation_id BIGINT,
                        PRIMARY KEY (no)
 );

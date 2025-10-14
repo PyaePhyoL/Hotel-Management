@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.dto;
+package org.bytesync.hotelmanagement.dto.room;
 
 import lombok.Builder;
 import org.bytesync.hotelmanagement.model.enums.Floor;

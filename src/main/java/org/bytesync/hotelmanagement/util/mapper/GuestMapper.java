@@ -1,6 +1,6 @@
 package org.bytesync.hotelmanagement.util.mapper;
 
-import org.bytesync.hotelmanagement.dto.GuestDto;
+import org.bytesync.hotelmanagement.dto.guest.GuestDto;
 import org.bytesync.hotelmanagement.model.Guest;
 
 public class GuestMapper {

@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.dto;
+package org.bytesync.hotelmanagement.dto.output;
 
 public record ResponseMessage(
         Integer code,

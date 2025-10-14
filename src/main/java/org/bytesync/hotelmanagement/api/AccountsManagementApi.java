@@ -2,7 +2,7 @@ package org.bytesync.hotelmanagement.api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.bytesync.hotelmanagement.dto.ResponseMessage;
+import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.dto.auth.*;
 import org.bytesync.hotelmanagement.service.UserService;
 import org.springframework.http.HttpStatus;

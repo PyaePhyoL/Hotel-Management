@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.dto;
+package org.bytesync.hotelmanagement.dto.guest;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

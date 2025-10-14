@@ -25,11 +25,6 @@ public class Payment extends Auditable{
     @ManyToOne
     private Reservation reservation;
 
-
-    public enum PaymentMethod {
-        DEPOSIT, CASH_DOWN, EXPENDITURE
-    }
-
     public void setReservation(Reservation resv) {
         this.reservation = resv;
         resv.addPayment(this);

@@ -1,6 +1,7 @@
 package org.bytesync.hotelmanagement.util.mapper;
 
-import org.bytesync.hotelmanagement.dto.RoomDto;
+import org.bytesync.hotelmanagement.dto.room.RoomDto;
+import org.bytesync.hotelmanagement.dto.room.RoomOverviewDetails;
 import org.bytesync.hotelmanagement.model.Room;
 
 public class RoomMapper {
@@ -15,6 +16,19 @@ public class RoomMapper {
                 .capacity(room.getCapacity())
                 .floor(room.getFloor())
                 .currentStatus(room.getCurrentStatus())
+                .build();
+    }
+
+    public static RoomOverviewDetails toRoomOverDetails(Room room) {
+        return RoomOverviewDetails.builder()
+                .no(room.getNo())
+                .roomType(room.getRoomtype())
+                .basePrice(room.getBasePrice())
+                .addOnPrice(room.getAddOnPrice())
+                .capacity(room.getCapacity())
+                .floor(room.getFloor())
+                .currentStatus(room.getCurrentStatus())
+                .currentReservationId(room.getCurrentReservationId())
                 .build();
     }
 }

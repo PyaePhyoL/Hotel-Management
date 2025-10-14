@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bytesync.hotelmanagement.model.enums.StayType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class Reservation {
     private Double pricePerNight;
     private StayType stayType;
     private String registeredStaff;
-    private Integer noOfGuest;
+    private Integer noOfGuests;
     @ManyToOne
     private Guest guest;
     @ManyToOne
@@ -53,10 +54,6 @@ public class Reservation {
     public void setRoom(Room room) {
         this.room = room;
         room.addReservation(this);
-    }
-
-    public enum StayType {
-        NORMAL, LONG
     }
 
 }

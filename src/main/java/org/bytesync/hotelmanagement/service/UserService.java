@@ -1,25 +1,20 @@
 package org.bytesync.hotelmanagement.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bytesync.hotelmanagement.dto.PageResult;
+import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.auth.*;
 import org.bytesync.hotelmanagement.exception.UserAlreadyExistsException;
 import org.bytesync.hotelmanagement.model.User;
 import org.bytesync.hotelmanagement.repository.UserRepository;
 import org.bytesync.hotelmanagement.security.SecurityTokenProvider;
 import org.bytesync.hotelmanagement.util.mapper.UserMapper;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 
 import static org.bytesync.hotelmanagement.security.SecurityTokenProvider.Type.ACCESS;
 import static org.bytesync.hotelmanagement.security.SecurityTokenProvider.Type.REFRESH;

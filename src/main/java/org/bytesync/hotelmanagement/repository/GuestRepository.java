@@ -1,6 +1,6 @@
 package org.bytesync.hotelmanagement.repository;
 
-import org.bytesync.hotelmanagement.dto.GuestDto;
+import org.bytesync.hotelmanagement.dto.guest.GuestDto;
 import org.bytesync.hotelmanagement.model.Guest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,7 +20,7 @@ public interface GuestRepository extends JpaRepository<Guest, Integer>, JpaSpeci
     boolean existsByNrc(String nrc);
 
     @Query("""
-    select new org.bytesync.hotelmanagement.dto.GuestDto(
+    select new org.bytesync.hotelmanagement.dto.guest.GuestDto(
     g.id,
     g.name,
     g.email,
@@ -38,7 +38,7 @@ public interface GuestRepository extends JpaRepository<Guest, Integer>, JpaSpeci
     Optional<GuestDto> findGuestDtoById(Integer id);
 
     @Query("""
-    select new org.bytesync.hotelmanagement.dto.GuestDto(
+    select new org.bytesync.hotelmanagement.dto.guest.GuestDto(
     g.id,
     g.name,
     g.email,

@@ -2,8 +2,8 @@ package org.bytesync.hotelmanagement.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.bytesync.hotelmanagement.dto.GuestDto;
-import org.bytesync.hotelmanagement.dto.PageResult;
+import org.bytesync.hotelmanagement.dto.guest.GuestDto;
+import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.exception.UserAlreadyExistsException;
 import org.bytesync.hotelmanagement.model.Guest;
 import org.bytesync.hotelmanagement.repository.GuestRepository;
@@ -13,12 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
