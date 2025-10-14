@@ -1,6 +1,6 @@
 package org.bytesync.hotelmanagement.dto.auth;
 
-import org.bytesync.hotelmanagement.model.Role;
+import org.bytesync.hotelmanagement.model.enums.Role;
 
 import java.time.LocalDate;
 

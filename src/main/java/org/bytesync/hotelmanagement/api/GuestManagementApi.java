@@ -26,14 +26,14 @@ public class GuestManagementApi {
     @GetMapping("/detail/{id}")
     public ResponseEntity<ResponseMessage> getDetailsById(@PathVariable int id) {
         var guest = guestService.getDetails(id);
-        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "", guest));
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Guest Details", guest));
     }
 
     @GetMapping
     public ResponseEntity<ResponseMessage> getAllGuests(@RequestParam(required = false, defaultValue = "0") int page,
                                                         @RequestParam(required = false, defaultValue = "10") int size) {
         var guestList = guestService.getAll(page, size);
-        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "", guestList));
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Guests List", guestList));
     }
 
     @PutMapping("/update/{id}")
@@ -45,7 +45,7 @@ public class GuestManagementApi {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseMessage> delete(@PathVariable int id) {
         var message = guestService.delete(id);
-        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "", message));
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Delete Guest", message));
     }
 
     @GetMapping("/search")
@@ -53,6 +53,6 @@ public class GuestManagementApi {
                                                   @RequestParam(required = false, defaultValue = "0") int page,
                                                   @RequestParam(required = false, defaultValue = "10") int size) {
         var resultList = guestService.search(query, page, size);
-        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "", resultList));
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Search Result", resultList));
     }
 }

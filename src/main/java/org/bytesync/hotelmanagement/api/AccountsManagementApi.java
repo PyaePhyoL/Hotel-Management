@@ -34,7 +34,7 @@ public class AccountsManagementApi {
     @GetMapping("/detail/{userId}")
     public ResponseEntity<ResponseMessage> getDetailsById(@PathVariable int userId) {
         var userDetails = userService.getDetails(userId);
-        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "", userDetails));
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "User Details", userDetails));
     }
 
     @PutMapping("/update/{userId}")
@@ -55,7 +55,7 @@ public class AccountsManagementApi {
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
         var contents = userService.getAll(page, size);
-        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "", contents));
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Users List", contents));
     }
 
     @PatchMapping("/enable/{userId}")

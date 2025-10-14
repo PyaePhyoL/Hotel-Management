@@ -2,7 +2,7 @@ package org.bytesync.hotelmanagement.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import org.bytesync.hotelmanagement.model.Role;
+import org.bytesync.hotelmanagement.model.enums.Role;
 
 import java.time.LocalDate;
 
