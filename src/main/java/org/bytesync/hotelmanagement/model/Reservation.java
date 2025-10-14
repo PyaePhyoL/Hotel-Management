@@ -26,6 +26,7 @@ public class Reservation {
     private LocalDateTime checkOutTime;
     private Integer daysOfStay;
     private Double pricePerNight;
+    private Double depositAmount;
     private StayType stayType;
     private String registeredStaff;
     private Integer noOfGuests;
@@ -38,7 +39,7 @@ public class Reservation {
     private List<DailyVoucher>  dailyVouchers;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Payment> paymentList = new ArrayList<>();
+    private List<Payment> paymentList;
 
 
 

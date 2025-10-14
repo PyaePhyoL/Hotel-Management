@@ -55,4 +55,6 @@ public interface GuestRepository extends JpaRepository<Guest, Integer>, JpaSpeci
     List<GuestDto> findAllGuestDto(Pageable pageable);
 
     boolean existsByName(String name);
+
+    Optional<Guest> findByNameAndNrc(String name, String nrc);
 }
