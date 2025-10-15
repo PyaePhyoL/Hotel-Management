@@ -69,7 +69,7 @@ public class GuestService {
         if(!guest.getEmail().equals(form.getEmail()) && guestRepository.existsByEmail(form.getEmail())) throw new UserAlreadyExistsException("Email already exists");
         if(!guest.getPhone().equals(form.getPhone()) && guestRepository.existsByPhone(form.getPhone())) throw new UserAlreadyExistsException("Phone already exists");
         if(!guest.getNrc().equals(form.getNrc()) && guestRepository.existsByNrc(form.getNrc())) throw new UserAlreadyExistsException("NRC already exists");
-        if(!guest.getPassport().equals(form.getPassport()) && guestRepository.existsByPassport(form.getPassport())) throw new UserAlreadyExistsException("Passport already exists");
+        if(null != guest.getPassport() && !guest.getPassport().equals(form.getPassport()) && guestRepository.existsByPassport(form.getPassport())) throw new UserAlreadyExistsException("Passport already exists");
     }
 
     public String delete(int id) {
