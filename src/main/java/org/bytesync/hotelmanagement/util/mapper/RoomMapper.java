@@ -22,7 +22,7 @@ public class RoomMapper {
     public static RoomOverviewDetails toRoomOverDetails(Room room) {
         return RoomOverviewDetails.builder()
                 .no(room.getNo())
-                .roomType(room.getRoomtype())
+                .roomType(room.getRoomType())
                 .basePrice(room.getBasePrice())
                 .addOnPrice(room.getAddOnPrice())
                 .capacity(room.getCapacity())

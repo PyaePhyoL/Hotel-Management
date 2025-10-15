@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.bytesync.hotelmanagement.model.enums.PaymentMethod;
 
 import java.time.LocalDate;
 

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.bytesync.hotelmanagement.model.enums.StayType;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,6 +26,7 @@ public class Reservation {
     private Integer daysOfStay;
     private Double pricePerNight;
     private Double depositAmount;
+    @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
     private StayType stayType;
     private String registeredStaff;
     private Integer noOfGuests;
@@ -42,19 +42,8 @@ public class Reservation {
     private List<Payment> paymentList;
 
 
-
     public void addPayment(Payment payment) {
         this.paymentList.add(payment);
-    }
-
-    public void setGuest(Guest guest) {
-        this.guest = guest;
-        guest.addReservation(this);
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-        room.addReservation(this);
     }
 
 }

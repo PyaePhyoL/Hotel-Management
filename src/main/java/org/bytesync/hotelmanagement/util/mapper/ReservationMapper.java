@@ -16,7 +16,7 @@ public class ReservationMapper {
                 .pricePerNight(form.getPricePerNight())
                 .depositAmount(form.getDepositAmount())
                 .registeredStaff(form.getStaffName())
-                .daysOfStay()
+                .daysOfStay(1)
                 .build();
     }
 }

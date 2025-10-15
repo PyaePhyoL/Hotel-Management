@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.bytesync.hotelmanagement.model.enums.Floor;
 import org.bytesync.hotelmanagement.model.enums.RoomStatus;
 import org.bytesync.hotelmanagement.model.enums.RoomType;
+import org.bytesync.hotelmanagement.model.enums.StayType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +24,13 @@ public class Room {
     @Id
     private Integer no;
     @Enumerated(EnumType.STRING)
-    private RoomType roomtype;
+    private RoomType roomType;
     private Double basePrice;
     private Double addOnPrice;
     private Integer capacity;
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
     private Floor floor;
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
     private RoomStatus currentStatus;
 
     private Long currentReservationId;
@@ -39,6 +40,9 @@ public class Room {
 
     public void addReservation(Reservation reservation) {
         this.reservationList.add(reservation);
+        this.setCurrentReservationId(reservation.getId());
+        this.currentStatus = reservation.getStayType() == StayType.NORMAL
+                ? RoomStatus.NORMAL_STAY : RoomStatus.LONG_STAY;
     }
 
 }

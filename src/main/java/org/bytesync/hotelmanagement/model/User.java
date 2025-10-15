@@ -31,7 +31,7 @@ public class User extends Auditable implements UserDetails {
 
     @Column(columnDefinition = "VARCHAR(50)")
     private String position;
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)@Column(columnDefinition = "VARCHAR(50)")
     private Role role;
 
     @Column(unique = true, columnDefinition = "VARCHAR(50)")
