@@ -16,7 +16,7 @@ public class RoomsManagementApi {
 
     private final RoomService roomService;
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<ResponseMessage> getRooms(@RequestParam(required = false) RoomStatus status){
         var rooms = roomService.getAllRoomsInGridView(status);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Rooms Overview", rooms));

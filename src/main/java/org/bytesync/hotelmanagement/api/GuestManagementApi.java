@@ -29,7 +29,7 @@ public class GuestManagementApi {
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Guest Details", guest));
     }
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<ResponseMessage> getAllGuests(@RequestParam(required = false, defaultValue = "0") int page,
                                                         @RequestParam(required = false, defaultValue = "10") int size) {
         var guestList = guestService.getAll(page, size);

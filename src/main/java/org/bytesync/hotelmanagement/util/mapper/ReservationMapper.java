@@ -1,6 +1,7 @@
 package org.bytesync.hotelmanagement.util.mapper;
 
 import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
+import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
 import org.bytesync.hotelmanagement.model.Reservation;
 
 public class ReservationMapper {
@@ -16,7 +17,19 @@ public class ReservationMapper {
                 .pricePerNight(form.getPricePerNight())
                 .depositAmount(form.getDepositAmount())
                 .registeredStaff(form.getStaffName())
+                .isActive(true)
                 .daysOfStay(1)
+                .build();
+    }
+
+    public static ReservationInfo toReservationInfo(Reservation reservation) {
+        return ReservationInfo.builder()
+                .id(reservation.getId())
+                .checkInTime(reservation.getCheckInTime())
+                .checkOutTime(reservation.getCheckOutTime())
+                .daysOfStay(reservation.getDaysOfStay())
+                .guestName(reservation.getGuest().getName())
+                .roomNo(reservation.getRoom().getNo())
                 .build();
     }
 }

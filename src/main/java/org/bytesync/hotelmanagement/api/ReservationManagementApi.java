@@ -22,4 +22,12 @@ public class ReservationManagementApi {
         var message = reservationService.create(form);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.CREATED.value(), "Reservation created", message));
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<ResponseMessage> getReservations(@RequestParam(required = false, defaultValue = "true") boolean active,
+                                                           @RequestParam(required = false, defaultValue = "0") int page,
+                                                           @RequestParam(required = false, defaultValue = "10") int size) {
+        var message = reservationService.getAll(active, page, size);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Reservations List", message));
+    }
 }
