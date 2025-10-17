@@ -35,7 +35,7 @@ public class RoomsManagementApi {
     }
 
     @GetMapping("/select-list")
-    public ResponseEntity<ResponseMessage> selectRooms(){
+    public ResponseEntity<ResponseMessage> selectAvailableRooms(){
         var rooms = roomService.selectList();
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Rooms Select", rooms));
     }

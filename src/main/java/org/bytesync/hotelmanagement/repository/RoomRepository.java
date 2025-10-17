@@ -31,7 +31,7 @@ public interface RoomRepository extends JpaRepository<Room,Integer>, JpaSpecific
     r.no,
     CONCAT(r.no, ' (', r.floor , ')')
     )
-    from Room r
+    from Room r where r.currentStatus = 'AVAILABLE'
 """)
     List<RoomSelectList> findAllRoomForSelectList();
 }
