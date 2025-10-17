@@ -79,4 +79,13 @@ public class ExceptionHandlers {
         );
     }
 
+    @ExceptionHandler @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ResponseMessage handle(IllegalStateException e) {
+        return new ResponseMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                e.getMessage(),
+                null
+        );
+    }
+
 }
