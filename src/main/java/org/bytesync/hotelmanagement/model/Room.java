@@ -25,8 +25,8 @@ public class Room {
     private Integer no;
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
-    private Double basePrice;
-    private Double addOnPrice;
+    private Integer basePrice;
+    private Integer addOnPrice;
     private Integer capacity;
     @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
     private Floor floor;

@@ -28,8 +28,8 @@ public class Reservation {
     private LocalDateTime checkInTime;
     private LocalDateTime checkOutTime;
     private Integer daysOfStay;
-    private Double pricePerNight;
-    private Double depositAmount;
+    private Integer pricePerNight;
+    private Integer depositAmount;
     @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
     private StayType stayType;
     private String registeredStaff;
@@ -52,5 +52,7 @@ public class Reservation {
         this.paymentList.add(payment);
     }
 
-
+    public void addDailyVoucher(DailyVoucher dailyVoucher) {
+        this.dailyVouchers.add(dailyVoucher);
+    }
 }

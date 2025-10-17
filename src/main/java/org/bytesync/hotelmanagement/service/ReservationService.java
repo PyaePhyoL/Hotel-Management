@@ -97,10 +97,6 @@ public class ReservationService {
         return "%s is checked out at %s".formatted(room.getNo(), timeString);
     }
 
-    public void createDailyVoucher() {
-
-    }
-
     public PageResult<ReservationInfo> getAll(boolean active, int page, int size) {
         Pageable pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "id");
         var spec = ReservationSpecification.filterByStatus(active);

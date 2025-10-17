@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation,Long>, JpaSpecificationExecutor<Reservation> {
@@ -24,4 +25,10 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long>, 
     where r.id = :id
 """)
     Optional<ReservationGuestInfo> findReservationGuestInfoById(Long id);
+
+    @Query("""
+    select r from Reservation r
+    where r.isActive = true
+""")
+    List<Reservation> findAllActiveReservations();
 }

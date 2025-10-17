@@ -25,6 +25,6 @@ public class ReservationForm {
     @NotBlank(message = "Please enter the name of register staff")
     private String staffName;
     @NotNull(message = "Price cannot be blank")
-    private Double pricePerNight;
-    private Double depositAmount;
+    private Integer pricePerNight;
+    private Integer depositAmount;
 }

@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS rooms (
                        no INT NOT NULL,
-                       base_price DOUBLE,
-                       add_on_price DOUBLE,
+                       base_price INT,
+                       add_on_price INT,
                        capacity INT,
                        floor ENUM('FOURTH', 'FIFTH', 'SEVENTH', 'EIGHTH'),
                        current_status ENUM('AVAILABLE', 'NORMAL_STAY', 'LONG_STAY', 'IN_SERVICE', 'STORE'),

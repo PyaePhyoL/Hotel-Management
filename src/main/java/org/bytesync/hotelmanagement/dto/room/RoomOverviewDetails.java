@@ -12,8 +12,8 @@ import org.bytesync.hotelmanagement.model.enums.RoomType;
 public class RoomOverviewDetails {
     private Integer no;
     private RoomType roomType;
-    private Double basePrice;
-    private Double addOnPrice;
+    private Integer basePrice;
+    private Integer addOnPrice;
     private Integer capacity;
     private Floor floor;
     private RoomStatus currentStatus;

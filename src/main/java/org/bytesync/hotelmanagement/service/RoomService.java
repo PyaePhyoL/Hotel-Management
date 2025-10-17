@@ -60,6 +60,7 @@ public class RoomService {
     }
 
     public List<RoomSelectList> selectList() {
-        return roomRepository.findAllRoomForSelectList();
+        var roomList = roomRepository.findAllRoomForSelectList();
+        return roomList.stream().map(RoomMapper::toRoomSelectList).toList();
     }
 }

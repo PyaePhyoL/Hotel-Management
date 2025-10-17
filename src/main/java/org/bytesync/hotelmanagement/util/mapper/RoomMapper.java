@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.util.mapper;
 
 import org.bytesync.hotelmanagement.dto.room.RoomDto;
 import org.bytesync.hotelmanagement.dto.room.RoomOverviewDetails;
+import org.bytesync.hotelmanagement.dto.room.RoomSelectList;
 import org.bytesync.hotelmanagement.model.Room;
 
 public class RoomMapper {
@@ -30,5 +31,13 @@ public class RoomMapper {
                 .currentStatus(room.getCurrentStatus())
                 .currentReservationId(room.getCurrentReservationId())
                 .build();
+    }
+
+    public static RoomSelectList toRoomSelectList(Room room) {
+        var name = "%d (%s) - %d MMK".formatted(room.getNo(), room.getFloor().getValue(), room.getBasePrice());
+        return new RoomSelectList(
+                room.getNo(),
+                name
+        );
     }
 }
