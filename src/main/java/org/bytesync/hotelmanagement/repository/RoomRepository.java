@@ -1,6 +1,7 @@
 package org.bytesync.hotelmanagement.repository;
 
 import org.bytesync.hotelmanagement.dto.room.RoomDto;
+import org.bytesync.hotelmanagement.dto.room.RoomSelectList;
 import org.bytesync.hotelmanagement.model.Room;
 import org.bytesync.hotelmanagement.model.enums.RoomStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,13 @@ public interface RoomRepository extends JpaRepository<Room,Integer>, JpaSpecific
     where r.currentStatus = :status
 """)
     List<RoomDto> findAllRoomDtosByStatus(RoomStatus status);
+
+    @Query("""
+    select new org.bytesync.hotelmanagement.dto.room.RoomSelectList(
+    r.no,
+    CONCAT(r.no, ' (', r.floor , ')')
+    )
+    from Room r
+""")
+    List<RoomSelectList> findAllRoomForSelectList();
 }

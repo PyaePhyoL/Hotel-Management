@@ -6,6 +6,7 @@ import org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo;
 import org.bytesync.hotelmanagement.dto.room.RoomDto;
 import org.bytesync.hotelmanagement.dto.room.RoomGridView;
 import org.bytesync.hotelmanagement.dto.room.RoomOverviewDetails;
+import org.bytesync.hotelmanagement.dto.room.RoomSelectList;
 import org.bytesync.hotelmanagement.model.enums.Floor;
 import org.bytesync.hotelmanagement.model.enums.RoomStatus;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
@@ -56,5 +57,9 @@ public class RoomService {
         roomOverviewDetails.setGuestInfo(guestInfo);
 
         return roomOverviewDetails;
+    }
+
+    public List<RoomSelectList> selectList() {
+        return roomRepository.findAllRoomForSelectList();
     }
 }

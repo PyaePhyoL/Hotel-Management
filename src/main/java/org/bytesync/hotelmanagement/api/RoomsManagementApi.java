@@ -33,4 +33,10 @@ public class RoomsManagementApi {
         var roomDetails = roomService.getRoomOverviewDetailsById(id);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Room Details", roomDetails));
     }
+
+    @GetMapping("/select-list")
+    public ResponseEntity<ResponseMessage> selectRooms(){
+        var rooms = roomService.selectList();
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Rooms Select", rooms));
+    }
 }
