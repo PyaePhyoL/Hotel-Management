@@ -1,8 +1,11 @@
 package org.bytesync.hotelmanagement.util.mapper;
 
+import org.bytesync.hotelmanagement.dto.reservation.ReservationDetails;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
 import org.bytesync.hotelmanagement.model.Reservation;
+
+import java.util.ArrayList;
 
 public class ReservationMapper {
 
@@ -19,6 +22,7 @@ public class ReservationMapper {
                 .registeredStaff(form.getStaffName())
                 .isActive(true)
                 .daysOfStay(1)
+                .dailyVouchers(new ArrayList<>())
                 .build();
     }
 
@@ -29,7 +33,21 @@ public class ReservationMapper {
                 .checkOutTime(reservation.getCheckOutTime())
                 .daysOfStay(reservation.getDaysOfStay())
                 .guestName(reservation.getGuest().getName())
-                .roomNo(reservation.getRoom().getNo())
+                .roomNo(reservation.getRoom().getRoomNo())
+                .build();
+    }
+
+    public static ReservationDetails toReservationDetails(Reservation reservation) {
+        return ReservationDetails.builder()
+                .id(reservation.getId())
+                .checkInTime(reservation.getCheckInTime())
+                .checkOutTime(reservation.getCheckOutTime())
+                .daysOfStay(reservation.getDaysOfStay())
+                .pricePerNight(reservation.getPricePerNight())
+                .depositAmount(reservation.getDepositAmount())
+                .stayType(reservation.getStayType())
+                .registeredStaff(reservation.getRegisteredStaff())
+                .noOfGuests(reservation.getNoOfGuests())
                 .build();
     }
 }

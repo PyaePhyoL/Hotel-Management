@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS rooms (
-                       no INT NOT NULL,
+                       room_no INT NOT NULL,
                        base_price INT,
                        add_on_price INT,
                        capacity INT,
@@ -22,5 +22,5 @@ CREATE TABLE IF NOT EXISTS rooms (
                        current_status ENUM('AVAILABLE', 'NORMAL_STAY', 'LONG_STAY', 'IN_SERVICE', 'STORE'),
                        current_reservation_id BIGINT,
                        room_type VARCHAR(50),
-                       PRIMARY KEY (no)
+                       PRIMARY KEY (room_no)
 );

@@ -10,8 +10,9 @@ public class RoomMapper {
     }
 
     public static RoomDto toDto(Room room) {
+        if (room == null) return null;
         return RoomDto.builder()
-                .no(room.getNo())
+                .no(room.getRoomNo())
                 .basePrice(room.getBasePrice())
                 .addOnPrice(room.getAddOnPrice())
                 .capacity(room.getCapacity())
@@ -22,7 +23,7 @@ public class RoomMapper {
 
     public static RoomOverviewDetails toRoomOverDetails(Room room) {
         return RoomOverviewDetails.builder()
-                .no(room.getNo())
+                .no(room.getRoomNo())
                 .roomType(room.getRoomType())
                 .basePrice(room.getBasePrice())
                 .addOnPrice(room.getAddOnPrice())
@@ -34,9 +35,9 @@ public class RoomMapper {
     }
 
     public static RoomSelectList toRoomSelectList(Room room) {
-        var name = "%d (%s) - %d MMK".formatted(room.getNo(), room.getFloor().getValue(), room.getBasePrice());
+        var name = "%d (%s) - %d MMK".formatted(room.getRoomNo(), room.getFloor().getValue(), room.getBasePrice());
         return new RoomSelectList(
-                room.getNo(),
+                room.getRoomNo(),
                 name
         );
     }

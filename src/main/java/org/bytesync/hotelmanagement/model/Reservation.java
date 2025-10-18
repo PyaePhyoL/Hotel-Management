@@ -55,4 +55,8 @@ public class Reservation {
     public void addDailyVoucher(DailyVoucher dailyVoucher) {
         this.dailyVouchers.add(dailyVoucher);
     }
+
+    public void incrementDaysOfStayByOne() {
+        this.daysOfStay++;
+    }
 }

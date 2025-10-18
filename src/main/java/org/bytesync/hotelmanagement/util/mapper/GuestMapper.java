@@ -23,6 +23,7 @@ public class GuestMapper {
     }
 
     public static GuestDto toDto(Guest guest) {
+        if (guest == null) return null;
         return GuestDto.builder()
                 .id(guest.getId())
                 .name(guest.getName())

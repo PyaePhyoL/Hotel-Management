@@ -22,7 +22,7 @@ import java.util.List;
 public class Room {
 
     @Id
-    private Integer no;
+    private Integer roomNo;
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
     private Integer basePrice;

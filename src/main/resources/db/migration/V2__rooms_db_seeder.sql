@@ -1,4 +1,4 @@
-INSERT INTO rooms (no, floor, base_price, add_on_price, capacity, current_status, room_type)
+INSERT INTO rooms (room_no, floor, base_price, add_on_price, capacity, current_status, room_type)
 VALUES
     (1, 'FOURTH', 40000,  25000, 2, 'AVAILABLE', 'SINGLE'),
     (2, 'FOURTH', 40000,  25000, 2, 'AVAILABLE', 'SINGLE'),

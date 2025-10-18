@@ -1,5 +1,6 @@
 package org.bytesync.hotelmanagement.scheduling;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bytesync.hotelmanagement.model.DailyVoucher;
@@ -17,7 +18,8 @@ public class ScheduleMethods {
 
     private final ReservationRepository reservationRepository;
 
-    @Scheduled(fixedRate = 1000 * 60)
+    @Transactional
+    @Scheduled(cron = "0 * * * * *")
     public void scheduleEveryDayCreatingVouchers() {
 
         log.info(" =============> Creating Voucher Schedule Task <=============");
@@ -25,17 +27,22 @@ public class ScheduleMethods {
         var date = LocalDate.now();
         var reservations = reservationRepository.findAllActiveReservations();
 
-        reservations.forEach(reservation -> createDailyVoucher(reservation, date));
+        reservations.forEach(reservation -> {
+            createDailyVoucher(reservation, date);
+            reservation.incrementDaysOfStayByOne();
+        });
 
         reservationRepository.saveAll(reservations);
     }
 
-    private void createDailyVoucher(Reservation reservation, LocalDate date) {
+    public static void createDailyVoucher(Reservation reservation, LocalDate date) {
         var dailyVoucher = DailyVoucher.builder()
                 .reservation(reservation)
                 .date(date)
                 .price(reservation.getPricePerNight())
                 .isPaid(false)
+                .guest(reservation.getGuest())
+                .room(reservation.getRoom())
                 .build();
         reservation.addDailyVoucher(dailyVoucher);
     }

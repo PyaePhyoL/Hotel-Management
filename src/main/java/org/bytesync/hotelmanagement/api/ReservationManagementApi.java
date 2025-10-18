@@ -39,4 +39,22 @@ public class ReservationManagementApi {
         var message = reservationService.checkoutReservation(id, checkout);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Reservation checkout", message));
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseMessage> deleteReservation(@PathVariable long id) {
+        var message = reservationService.delete(id);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Reservation deleted", message));
+    }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<ResponseMessage> getDetailsById(@PathVariable long id) {
+        var detail = reservationService.getDetailsById(id);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Reservation Detail", detail));
+    }
+
+    @PutMapping("/{id}/change-room/{roomId}")
+    public ResponseEntity<ResponseMessage> changeRoom(@PathVariable long id, @PathVariable int roomId) {
+        var message = reservationService.changeRoom(id, roomId);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Room change", message));
+    }
 }

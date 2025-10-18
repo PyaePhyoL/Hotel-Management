@@ -1,13 +1,13 @@
 package org.bytesync.hotelmanagement.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
+import org.bytesync.hotelmanagement.dto.reservation.ReservationDetails;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
+import org.bytesync.hotelmanagement.model.DailyVoucher;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Room;
 import org.bytesync.hotelmanagement.model.enums.RoomStatus;
@@ -15,20 +15,19 @@ import org.bytesync.hotelmanagement.repository.GuestRepository;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.repository.specification.ReservationSpecification;
-import org.bytesync.hotelmanagement.util.EntityOperationUtils;
+import org.bytesync.hotelmanagement.scheduling.ScheduleMethods;
+import org.bytesync.hotelmanagement.util.mapper.GuestMapper;
 import org.bytesync.hotelmanagement.util.mapper.ReservationMapper;
+import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.function.Function;
 
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.timeFormat;
@@ -62,6 +61,8 @@ public class ReservationService {
 
         var savedReservation = reservationRepository.save(reservation);
 
+        ScheduleMethods.createDailyVoucher(reservation, form.getCheckInTime().toLocalDate());
+
         room.addReservation(savedReservation);
         guest.addReservation(savedReservation);
         roomRepository.save(room);
@@ -87,14 +88,12 @@ public class ReservationService {
         reservation.setIsActive(false);
 
         var room = reservation.getRoom();
-        room.setCurrentReservationId(null);
-        room.setCurrentStatus(RoomStatus.AVAILABLE);
+        makeRoomAvailable(room);
         
         var timeString = timeFormat(checkoutTime);
         reservationRepository.save(reservation);
-        roomRepository.save(room);
 
-        return "%s is checked out at %s".formatted(room.getNo(), timeString);
+        return "Room-%s is checked out at %s".formatted(room.getRoomNo(), timeString);
     }
 
     public PageResult<ReservationInfo> getAll(boolean active, int page, int size) {
@@ -108,4 +107,58 @@ public class ReservationService {
         return new PageResult<>(infos, result.getTotalElements(), page, size);
     }
 
+    public String delete(Long reservationId) {
+        var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
+        makeRoomAvailable(reservation.getRoom());
+        reservationRepository.delete(reservation);
+        return "Reservation deleted successfully";
+    }
+
+    private void makeRoomAvailable(Room room) {
+        room.setCurrentStatus(RoomStatus.AVAILABLE);
+        room.setCurrentReservationId(null);
+        roomRepository.save(room);
+    }
+
+    public ReservationDetails getDetailsById(long id) {
+        var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
+
+        var resvDetails = ReservationMapper.toReservationDetails(reservation);
+        var guestDto = GuestMapper.toDto(reservation.getGuest());
+        var roomDto = RoomMapper.toDto(reservation.getRoom());
+        var totalPrice = getTotalPriceInReservation(reservation);
+        var paidPrice = getPaidPriceInReservation(reservation);
+        var leftPrice = totalPrice - paidPrice;
+
+        resvDetails.setGuestDetails(guestDto);
+        resvDetails.setRoomDetails(roomDto);
+        resvDetails.setTotalPrice(totalPrice);
+        resvDetails.setPaidPrice(paidPrice);
+        resvDetails.setLeftPrice(leftPrice);
+
+        return resvDetails;
+    }
+
+    public Integer getTotalPriceInReservation(Reservation reservation) {
+        return reservation.getDailyVouchers().stream().map(DailyVoucher::getPrice).reduce(0, Integer::sum);
+    }
+
+    public Integer getPaidPriceInReservation(Reservation reservation) {
+        return reservation.getDailyVouchers().stream().filter(DailyVoucher::getIsPaid).map(DailyVoucher::getPrice).reduce(0, Integer::sum);
+    }
+
+    @Transactional
+    public String changeRoom(long id, int roomId) {
+        var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
+        var newRoom = safeCall(roomRepository.findById(roomId), "Room", id);
+        var oldRoom = reservation.getRoom();
+        makeRoomAvailable(oldRoom);
+
+        reservation.setRoom(newRoom);
+        newRoom.addReservation(reservation);
+        roomRepository.save(newRoom);
+        reservationRepository.save(reservation);
+        return "Room-%s is changed with Room-%s".formatted(oldRoom.getRoomNo(), newRoom.getRoomNo());
+
+    }
 }
