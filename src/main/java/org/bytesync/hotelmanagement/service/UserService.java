@@ -7,14 +7,18 @@ import org.bytesync.hotelmanagement.dto.auth.*;
 import org.bytesync.hotelmanagement.exception.UserAlreadyExistsException;
 import org.bytesync.hotelmanagement.model.User;
 import org.bytesync.hotelmanagement.repository.UserRepository;
+import org.bytesync.hotelmanagement.repository.specification.UserSpecification;
 import org.bytesync.hotelmanagement.security.SecurityTokenProvider;
 import org.bytesync.hotelmanagement.util.mapper.UserMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static org.bytesync.hotelmanagement.security.SecurityTokenProvider.Type.ACCESS;
 import static org.bytesync.hotelmanagement.security.SecurityTokenProvider.Type.REFRESH;
@@ -125,5 +129,19 @@ public class UserService {
 
     public UserDetailsDto getDetails(Integer userId) {
         return safeCall(userRepository.findDetailsById(userId), "User", userId);
+    }
+
+    public PageResult<UserDto> search(String query, int page, int size) {
+        if(query == null || query.trim().isEmpty()) {
+            return new PageResult<>(List.of(), 0, page, size);
+        }
+
+        Pageable pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "id");
+        var spec = UserSpecification.keyword(query);
+
+        Page<User> results = userRepository.findAll(spec, pageable);
+        List<UserDto> dtos = results.stream().map(UserMapper::toUserDto).toList();
+
+        return new PageResult<>(dtos, results.getTotalElements(), page, size);
     }
 }

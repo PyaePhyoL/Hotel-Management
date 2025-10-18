@@ -75,4 +75,12 @@ public class AccountsManagementApi {
         var message = userService.delete(userId);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), message, null));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseMessage> search(@RequestParam(defaultValue = " ") String query,
+                                                  @RequestParam(required = false, defaultValue = "0") int page,
+                                                  @RequestParam(required = false, defaultValue = "10") int size ){
+        var contents = userService.search(query, page, size);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Search Result", contents));
+    }
 }

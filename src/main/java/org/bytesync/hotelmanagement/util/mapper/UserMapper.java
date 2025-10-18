@@ -34,4 +34,17 @@ public class UserMapper {
         user.setAddress(form.address());
 
     }
+
+    public static UserDto toUserDto(User user) {
+        return UserDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .joinDate(user.getJoinDate())
+                .position(user.getPosition())
+                .nrc(user.getNrc())
+                .birthDate(user.getBirthDate())
+                .enabled(user.isEnabled())
+                .build();
+    }
 }

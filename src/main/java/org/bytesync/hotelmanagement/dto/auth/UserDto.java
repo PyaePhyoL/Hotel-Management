@@ -1,7 +1,10 @@
 package org.bytesync.hotelmanagement.dto.auth;
 
+import lombok.Builder;
+
 import java.time.LocalDate;
 
+@Builder
 public record UserDto(
         long id,
         String name,
