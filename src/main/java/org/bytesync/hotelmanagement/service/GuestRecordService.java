@@ -44,6 +44,7 @@ public class GuestRecordService {
         int daysOfStay = (int) ChronoUnit.DAYS.between(guestRecord.getCheckInTime(), checkoutTime);
         guestRecord.setCheckOutTime(checkoutTime);
         guestRecord.setDaysOfStay(daysOfStay);
+        guestRecord.setCurrent(false);
         guestRecordRepository.save(guestRecord);
     }
 
