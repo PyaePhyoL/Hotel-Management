@@ -19,6 +19,7 @@ public class GuestMapper {
                 .maritalStatus(guestDto.getMaritalStatus())
                 .address(guestDto.getAddress())
                 .birthDate(guestDto.getBirthDate())
+                .isStaying(false)
                 .build();
     }
 

@@ -34,11 +34,16 @@ public class Guest {
     private String address;
     private LocalDate birthDate;
 
+    private Long currentReservationId;
+    private Boolean isStaying;
+
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();
 
     public void addReservation(Reservation reservation) {
         this.reservationList.add(reservation);
+        this.setCurrentReservationId(reservation.getId());
+        this.setIsStaying(true);
     }
 
 }

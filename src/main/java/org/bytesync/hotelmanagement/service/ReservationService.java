@@ -8,6 +8,7 @@ import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
 import org.bytesync.hotelmanagement.model.DailyVoucher;
+import org.bytesync.hotelmanagement.model.Guest;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Room;
 import org.bytesync.hotelmanagement.model.enums.RoomStatus;
@@ -37,6 +38,7 @@ import static org.bytesync.hotelmanagement.util.EntityOperationUtils.timeFormat;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final GuestRecordService guestRecordService;
     private final RoomRepository roomRepository;
     private final GuestRepository guestRepository;
 
@@ -50,6 +52,7 @@ public class ReservationService {
 
     @Transactional
     public String create(ReservationForm form) {
+//        1st create Reservation
         var guest = guestRepository.findByNameAndNrc(form.getGuestName(), form.getGuestNrc())
                 .orElseThrow(() -> new EntityNotFoundException("Guest not found"));
 
@@ -61,8 +64,13 @@ public class ReservationService {
 
         var savedReservation = reservationRepository.save(reservation);
 
+//        2nd create guest record
+        guestRecordService.createGuestRecord(savedReservation);
+
+//        3rd create the first daily voucher for that reservation
         ScheduleMethods.createDailyVoucher(reservation, form.getCheckInTime().toLocalDate());
 
+//        4th Change the currentReservationId in room and guest
         room.addReservation(savedReservation);
         guest.addReservation(savedReservation);
         roomRepository.save(room);
@@ -83,12 +91,19 @@ public class ReservationService {
 
     @Transactional
     public String checkoutReservation(Long reservationId, LocalDateTime checkoutTime) {
+//        1st change the status in Reservation
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
         reservation.setCheckOutTime(checkoutTime);
         reservation.setIsActive(false);
 
         var room = reservation.getRoom();
+        var guest = reservation.getGuest();
+//        2nd make the room and guest clear
         makeRoomAvailable(room);
+        guestCheckout(guest);
+
+//        3rd change the checkout time in guest record
+        guestRecordService.updateGuestRecordWhenCheckout(guest.getId(), room.getRoomNo(), checkoutTime);
         
         var timeString = timeFormat(checkoutTime);
         reservationRepository.save(reservation);
@@ -110,6 +125,7 @@ public class ReservationService {
     public String delete(Long reservationId) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
         makeRoomAvailable(reservation.getRoom());
+        guestCheckout(reservation.getGuest());
         reservationRepository.delete(reservation);
         return "Reservation deleted successfully";
     }
@@ -118,6 +134,12 @@ public class ReservationService {
         room.setCurrentStatus(RoomStatus.AVAILABLE);
         room.setCurrentReservationId(null);
         roomRepository.save(room);
+    }
+
+    private void guestCheckout(Guest guest) {
+        guest.setCurrentReservationId(null);
+        guest.setIsStaying(false);
+        guestRepository.save(guest);
     }
 
     public ReservationDetails getDetailsById(long id) {
