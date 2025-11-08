@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.time.LocalDate;
 
 @Builder
-public record UserDto(
+public record StaffDto(
         long id,
         String name,
         String email,

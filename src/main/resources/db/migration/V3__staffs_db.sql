@@ -1,4 +1,4 @@
-INSERT INTO users (name,
+INSERT INTO staffs (name,
                    email,
                    password,
                    role,

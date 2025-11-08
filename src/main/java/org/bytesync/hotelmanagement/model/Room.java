@@ -26,13 +26,13 @@ public class Room {
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
     private Integer basePrice;
-    private Integer addOnPrice;
     private Integer capacity;
     @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
     private Floor floor;
     @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
     private RoomStatus currentStatus;
-
+    @Column(columnDefinition = "TEXT")
+    private String notes;
     private Long currentReservationId;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

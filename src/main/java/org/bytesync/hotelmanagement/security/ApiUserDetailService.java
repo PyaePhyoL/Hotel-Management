@@ -1,7 +1,7 @@
 package org.bytesync.hotelmanagement.security;
 
 import lombok.RequiredArgsConstructor;
-import org.bytesync.hotelmanagement.repository.UserRepository;
+import org.bytesync.hotelmanagement.repository.StaffRepository;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ApiUserDetailService implements UserDetailsService {
 
-    private final UserRepository userRepo;
+    private final StaffRepository userRepo;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

@@ -29,4 +29,3 @@ public class FinanceService {
         return new PageResult<>(dtos, vouchers.getTotalElements(), page, size);
     }
 }
-

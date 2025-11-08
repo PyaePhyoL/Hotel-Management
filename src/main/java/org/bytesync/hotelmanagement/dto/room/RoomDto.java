@@ -8,7 +8,6 @@ import org.bytesync.hotelmanagement.model.enums.RoomStatus;
 public record RoomDto(
         Integer no,
         Integer basePrice,
-        Integer addOnPrice,
         Integer capacity,
         Floor floor,
         RoomStatus currentStatus

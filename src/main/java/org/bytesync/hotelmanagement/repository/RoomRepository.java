@@ -16,7 +16,6 @@ public interface RoomRepository extends JpaRepository<Room,Integer>, JpaSpecific
     select new org.bytesync.hotelmanagement.dto.room.RoomDto(
     r.roomNo,
     r.basePrice,
-    r.addOnPrice,
     r.capacity,
     r.floor,
     r.currentStatus

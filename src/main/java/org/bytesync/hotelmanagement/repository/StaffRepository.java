@@ -1,8 +1,8 @@
 package org.bytesync.hotelmanagement.repository;
 
-import org.bytesync.hotelmanagement.dto.auth.UserDetailsDto;
-import org.bytesync.hotelmanagement.dto.auth.UserDto;
-import org.bytesync.hotelmanagement.model.User;
+import org.bytesync.hotelmanagement.dto.auth.StaffDetailsDto;
+import org.bytesync.hotelmanagement.dto.auth.StaffDto;
+import org.bytesync.hotelmanagement.model.Staff;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -11,18 +11,18 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User> {
+public interface StaffRepository extends JpaRepository<Staff, Integer>, JpaSpecificationExecutor<Staff> {
 
     @Query("""
-    select u from User u
+    select u from Staff u
     where u.email = :email
 """)
-    Optional<User> findByEmail(String email);
+    Optional<Staff> findByEmail(String email);
 
     boolean existsByEmail(String email);
 
     @Query("""
-    select new org.bytesync.hotelmanagement.dto.auth.UserDto(
+    select new org.bytesync.hotelmanagement.dto.auth.StaffDto(
     u.id,
     u.name,
     u.email,
@@ -32,28 +32,31 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
     u.birthDate,
     u.enabled
     )
-    from User u
+    from Staff u
 """)
-    List<UserDto> findAllDtos(Pageable pageable);
+    List<StaffDto> findAllDtos(Pageable pageable);
 
     boolean existsByName(String name);
 
     boolean existsByNrc(String nrc);
 
     @Query("""
-    select new org.bytesync.hotelmanagement.dto.auth.UserDetailsDto(
+    select new org.bytesync.hotelmanagement.dto.auth.StaffDetailsDto(
     u.id,
     u.name,
     u.email,
+    u.phoneNumber,
     u.position,
     u.role,
     u.nrc,
     u.birthDate,
     u.joinDate,
     u.address,
+    u.fatherName,
+    u.notes,
     u.enabled
-    ) from User u
+    ) from Staff u
     where u.id = :id
 """)
-    Optional<UserDetailsDto> findDetailsById(Integer id);
+    Optional<StaffDetailsDto> findDetailsById(Integer id);
 }

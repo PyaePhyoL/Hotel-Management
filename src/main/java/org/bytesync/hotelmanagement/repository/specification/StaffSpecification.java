@@ -1,11 +1,11 @@
 package org.bytesync.hotelmanagement.repository.specification;
 
-import org.bytesync.hotelmanagement.model.User;
+import org.bytesync.hotelmanagement.model.Staff;
 import org.springframework.data.jpa.domain.Specification;
 
-public class UserSpecification {
+public class StaffSpecification {
 
-    public static Specification<User> keyword(String keyword) {
+    public static Specification<Staff> keyword(String keyword) {
         return (root, cq, cb) -> {
             String likeKeyword = "%" + keyword.toLowerCase() + "%";
 

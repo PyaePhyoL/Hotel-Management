@@ -37,13 +37,24 @@ public class Guest {
     private Long currentReservationId;
     private Boolean isStaying;
 
+    @Column(columnDefinition = "TEXT")
+    private String note;
+
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();
+
+    @ManyToMany
+    private List<Guest> relations;
 
     public void addReservation(Reservation reservation) {
         this.reservationList.add(reservation);
         this.setCurrentReservationId(reservation.getId());
         this.setIsStaying(true);
+    }
+
+    public void addRelation(Guest guest) {
+        this.relations.add(guest);
+        guest.addRelation(this);
     }
 
 }

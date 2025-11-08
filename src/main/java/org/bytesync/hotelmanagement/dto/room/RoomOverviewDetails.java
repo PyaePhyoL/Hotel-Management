@@ -13,11 +13,11 @@ public class RoomOverviewDetails {
     private Integer no;
     private RoomType roomType;
     private Integer basePrice;
-    private Integer addOnPrice;
     private Integer capacity;
     private Floor floor;
     private RoomStatus currentStatus;
     private Long currentReservationId;
+    private String notes;
 
     private ReservationGuestInfo guestInfo;
 }

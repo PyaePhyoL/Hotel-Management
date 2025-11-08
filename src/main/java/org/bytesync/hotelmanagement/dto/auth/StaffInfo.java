@@ -3,7 +3,7 @@ package org.bytesync.hotelmanagement.dto.auth;
 import lombok.Builder;
 
 @Builder
-public record UserInfo(
+public record StaffInfo(
         Integer userId,
         String userName,
         String email,

@@ -17,8 +17,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
-public class User extends Auditable implements UserDetails {
+@Table(name = "staffs")
+public class Staff extends Auditable implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +27,11 @@ public class User extends Auditable implements UserDetails {
     private String name;
     @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(50)")
     private String email;
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String phoneNumber;
     private String password;
-
+    @Column(columnDefinition = "VARCHAR(50)")
+    private String fatherName;
     @Column(columnDefinition = "VARCHAR(50)")
     private String position;
     @Enumerated(EnumType.STRING)@Column(columnDefinition = "VARCHAR(50)")
@@ -40,6 +43,8 @@ public class User extends Auditable implements UserDetails {
     private LocalDate joinDate;
     private String address;
 
+    @Column(columnDefinition = "TEXT")
+    private String notes;
     private boolean enabled;
 
 
