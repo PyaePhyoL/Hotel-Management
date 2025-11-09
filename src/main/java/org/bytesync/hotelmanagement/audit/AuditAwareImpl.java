@@ -16,6 +16,6 @@ public class AuditAwareImpl implements AuditorAware<String> {
         if(authentication != null && authentication.getPrincipal() instanceof Staff staff) {
             return Optional.of(staff.getUsername());
         }
-        return Optional.of("System User");
+        return Optional.of("System");
     }
 }

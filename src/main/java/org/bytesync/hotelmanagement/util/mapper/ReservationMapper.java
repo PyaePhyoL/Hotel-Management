@@ -21,8 +21,9 @@ public class ReservationMapper {
                 .depositAmount(form.getDepositAmount())
                 .registeredStaff(form.getStaffName())
                 .isActive(true)
-                .daysOfStay(1)
+                .daysOfStay(0)
                 .dailyVouchers(new ArrayList<>())
+                .paymentList(new ArrayList<>())
                 .build();
     }
 

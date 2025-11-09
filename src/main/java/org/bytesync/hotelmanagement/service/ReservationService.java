@@ -68,7 +68,7 @@ public class ReservationService {
         guestRecordService.createGuestRecord(savedReservation);
 
 //        3rd create the first daily voucher for that reservation
-        ScheduleMethods.createDailyVoucher(reservation, form.getCheckInTime().toLocalDate());
+//        ScheduleMethods.createDailyVoucher(reservation, form.getCheckInTime().toLocalDate());
 
 //        4th Change the currentReservationId in room and guest
         room.addReservation(savedReservation);

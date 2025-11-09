@@ -19,11 +19,17 @@ public class Payment extends Auditable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate paymentDate;
-    private Double amount;
+    private Integer amount;
+    @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
     private String notes;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Guest guest;
+
+    private Integer roomNo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Reservation reservation;
 
     public void setReservation(Reservation resv) {
