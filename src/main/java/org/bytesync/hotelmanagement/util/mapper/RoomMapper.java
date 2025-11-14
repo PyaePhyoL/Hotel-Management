@@ -37,7 +37,8 @@ public class RoomMapper {
         var name = "%d (%s) - %d MMK".formatted(room.getRoomNo(), room.getFloor().getValue(), room.getBasePrice());
         return new RoomSelectList(
                 room.getRoomNo(),
-                name
+                name,
+                room.getBasePrice()
         );
     }
 }

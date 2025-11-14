@@ -15,8 +15,6 @@ public interface GuestRepository extends JpaRepository<Guest, Integer>, JpaSpeci
 
     boolean existsByPassport(String passport);
 
-    boolean existsByPhone(String phone);
-
     boolean existsByNrc(String nrc);
 
     @Query("""
@@ -24,25 +22,7 @@ public interface GuestRepository extends JpaRepository<Guest, Integer>, JpaSpeci
     g.id,
     g.name,
     g.email,
-    g.phone,
-    g.nrc,
-    g.passport,
-    g.occupation,
-    g.maritalStatus,
-    g.address,
-    g.birthDate
-    )
-    from Guest g
-    where g.id = :id
-""")
-    Optional<GuestDto> findGuestDtoById(Integer id);
-
-    @Query("""
-    select new org.bytesync.hotelmanagement.dto.guest.GuestDto(
-    g.id,
-    g.name,
-    g.email,
-    g.phone,
+    null,
     g.nrc,
     g.passport,
     g.occupation,

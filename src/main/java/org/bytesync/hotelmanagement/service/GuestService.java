@@ -40,11 +40,11 @@ public class GuestService {
         if(guestRepository.existsByEmail(guest.getEmail())) throw new UserAlreadyExistsException("Email already exists");
         if(guestRepository.existsByNrc(guest.getNrc())) throw new UserAlreadyExistsException("National Id already exists");
         if(null != guest.getPassport() && guestRepository.existsByPassport(guest.getPassport())) throw new UserAlreadyExistsException("Passport already exists");
-        if(guestRepository.existsByPhone(guest.getPhone())) throw new UserAlreadyExistsException("Phone already exists");
     }
 
     public GuestDto getDetails(int id) {
-        return safeCall(guestRepository.findGuestDtoById(id), "Guest", id);
+        var guest = safeCall(guestRepository.findById(id), "Guest", id);
+        return GuestMapper.toDto(guest);
     }
 
     public PageResult<GuestDto> getAll(int page, int size) {
@@ -67,7 +67,6 @@ public class GuestService {
     private void ensureGuestUpdateNoConflict(Guest guest, GuestDto form) {
         if(!guest.getName().equals(form.getName()) && guestRepository.existsByName(form.getName())) throw new UserAlreadyExistsException("Name already exists");
         if(!guest.getEmail().equals(form.getEmail()) && guestRepository.existsByEmail(form.getEmail())) throw new UserAlreadyExistsException("Email already exists");
-        if(!guest.getPhone().equals(form.getPhone()) && guestRepository.existsByPhone(form.getPhone())) throw new UserAlreadyExistsException("Phone already exists");
         if(!guest.getNrc().equals(form.getNrc()) && guestRepository.existsByNrc(form.getNrc())) throw new UserAlreadyExistsException("NRC already exists");
         if(null != guest.getPassport() && !guest.getPassport().equals(form.getPassport()) && guestRepository.existsByPassport(form.getPassport())) throw new UserAlreadyExistsException("Passport already exists");
     }

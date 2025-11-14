@@ -2,11 +2,16 @@ package org.bytesync.hotelmanagement.dto.guest;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Set;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Builder
 public class GuestDto {
@@ -16,8 +21,7 @@ public class GuestDto {
     @Email(message = "Email must be in correct format")
     @NotBlank(message = "Email cannot be blank")
     private String email;
-    @NotBlank(message = "Phone cannot be blank")
-    private String phone;
+    private Set<String> phone;
     @NotBlank(message = "NRC cannot be blank")
     private String nrc;
     private String passport;

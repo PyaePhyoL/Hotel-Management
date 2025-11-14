@@ -16,7 +16,6 @@ import org.bytesync.hotelmanagement.repository.GuestRepository;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.repository.specification.ReservationSpecification;
-import org.bytesync.hotelmanagement.scheduling.ScheduleMethods;
 import org.bytesync.hotelmanagement.util.mapper.GuestMapper;
 import org.bytesync.hotelmanagement.util.mapper.ReservationMapper;
 import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
@@ -52,30 +51,28 @@ public class ReservationService {
 
     @Transactional
     public String create(ReservationForm form) {
-//        1st create Reservation
-        var guest = guestRepository.findByNameAndNrc(form.getGuestName(), form.getGuestNrc())
-                .orElseThrow(() -> new EntityNotFoundException("Guest not found"));
-
+        var guest = findOrCreateGuest(form);
         var room = findRoom(form.getRoomId());
+        var reservation = createReservation(form, guest, room);
 
+        guestRecordService.createGuestRecord(reservation);
+
+        updateAssociation(room, reservation, guest);
+        return "Reservation created successfully";
+    }
+
+    private void updateAssociation(Room room, Reservation reservation, Guest guest) {
+        room.addReservation(reservation);
+        guest.addReservation(reservation);
+        roomRepository.save(room);
+        guestRepository.save(guest);
+    }
+
+    private Reservation createReservation(ReservationForm form, Guest guest, Room room) {
         var reservation = ReservationMapper.toEntity(form);
         reservation.setGuest(guest);
         reservation.setRoom(room);
-
-        var savedReservation = reservationRepository.save(reservation);
-
-//        2nd create guest record
-        guestRecordService.createGuestRecord(savedReservation);
-
-//        3rd create the first daily voucher for that reservation
-//        ScheduleMethods.createDailyVoucher(reservation, form.getCheckInTime().toLocalDate());
-
-//        4th Change the currentReservationId in room and guest
-        room.addReservation(savedReservation);
-        guest.addReservation(savedReservation);
-        roomRepository.save(room);
-        guestRepository.save(guest);
-        return "Reservation created successfully";
+        return reservationRepository.save(reservation);
     }
 
     private Room findRoom(Integer roomNo) {
@@ -86,6 +83,21 @@ public class ReservationService {
         } else {
             return room;
         }
+    }
+
+    private Guest findOrCreateGuest(ReservationForm form) {
+        return guestRepository.findByNameAndNrc(form.getGuestName(), form.getGuestNrc())
+                .map(guest -> {
+                    // may be phone number might be new
+                    guest.addPhone(form.getPhoneNumber());
+                    return guest;
+                }).orElseGet(() -> {
+                    Guest guest = new Guest();
+                    guest.setName(form.getGuestName());
+                    guest.setNrc(form.getGuestNrc());
+                    guest.addPhone(form.getPhoneNumber());
+                    return guest;
+                });
     }
 
 

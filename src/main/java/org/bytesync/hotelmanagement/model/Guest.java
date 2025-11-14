@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -23,8 +25,8 @@ public class Guest {
     private String name;
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(unique = true, nullable = false)
-    private String phone;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> phone = new HashSet<>();
     @Column(unique = true, nullable = false)
     private String nrc;
     @Column(unique = true)
@@ -43,8 +45,8 @@ public class Guest {
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();
 
-    @ManyToMany
-    private List<Guest> relations;
+    @OneToMany
+    private List<Relation> relations;
 
     public void addReservation(Reservation reservation) {
         this.reservationList.add(reservation);
@@ -52,9 +54,13 @@ public class Guest {
         this.setIsStaying(true);
     }
 
-    public void addRelation(Guest guest) {
-        this.relations.add(guest);
-        guest.addRelation(this);
+    public void addRelation(Relation relation) {
+        this.relations.add(relation);
+        relation.setGuest(this);
+    }
+
+    public void addPhone(String phone) {
+        this.phone.add(phone);
     }
 
 }
