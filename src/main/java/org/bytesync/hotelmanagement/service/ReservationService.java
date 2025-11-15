@@ -44,11 +44,13 @@ public class ReservationService {
     private final GuestRepository guestRepository;
 
     public ReservationGuestInfo getReservationGuestInfoById(Long id ){
-        if(id != null && id != 0) {
-            var reservation = reservationRepository.findById(id).orElse(null);
-        } else {
+        if (id == null || id <= 0) {
             return null;
         }
+
+        return reservationRepository.findById(id)
+                .map(ReservationMapper::toReservationGuestInfo)
+                .orElse(null);
     }
 
     @Transactional
