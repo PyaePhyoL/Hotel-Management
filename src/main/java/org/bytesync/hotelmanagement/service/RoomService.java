@@ -13,17 +13,19 @@ import org.bytesync.hotelmanagement.model.enums.RoomType;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.repository.specification.RoomSpecification;
+import org.bytesync.hotelmanagement.util.EntityOperationUtils;
 import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Service
 @RequiredArgsConstructor
 public class RoomService {
 
     private final RoomRepository roomRepository;
-    private final ReservationRepository reservationRepository;
     private final ReservationService reservationService;
 
     public RoomGridView getAllRoomsInGridView(RoomStatus roomStatus) {
@@ -69,5 +71,12 @@ public class RoomService {
         var roomList = roomRepository.findAllRoomForSelectList().stream()
                 .filter(room -> room.getRoomType().equals(RoomType.DOUBLE)).toList();
         return roomList.stream().map(RoomMapper::toRoomSelectList).toList();
+    }
+
+    public String changeRoomStatus(Integer id, RoomStatus status) {
+        var room = safeCall(roomRepository.findById(id), "Room", id);
+        room.setCurrentStatus(status);
+        roomRepository.save(room);
+        return "Room Status Changed.";
     }
 }

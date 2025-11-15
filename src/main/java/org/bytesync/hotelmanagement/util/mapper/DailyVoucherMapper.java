@@ -9,12 +9,14 @@ public class DailyVoucherMapper {
     }
 
     public static DailyVoucherDto toDto(DailyVoucher voucher) {
+        var payment = voucher.getPayment();
         return DailyVoucherDto.builder()
                 .voucherNo(voucher.getVoucherNo())
+                .paymentId(null == payment ? null : payment.getId())
                 .date(voucher.getDate())
                 .reservationId(voucher.getReservation().getId())
-                .guestName(voucher.getGuest().getName())
-                .roomNo(voucher.getRoom().getRoomNo())
+                .guestName(voucher.getGuestName())
+                .roomNo(voucher.getRoomNo())
                 .price(voucher.getPrice())
                 .isPaid(voucher.getIsPaid())
                 .build();

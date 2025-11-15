@@ -7,7 +7,8 @@ import java.util.UUID;
 
 @Builder
 public record DailyVoucherDto (
-    UUID voucherNo,
+    String voucherNo,
+    String paymentId,
     LocalDate date,
     Long reservationId,
     String guestName,

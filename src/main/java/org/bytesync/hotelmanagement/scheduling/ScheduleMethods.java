@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import static org.bytesync.hotelmanagement.model.enums.PaymentMethod.DEPOSIT;
 
@@ -57,20 +58,18 @@ public class ScheduleMethods {
     }
 
     public static void createDailyVoucher(Reservation reservation, LocalDate date) {
-        var paid = processDailyPayment(reservation);
-
         var dailyVoucher = DailyVoucher.builder()
                 .reservation(reservation)
                 .date(date)
                 .price(reservation.getPricePerNight())
-                .isPaid(paid)
-                .guest(reservation.getGuest())
-                .room(reservation.getRoom())
+                .guestName(reservation.getGuest().getName())
+                .roomNo(reservation.getRoom().getRoomNo())
                 .build();
+        dailyVoucher.setIsPaid(processDailyPayment(reservation, dailyVoucher));
         reservation.addDailyVoucher(dailyVoucher);
     }
 
-    private static boolean processDailyPayment(Reservation reservation) {
+    private static boolean processDailyPayment(Reservation reservation, DailyVoucher voucher) {
         var deposit = reservation.getDepositAmount();
         var pricePerNight = reservation.getPricePerNight();
         var paid = false;
@@ -78,21 +77,21 @@ public class ScheduleMethods {
             deposit = deposit - pricePerNight;
             paid = true;
             reservation.setDepositAmount(deposit);
-            createPayment(reservation);
+            createPayment(reservation, voucher);
         }
         return paid;
     }
 
-    private static void createPayment(Reservation reservation) {
+    private static void createPayment(Reservation reservation, DailyVoucher voucher) {
         var payment = Payment.builder()
                 .paymentDate(LocalDate.now())
                 .amount(reservation.getPricePerNight())
                 .paymentMethod(DEPOSIT)
                 .notes("Automatic paid from deposit")
-                .guest(reservation.getGuest())
-                .roomNo(reservation.getRoom().getRoomNo())
+                .dailyVouchers(new ArrayList<>())
                 .build();
         payment.setReservation(reservation);
+        payment.addDailyVoucher(voucher);
     }
 
     public static Status checkDateTimeAndGetStatus(LocalDateTime checkIn, LocalDateTime checkOut) {

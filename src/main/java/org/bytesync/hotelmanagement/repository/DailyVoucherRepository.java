@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.UUID;
 
-public interface DailyVoucherRepository extends JpaRepository<DailyVoucher, UUID>, JpaSpecificationExecutor<DailyVoucher> {
+public interface DailyVoucherRepository extends JpaRepository<DailyVoucher, String>, JpaSpecificationExecutor<DailyVoucher> {
 }

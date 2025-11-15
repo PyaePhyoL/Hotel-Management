@@ -18,18 +18,17 @@ public class DailyVoucher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID voucherNo;
+    private String voucherNo;
     private LocalDate date;
+    private String guestName;
+    private Integer roomNo;
+    private Integer price;
+    private Boolean isPaid;
 
     @ManyToOne
     private Reservation reservation;
-
     @ManyToOne
-    private Guest guest;
+    private Payment payment;
 
-    @ManyToOne
-    private Room room;
 
-    private Integer price;
-    private Boolean isPaid;
 }

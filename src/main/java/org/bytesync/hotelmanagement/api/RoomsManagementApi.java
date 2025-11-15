@@ -45,4 +45,11 @@ public class RoomsManagementApi {
         var rooms = roomService.selectAvailableDoubleRoomList();
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Rooms Select", rooms));
     }
+
+    @PatchMapping("/change-status/{id}/{status}")
+    public ResponseEntity<ResponseMessage> changeRoomStatus(@PathVariable Integer id,
+                                                            @PathVariable RoomStatus status){
+        var message = roomService.changeRoomStatus(id, status);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Room Status change", message));
+    }
 }
