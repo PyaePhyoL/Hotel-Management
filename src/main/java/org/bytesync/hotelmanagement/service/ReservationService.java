@@ -68,7 +68,9 @@ public class ReservationService {
     private void updateAssociation(Reservation reservation, Room room, Guest guest, List<RelationDto> relationDtos) {
         room.addReservation(reservation);
         guest.addReservation(reservation);
-        relationDtos.forEach(dto -> {
+        relationDtos.stream()
+                .filter(rs -> !rs.name().isBlank() || !rs.phone().isBlank())
+                .forEach(dto -> {
             guest.addRelation(RelationMapper.toEntity(dto));
         });
 
@@ -104,7 +106,7 @@ public class ReservationService {
                     guest.setName(form.getGuestName());
                     guest.setNrc(form.getGuestNrc());
                     guest.addPhone(form.getPhone());
-                    return guest;
+                    return guestRepository.save(guest);
                 });
     }
 

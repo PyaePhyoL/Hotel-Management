@@ -23,7 +23,7 @@ public class Guest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String email;
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> phoneList = new HashSet<>();
@@ -45,8 +45,8 @@ public class Guest {
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();
 
-    @OneToMany
-    private List<Relation> relations;
+    @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
+    private List<Relation> relations = new ArrayList<>();
 
     public void addReservation(Reservation reservation) {
         this.reservationList.add(reservation);

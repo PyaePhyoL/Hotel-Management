@@ -31,6 +31,7 @@ public class ReservationForm {
     private String staffName;
     @NotNull(message = "Price cannot be blank")
     private Integer pricePerNight;
+    private Integer discountAmount;
     private Integer depositAmount;
     private String note;
     private List<RelationDto> relations;

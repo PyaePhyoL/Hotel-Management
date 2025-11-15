@@ -26,7 +26,7 @@ public class GuestRecordService {
 
     private final GuestRecordRepository guestRecordRepository;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void createGuestRecord(Reservation reservation) {
         GuestRecord guestRecord = GuestRecord.builder()
                 .guest(reservation.getGuest())
