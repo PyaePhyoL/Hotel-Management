@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.bytesync.hotelmanagement.dto.guest.GuestDto;
 import org.bytesync.hotelmanagement.dto.room.RoomDto;
+import org.bytesync.hotelmanagement.model.enums.Status;
 import org.bytesync.hotelmanagement.model.enums.StayType;
 
 import java.time.LocalDateTime;
@@ -20,7 +21,7 @@ public class ReservationDetails {
     private StayType stayType;
     private String registeredStaff;
     private Integer noOfGuests;
-
+    private Status status;
     private GuestDto guestDetails;
     private RoomDto roomDetails;
 

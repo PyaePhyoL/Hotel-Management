@@ -5,6 +5,7 @@ import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
 import org.bytesync.hotelmanagement.model.Reservation;
+import org.bytesync.hotelmanagement.scheduling.ScheduleMethods;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ public class ReservationMapper {
                 .pricePerNight(form.getPricePerNight())
                 .depositAmount(form.getDepositAmount())
                 .registeredStaff(form.getStaffName())
-                .isActive(true)
+                .status(ScheduleMethods.checkDateTimeAndGetStatus(form.getCheckInTime(), null))
                 .daysOfStay(0)
                 .dailyVouchers(new ArrayList<>())
                 .paymentList(new ArrayList<>())

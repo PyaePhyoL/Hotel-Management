@@ -13,10 +13,12 @@ import org.bytesync.hotelmanagement.model.Guest;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Room;
 import org.bytesync.hotelmanagement.model.enums.RoomStatus;
+import org.bytesync.hotelmanagement.model.enums.Status;
 import org.bytesync.hotelmanagement.repository.GuestRepository;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.repository.specification.ReservationSpecification;
+import org.bytesync.hotelmanagement.scheduling.ScheduleMethods;
 import org.bytesync.hotelmanagement.util.mapper.GuestMapper;
 import org.bytesync.hotelmanagement.util.mapper.RelationMapper;
 import org.bytesync.hotelmanagement.util.mapper.ReservationMapper;
@@ -80,6 +82,7 @@ public class ReservationService {
 
     private Reservation createReservation(ReservationForm form, Guest guest, Room room) {
         var reservation = ReservationMapper.toEntity(form);
+
         reservation.setGuest(guest);
         reservation.setRoom(room);
         return reservationRepository.save(reservation);
@@ -116,7 +119,7 @@ public class ReservationService {
 //        1st change the status in Reservation
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
         reservation.setCheckOutTime(checkoutTime);
-        reservation.setIsActive(false);
+        reservation.setStatus(Status.PAST);
 
         var room = reservation.getRoom();
         var guest = reservation.getGuest();

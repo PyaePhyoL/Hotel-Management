@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
+import org.bytesync.hotelmanagement.model.enums.Status;
 import org.bytesync.hotelmanagement.model.enums.StayType;
 
 import java.time.LocalDateTime;
@@ -45,7 +46,8 @@ public class Reservation {
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Payment> paymentList;
 
-    private Boolean isActive;
+    @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
+    private Status status;
     @Column(columnDefinition = "TEXT")
     private String note;
 
