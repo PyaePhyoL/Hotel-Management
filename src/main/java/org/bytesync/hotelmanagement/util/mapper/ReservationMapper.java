@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.util.mapper;
 
 import org.bytesync.hotelmanagement.dto.reservation.ReservationDetails;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
+import org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
 import org.bytesync.hotelmanagement.model.Reservation;
 
@@ -24,6 +25,7 @@ public class ReservationMapper {
                 .daysOfStay(0)
                 .dailyVouchers(new ArrayList<>())
                 .paymentList(new ArrayList<>())
+                .note(form.getNote())
                 .build();
     }
 
@@ -49,6 +51,19 @@ public class ReservationMapper {
                 .stayType(reservation.getStayType())
                 .registeredStaff(reservation.getRegisteredStaff())
                 .noOfGuests(reservation.getNoOfGuests())
+                .build();
+    }
+
+    public static ReservationGuestInfo toReservationGuestInfo(Reservation reservation) {
+        var guest = reservation.getGuest();
+        return ReservationGuestInfo.builder()
+                .reservationId(reservation.getId())
+                .checkInTime(reservation.getCheckInTime())
+                .guestId(guest.getId())
+                .guestName(guest.getName())
+                .guestPhoneList(guest.getPhoneList())
+                .noOfGuests(reservation.getNoOfGuests())
+                .daysOfStay(reservation.getDaysOfStay())
                 .build();
     }
 }

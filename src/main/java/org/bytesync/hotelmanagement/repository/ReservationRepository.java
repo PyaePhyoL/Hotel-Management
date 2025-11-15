@@ -15,13 +15,15 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long>, 
     select new org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo(
     r.id,
     r.checkInTime,
-    r.guest.id,
-    r.guest.name,
-    r.guest.phone,
+    g.id,
+    g.name,
+    g.phoneList,
     r.noOfGuests,
     r.daysOfStay
     )
     from Reservation r
+    left join fetch r.guest g
+    left join fetch g.phoneList phoneList
     where r.id = :id
 """)
     Optional<ReservationGuestInfo> findReservationGuestInfoById(Long id);

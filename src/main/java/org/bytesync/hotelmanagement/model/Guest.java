@@ -26,7 +26,7 @@ public class Guest {
     @Column(unique = true, nullable = false)
     private String email;
     @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> phone = new HashSet<>();
+    private Set<String> phoneList = new HashSet<>();
     @Column(unique = true, nullable = false)
     private String nrc;
     @Column(unique = true)
@@ -60,7 +60,7 @@ public class Guest {
     }
 
     public void addPhone(String phone) {
-        this.phone.add(phone);
+        this.phoneList.add(phone);
     }
 
 }

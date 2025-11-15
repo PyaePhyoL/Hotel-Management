@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.bytesync.hotelmanagement.dto.guest.RelationDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationDetails;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
@@ -17,6 +18,7 @@ import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.repository.specification.ReservationSpecification;
 import org.bytesync.hotelmanagement.util.mapper.GuestMapper;
+import org.bytesync.hotelmanagement.util.mapper.RelationMapper;
 import org.bytesync.hotelmanagement.util.mapper.ReservationMapper;
 import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
 import org.springframework.data.domain.Page;
@@ -43,7 +45,7 @@ public class ReservationService {
 
     public ReservationGuestInfo getReservationGuestInfoById(Long id ){
         if(id != null && id != 0) {
-            return reservationRepository.findReservationGuestInfoById(id).orElse(null);
+            var reservation = reservationRepository.findById(id).orElse(null);
         } else {
             return null;
         }
@@ -57,13 +59,17 @@ public class ReservationService {
 
         guestRecordService.createGuestRecord(reservation);
 
-        updateAssociation(room, reservation, guest);
+        updateAssociation(reservation, room, guest, form.getRelations());
         return "Reservation created successfully";
     }
 
-    private void updateAssociation(Room room, Reservation reservation, Guest guest) {
+    private void updateAssociation(Reservation reservation, Room room, Guest guest, List<RelationDto> relationDtos) {
         room.addReservation(reservation);
         guest.addReservation(reservation);
+        relationDtos.forEach(dto -> {
+            guest.addRelation(RelationMapper.toEntity(dto));
+        });
+
         roomRepository.save(room);
         guestRepository.save(guest);
     }
@@ -89,13 +95,13 @@ public class ReservationService {
         return guestRepository.findByNameAndNrc(form.getGuestName(), form.getGuestNrc())
                 .map(guest -> {
                     // may be phone number might be new
-                    guest.addPhone(form.getPhoneNumber());
+                    guest.addPhone(form.getPhone());
                     return guest;
                 }).orElseGet(() -> {
                     Guest guest = new Guest();
                     guest.setName(form.getGuestName());
                     guest.setNrc(form.getGuestNrc());
-                    guest.addPhone(form.getPhoneNumber());
+                    guest.addPhone(form.getPhone());
                     return guest;
                 });
     }

@@ -36,7 +36,13 @@ public class RoomsManagementApi {
 
     @GetMapping("/select-list")
     public ResponseEntity<ResponseMessage> selectAvailableRooms(){
-        var rooms = roomService.selectList();
+        var rooms = roomService.selectAvailableRoomList();
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Rooms Select", rooms));
+    }
+
+    @GetMapping("/select-list/double")
+    public ResponseEntity<ResponseMessage> selectAvailableDoubleRooms(){
+        var rooms = roomService.selectAvailableDoubleRoomList();
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Rooms Select", rooms));
     }
 }

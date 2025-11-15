@@ -46,7 +46,8 @@ public class Reservation {
     private List<Payment> paymentList;
 
     private Boolean isActive;
-
+    @Column(columnDefinition = "TEXT")
+    private String note;
 
     public void addPayment(Payment payment) {
         this.paymentList.add(payment);

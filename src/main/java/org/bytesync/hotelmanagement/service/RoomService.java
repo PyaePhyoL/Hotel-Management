@@ -9,6 +9,7 @@ import org.bytesync.hotelmanagement.dto.room.RoomOverviewDetails;
 import org.bytesync.hotelmanagement.dto.room.RoomSelectList;
 import org.bytesync.hotelmanagement.model.enums.Floor;
 import org.bytesync.hotelmanagement.model.enums.RoomStatus;
+import org.bytesync.hotelmanagement.model.enums.RoomType;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.repository.specification.RoomSpecification;
@@ -59,8 +60,14 @@ public class RoomService {
         return roomOverviewDetails;
     }
 
-    public List<RoomSelectList> selectList() {
+    public List<RoomSelectList> selectAvailableRoomList() {
         var roomList = roomRepository.findAllRoomForSelectList();
+        return roomList.stream().map(RoomMapper::toRoomSelectList).toList();
+    }
+
+    public List<RoomSelectList> selectAvailableDoubleRoomList() {
+        var roomList = roomRepository.findAllRoomForSelectList().stream()
+                .filter(room -> room.getRoomType().equals(RoomType.DOUBLE)).toList();
         return roomList.stream().map(RoomMapper::toRoomSelectList).toList();
     }
 }

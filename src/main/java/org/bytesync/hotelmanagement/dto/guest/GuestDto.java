@@ -21,7 +21,7 @@ public class GuestDto {
     @Email(message = "Email must be in correct format")
     @NotBlank(message = "Email cannot be blank")
     private String email;
-    private Set<String> phone;
+    private Set<String> phoneList;
     @NotBlank(message = "NRC cannot be blank")
     private String nrc;
     private String passport;
