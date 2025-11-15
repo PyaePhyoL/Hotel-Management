@@ -40,7 +40,7 @@ public class Guest {
     private Boolean isStaying;
 
     @Column(columnDefinition = "TEXT")
-    private String note;
+    private String notes;
 
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();

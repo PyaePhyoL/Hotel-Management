@@ -1,14 +1,10 @@
 package org.bytesync.hotelmanagement.model;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
 import org.bytesync.hotelmanagement.model.enums.Status;
 import org.bytesync.hotelmanagement.model.enums.StayType;
 
@@ -49,7 +45,7 @@ public class Reservation {
     @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
     private Status status;
     @Column(columnDefinition = "TEXT")
-    private String note;
+    private String notes;
 
     public void addPayment(Payment payment) {
         this.paymentList.add(payment);

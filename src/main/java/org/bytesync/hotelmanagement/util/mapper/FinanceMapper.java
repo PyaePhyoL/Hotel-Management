@@ -1,7 +1,9 @@
 package org.bytesync.hotelmanagement.util.mapper;
 
+import org.bytesync.hotelmanagement.dto.finance.ExpenseDto;
 import org.bytesync.hotelmanagement.dto.finance.PaymentCreateForm;
 import org.bytesync.hotelmanagement.dto.finance.PaymentDto;
+import org.bytesync.hotelmanagement.model.Expense;
 import org.bytesync.hotelmanagement.model.Payment;
 
 import java.util.ArrayList;
@@ -31,6 +33,27 @@ public class FinanceMapper {
                 .reservationId(reservation.getId())
                 .guestName(reservation.getGuest().getName())
                 .roomNo(reservation.getRoom().getRoomNo())
+                .build();
+    }
+
+    public static Expense toExpense(ExpenseDto form) {
+        return Expense.builder()
+                .title(form.getTitle())
+                .date(form.getDate())
+                .amount(form.getAmount())
+                .type(form.getType())
+                .notes(form.getNotes())
+                .build();
+    }
+
+    public static ExpenseDto toExpenseDto(Expense expense) {
+        return ExpenseDto.builder()
+                .id(expense.getId())
+                .title(expense.getTitle())
+                .date(expense.getDate())
+                .amount(expense.getAmount())
+                .type(expense.getType())
+                .notes(expense.getNotes())
                 .build();
     }
 }

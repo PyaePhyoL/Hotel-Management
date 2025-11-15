@@ -1,6 +1,8 @@
 package org.bytesync.hotelmanagement.api;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.bytesync.hotelmanagement.dto.finance.ExpenseDto;
 import org.bytesync.hotelmanagement.dto.finance.PaymentCreateForm;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.service.FinanceService;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/finance/api")
@@ -45,6 +48,26 @@ public class FinanceManagementApi {
                                                           @RequestParam(required = false, defaultValue = "10") int size) {
         var paymentList = financeService.getPaymentList(page, size);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Payment List", paymentList));
+    }
+
+    @PostMapping("/expense/create")
+    public ResponseEntity<ResponseMessage> createExpense(@RequestBody @Valid ExpenseDto form) {
+        var status = HttpStatus.CREATED;
+        var message = financeService.createExpense(form);
+        return ResponseEntity.status(status).body(new ResponseMessage(status.value(), "Expense Create", message));
+    }
+
+    @GetMapping("/expense/list")
+    public ResponseEntity<ResponseMessage> getExpenseList(@RequestParam(required = false, defaultValue = "0") int page,
+                                                          @RequestParam(required = false, defaultValue = "10") int size) {
+        var expenseList = financeService.getExpenseList(page, size);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Expense List", expenseList));
+    }
+
+    @GetMapping("/balance/{year}/{month}")
+    public ResponseEntity<ResponseMessage> getBalanceSheet(@PathVariable int year, @PathVariable int month) {
+        var monthlyBalance = financeService.getMonthlyBalance(year, month);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Monthly Balance Sheet", monthlyBalance));
     }
 
 }

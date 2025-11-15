@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.bytesync.hotelmanagement.model.enums.ExpenseType;
 
 import java.time.LocalDate;
 
@@ -13,21 +14,15 @@ import java.time.LocalDate;
 @Entity
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class DailyVoucher {
+public class Expense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String voucherNo;
+    private String id;
     private LocalDate date;
-    private String guestName;
-    private Integer roomNo;
-    private Integer price;
-    private Boolean isPaid;
-
-    @ManyToOne
-    private Reservation reservation;
-    @ManyToOne
-    private Payment payment;
-
-
+    private String title;
+    @Enumerated(EnumType.STRING)
+    private ExpenseType type;
+    private Integer amount;
+    private String notes;
 }
