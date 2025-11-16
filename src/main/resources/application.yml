@@ -3,9 +3,9 @@ spring:
     name: "hotel-management"
 
   datasource:
-    url: jdbc:mysql://localhost:3306/hotel_management_db?createDatabaseIfNotExist=true
-    username: root
-    password: admin
+    url: jdbc:mysql://database-1.cji8u4ycew1l.ap-southeast-1.rds.amazonaws.com:3306/hotel_management_db?createDatabaseIfNotExist=true
+    username: admin
+    password: admin123
   jpa:
     hibernate:
       ddl-auto: update
