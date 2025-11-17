@@ -88,4 +88,11 @@ public class RoomService {
         roomRepository.save(room);
         return "Room Status Changed.";
     }
+
+    public String changeRoomService(Integer id, Integer price) {
+        var room = safeCall(roomRepository.findById(id), "Room", id);
+        room.setBasePrice(price);
+        roomRepository.save(room);
+        return "Room Price Changed.";
+    }
 }

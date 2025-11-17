@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/rooms/api")
@@ -51,5 +53,11 @@ public class RoomsManagementApi {
                                                             @PathVariable RoomStatus status){
         var message = roomService.changeRoomStatus(id, status);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Room Status change", message));
+    }
+
+    @PatchMapping("/change-price/{id}")
+    public ResponseEntity<ResponseMessage> changeRoomPrice(@PathVariable Integer id, @RequestParam Integer price){
+        var message = roomService.changeRoomService(id, price);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Room Price change", message));
     }
 }
