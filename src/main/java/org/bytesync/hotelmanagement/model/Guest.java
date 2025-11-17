@@ -45,18 +45,10 @@ public class Guest {
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
-    private List<Relation> relations = new ArrayList<>();
-
     public void addReservation(Reservation reservation) {
         this.reservationList.add(reservation);
         this.setCurrentReservationId(reservation.getId());
         this.setIsStaying(true);
-    }
-
-    public void addRelation(Relation relation) {
-        this.relations.add(relation);
-        relation.setGuest(this);
     }
 
     public void addPhone(String phone) {

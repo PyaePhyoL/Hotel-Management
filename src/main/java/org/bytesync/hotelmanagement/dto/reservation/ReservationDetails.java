@@ -3,7 +3,7 @@ package org.bytesync.hotelmanagement.dto.reservation;
 import lombok.Builder;
 import lombok.Data;
 import org.bytesync.hotelmanagement.dto.guest.GuestDto;
-import org.bytesync.hotelmanagement.dto.guest.RelationDto;
+import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.room.RoomDto;
 import org.bytesync.hotelmanagement.model.enums.Status;
 import org.bytesync.hotelmanagement.model.enums.StayType;
@@ -31,5 +31,5 @@ public class ReservationDetails {
     private Integer paidPrice;
     private Integer leftPrice;
 
-    private List<RelationDto> relations;
+    private List<ContactDto> relations;
 }

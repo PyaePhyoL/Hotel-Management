@@ -7,7 +7,13 @@ import java.util.List;
 
 @Data
 @Builder
-public class RoomGridView {
+public class RoomDashboardView {
+
+    private Integer availableRooms;
+    private Integer bookingRooms;
+    private Integer longStayRooms;
+    private Integer normalStayRooms;
+    private Integer sectionRooms;
 
     private List<RoomDto> fourth;
     private List<RoomDto> fifth;

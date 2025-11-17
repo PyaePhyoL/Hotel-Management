@@ -2,7 +2,7 @@ package org.bytesync.hotelmanagement.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.bytesync.hotelmanagement.dto.guest.RelationDto;
+import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationDetails;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
@@ -18,9 +18,8 @@ import org.bytesync.hotelmanagement.repository.GuestRepository;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.repository.specification.ReservationSpecification;
-import org.bytesync.hotelmanagement.scheduling.ScheduleMethods;
 import org.bytesync.hotelmanagement.util.mapper.GuestMapper;
-import org.bytesync.hotelmanagement.util.mapper.RelationMapper;
+import org.bytesync.hotelmanagement.util.mapper.ContactMapper;
 import org.bytesync.hotelmanagement.util.mapper.ReservationMapper;
 import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
 import org.springframework.data.domain.Page;
@@ -30,6 +29,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -67,13 +67,13 @@ public class ReservationService {
         return "Reservation created successfully";
     }
 
-    private void updateAssociation(Reservation reservation, Room room, Guest guest, List<RelationDto> relationDtos) {
+    private void updateAssociation(Reservation reservation, Room room, Guest guest, List<ContactDto> contactDtos) {
         room.addReservation(reservation);
         guest.addReservation(reservation);
-        relationDtos.stream()
+        contactDtos.stream()
                 .filter(rs -> !rs.name().isBlank() || !rs.phone().isBlank())
                 .forEach(dto -> {
-            guest.addRelation(RelationMapper.toEntity(dto));
+            reservation.addRelation(ContactMapper.toEntity(dto));
         });
 
         roomRepository.save(room);
@@ -136,11 +136,11 @@ public class ReservationService {
         return "Room-%s is checked out at %s".formatted(room.getRoomNo(), timeString);
     }
 
-    public PageResult<ReservationInfo> getAll(boolean active, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "id");
-        var spec = ReservationSpecification.filterByStatus(active);
 
-        Page<Reservation> result = reservationRepository.findAll(spec, pageable);
+    public PageResult<ReservationInfo> getAll(int page, int size, Status status) {
+        Pageable pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "id");
+        var spec = ReservationSpecification.filterByStatus(Status.ACTIVE);
+        Page<Reservation> result = reservationRepository.findAll(pageable);
 
         List<ReservationInfo> infos = result.stream().map(ReservationMapper::toReservationInfo).toList();
 
@@ -169,15 +169,14 @@ public class ReservationService {
 
     public ReservationDetails getDetailsById(long id) {
         var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
-        var guest = reservation.getGuest();
 
         var resvDetails = ReservationMapper.toReservationDetails(reservation);
-        var guestDto = GuestMapper.toDto(guest);
+        var guestDto = GuestMapper.toDto(reservation.getGuest());
         var roomDto = RoomMapper.toDto(reservation.getRoom());
         var totalPrice = getTotalPriceInReservation(reservation);
         var paidPrice = getPaidPriceInReservation(reservation);
         var leftPrice = totalPrice - paidPrice;
-        var relations = guest.getRelations().stream().map(RelationMapper::toDto).toList();
+        var relations = reservation.getContacts().stream().map(ContactMapper::toDto).toList();
 
         resvDetails.setGuestDetails(guestDto);
         resvDetails.setRoomDetails(roomDto);
@@ -211,4 +210,12 @@ public class ReservationService {
         return "Room-%s is changed with Room-%s".formatted(oldRoom.getRoomNo(), newRoom.getRoomNo());
 
     }
+
+    public Integer getDailyCheckIns() {
+        var today =  LocalDate.now();
+        var reservations = reservationRepository.findByCheckInDate(today);
+        return reservations.size();
+    }
+
+
 }

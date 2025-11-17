@@ -174,4 +174,11 @@ public class FinanceService {
 
         return dailyBalances;
     }
+
+    public Integer getDailyIncomeAmount() {
+        var today = LocalDate.now();
+        var payments =paymentRepository.findByPaymentDate(today);
+
+        return payments.stream().map(Payment::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
+    }
 }

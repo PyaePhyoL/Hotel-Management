@@ -4,16 +4,14 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo;
 import org.bytesync.hotelmanagement.dto.room.RoomDto;
-import org.bytesync.hotelmanagement.dto.room.RoomGridView;
+import org.bytesync.hotelmanagement.dto.room.RoomDashboardView;
 import org.bytesync.hotelmanagement.dto.room.RoomOverviewDetails;
 import org.bytesync.hotelmanagement.dto.room.RoomSelectList;
 import org.bytesync.hotelmanagement.model.enums.Floor;
 import org.bytesync.hotelmanagement.model.enums.RoomStatus;
 import org.bytesync.hotelmanagement.model.enums.RoomType;
-import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.repository.specification.RoomSpecification;
-import org.bytesync.hotelmanagement.util.EntityOperationUtils;
 import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +26,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final ReservationService reservationService;
 
-    public RoomGridView getAllRoomsInGridView(RoomStatus roomStatus) {
+    public RoomDashboardView getAllRoomsInGridView(RoomStatus roomStatus) {
         var specification = RoomSpecification.roomStatusEquals(roomStatus);
         var rooms = roomRepository.findAll(specification).stream().map(RoomMapper::toDto).toList();
 
@@ -37,7 +35,18 @@ public class RoomService {
         var seventh = rooms.stream().filter(room -> room.floor().equals(Floor.SEVENTH)).toList();
         var eighth = rooms.stream().filter(room -> room.floor().equals(Floor.EIGHTH)).toList();
 
-        return RoomGridView.builder()
+        var availableRooms = rooms.stream().filter(room -> room.currentStatus().equals(RoomStatus.AVAILABLE)).toList().size();
+        var bookingRooms = rooms.stream().filter(room -> room.currentStatus().equals(RoomStatus.BOOKING)).toList().size();
+        var longStayRooms = rooms.stream().filter(room -> room.currentStatus().equals(RoomStatus.LONG_STAY)).toList().size();
+        var normalRooms = rooms.stream().filter(room -> room.currentStatus().equals(RoomStatus.NORMAL_STAY)).toList().size();
+        var sectionRooms = rooms.stream().filter(room -> room.currentStatus().equals(RoomStatus.SECTION_STAY)).toList().size();
+
+        return RoomDashboardView.builder()
+                .availableRooms(availableRooms)
+                .bookingRooms(bookingRooms)
+                .longStayRooms(longStayRooms)
+                .normalStayRooms(normalRooms)
+                .sectionRooms(sectionRooms)
                 .fourth(fourth)
                 .fifth(fifth)
                 .seventh(seventh)

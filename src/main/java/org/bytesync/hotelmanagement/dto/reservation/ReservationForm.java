@@ -3,11 +3,7 @@ package org.bytesync.hotelmanagement.dto.reservation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.bytesync.hotelmanagement.dto.guest.RelationDto;
-import org.bytesync.hotelmanagement.model.Payment;
-import org.bytesync.hotelmanagement.model.Relation;
-import org.bytesync.hotelmanagement.model.Reservation;
-import org.bytesync.hotelmanagement.model.enums.PaymentMethod;
+import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.model.enums.StayType;
 
 import java.time.LocalDateTime;
@@ -34,5 +30,5 @@ public class ReservationForm {
     private Integer discountAmount;
     private Integer depositAmount;
     private String note;
-    private List<RelationDto> relations;
+    private List<ContactDto> relations;
 }

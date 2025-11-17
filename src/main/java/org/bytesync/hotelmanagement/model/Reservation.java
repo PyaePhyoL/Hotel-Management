@@ -9,6 +9,7 @@ import org.bytesync.hotelmanagement.model.enums.Status;
 import org.bytesync.hotelmanagement.model.enums.StayType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -47,6 +48,9 @@ public class Reservation {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
+    private List<Contact> contacts = new ArrayList<>();
+
     public void addPayment(Payment payment) {
         this.paymentList.add(payment);
     }
@@ -57,5 +61,10 @@ public class Reservation {
 
     public void incrementDaysOfStayByOne() {
         this.daysOfStay++;
+    }
+
+    public void addRelation(Contact contact) {
+        this.contacts.add(contact);
+        contact.setReservation(this);
     }
 }

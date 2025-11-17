@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
+import org.bytesync.hotelmanagement.model.enums.Status;
 import org.bytesync.hotelmanagement.service.ReservationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +27,17 @@ public class ReservationManagementApi {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ResponseMessage> getReservations(@RequestParam(required = false, defaultValue = "false") boolean active,
-                                                           @RequestParam(required = false, defaultValue = "0") int page,
-                                                           @RequestParam(required = false, defaultValue = "10") int size) {
-        var message = reservationService.getAll(active, page, size);
-        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Reservations List", message));
+    public ResponseEntity<ResponseMessage> getAllReservations(@RequestParam(required = false, defaultValue = "0") int page,
+                                                              @RequestParam(required = false, defaultValue = "10") int size) {
+        var message = reservationService.getAll(page, size, null);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "All Reservations List", message));
+    }
+
+    @GetMapping("/list/current")
+    public ResponseEntity<ResponseMessage> getCurrentReservations(@RequestParam(required = false, defaultValue = "0") int page,
+                                                                  @RequestParam(required = false, defaultValue = "10") int size) {
+        var message = reservationService.getAll(page, size, Status.ACTIVE);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Current Reservations List", message));
     }
 
     @PutMapping("/checkout/{id}")

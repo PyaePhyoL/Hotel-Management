@@ -1,23 +1,23 @@
 package org.bytesync.hotelmanagement.util.mapper;
 
-import org.bytesync.hotelmanagement.dto.guest.RelationDto;
-import org.bytesync.hotelmanagement.model.Relation;
+import org.bytesync.hotelmanagement.dto.guest.ContactDto;
+import org.bytesync.hotelmanagement.model.Contact;
 
-public class RelationMapper {
+public class ContactMapper {
 
-    private RelationMapper() {
+    private ContactMapper() {
     }
 
-    public static Relation toEntity(RelationDto dto) {
-        return Relation.builder()
+    public static Contact toEntity(ContactDto dto) {
+        return Contact.builder()
                 .name(dto.name())
                 .phoneNumber(dto.phone())
                 .relation(dto.relation())
                 .build();
     }
 
-    public static RelationDto toDto(Relation entity) {
-        return RelationDto.builder()
+    public static ContactDto toDto(Contact entity) {
+        return ContactDto.builder()
                 .name(entity.getName())
                 .phone(entity.getPhoneNumber())
                 .relation(entity.getRelation())

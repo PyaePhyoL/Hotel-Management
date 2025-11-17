@@ -26,6 +26,7 @@ public class ReservationMapper {
                 .daysOfStay(0)
                 .dailyVouchers(new ArrayList<>())
                 .paymentList(new ArrayList<>())
+                .contacts(new ArrayList<>())
                 .notes(form.getNote())
                 .build();
     }
