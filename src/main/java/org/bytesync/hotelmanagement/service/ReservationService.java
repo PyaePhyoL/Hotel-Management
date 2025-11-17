@@ -169,19 +169,22 @@ public class ReservationService {
 
     public ReservationDetails getDetailsById(long id) {
         var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
+        var guest = reservation.getGuest();
 
         var resvDetails = ReservationMapper.toReservationDetails(reservation);
-        var guestDto = GuestMapper.toDto(reservation.getGuest());
+        var guestDto = GuestMapper.toDto(guest);
         var roomDto = RoomMapper.toDto(reservation.getRoom());
         var totalPrice = getTotalPriceInReservation(reservation);
         var paidPrice = getPaidPriceInReservation(reservation);
         var leftPrice = totalPrice - paidPrice;
+        var relations = guest.getRelations().stream().map(RelationMapper::toDto).toList();
 
         resvDetails.setGuestDetails(guestDto);
         resvDetails.setRoomDetails(roomDto);
         resvDetails.setTotalPrice(totalPrice);
         resvDetails.setPaidPrice(paidPrice);
         resvDetails.setLeftPrice(leftPrice);
+        resvDetails.setRelations(relations);
 
         return resvDetails;
     }
