@@ -3,13 +3,13 @@ package org.bytesync.hotelmanagement.service;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.*;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
+import org.bytesync.hotelmanagement.exception.NotEnoughMoneyException;
 import org.bytesync.hotelmanagement.model.DailyVoucher;
 import org.bytesync.hotelmanagement.model.Expense;
 import org.bytesync.hotelmanagement.model.Payment;
-import org.bytesync.hotelmanagement.repository.DailyVoucherRepository;
-import org.bytesync.hotelmanagement.repository.ExpenseRepository;
-import org.bytesync.hotelmanagement.repository.PaymentRepository;
-import org.bytesync.hotelmanagement.repository.ReservationRepository;
+import org.bytesync.hotelmanagement.model.Refund;
+import org.bytesync.hotelmanagement.model.enums.ExpenseType;
+import org.bytesync.hotelmanagement.repository.*;
 import org.bytesync.hotelmanagement.repository.specification.DailyVoucherSpecification;
 import org.bytesync.hotelmanagement.util.mapper.DailyVoucherMapper;
 import org.bytesync.hotelmanagement.util.mapper.FinanceMapper;
@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -38,6 +39,7 @@ public class FinanceService {
     private final ReservationRepository reservationRepository;
     private final PaymentRepository paymentRepository;
     private final ExpenseRepository expenseRepository;
+    private final RefundRepository refundRepository;
 
     public PageResult<DailyVoucherDto> getDailyVouchersByReservation(long reservationId, boolean isPaid, int page, int size) {
         var pageable = PageRequest.of(page, size).withSort(Sort.Direction.ASC, "date");
@@ -198,5 +200,39 @@ public class FinanceService {
     public ExpenseDto getExpenseDetailsById(String id) {
         var expense = safeCall(expenseRepository.findById(id), "Expense", id);
         return FinanceMapper.toExpenseDto(expense);
+    }
+
+    @Transactional
+    public String createRefund(Long reservationId, RefundDto refundDto) {
+        var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
+        var deposit = reservation.getDepositAmount();
+        if(deposit < refundDto.getAmount()) {
+            throw new NotEnoughMoneyException("Not enough money");
+        }
+        var refund = FinanceMapper.toRefund(refundDto);
+        refund.setReservation(reservation);
+        refundRepository.save(refund);
+
+        createExpenseFromRefund(refund);
+
+        var leftDeposit = deposit - refund.getAmount();
+        reservation.setDepositAmount(leftDeposit);
+        reservationRepository.save(reservation);
+        return "Refund successfully : " + reservation.getId();
+    }
+
+    private void createExpenseFromRefund(Refund refund) {
+        var guestName = refund.getReservation().getGuest().getName();
+        var amount = refund.getAmount();
+        var date = refund.getRefundDate();
+        Expense expense = Expense.builder()
+                .title(String.format("%s refund %d MMK at %s", guestName, amount, date))
+                .amount(amount)
+                .date(date)
+                .type(ExpenseType.REFUND)
+                .notes(refund.getNotes())
+                .build();
+
+        expenseRepository.save(expense);
     }
 }

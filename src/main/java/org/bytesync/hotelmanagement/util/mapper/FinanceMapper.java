@@ -3,8 +3,10 @@ package org.bytesync.hotelmanagement.util.mapper;
 import org.bytesync.hotelmanagement.dto.finance.ExpenseDto;
 import org.bytesync.hotelmanagement.dto.finance.PaymentCreateForm;
 import org.bytesync.hotelmanagement.dto.finance.PaymentDto;
+import org.bytesync.hotelmanagement.dto.finance.RefundDto;
 import org.bytesync.hotelmanagement.model.Expense;
 import org.bytesync.hotelmanagement.model.Payment;
+import org.bytesync.hotelmanagement.model.Refund;
 
 import java.util.ArrayList;
 
@@ -63,5 +65,13 @@ public class FinanceMapper {
         expense.setAmount(form.getAmount());
         expense.setType(form.getType());
         expense.setNotes(form.getNotes());
+    }
+
+    public static Refund toRefund(RefundDto refundDto) {
+        return Refund.builder()
+                .refundDate(refundDto.getRefundDate())
+                .amount(refundDto.getAmount())
+                .notes(refundDto.getNotes())
+                .build();
     }
 }

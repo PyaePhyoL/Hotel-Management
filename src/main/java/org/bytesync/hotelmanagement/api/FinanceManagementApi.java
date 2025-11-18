@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.ExpenseDto;
 import org.bytesync.hotelmanagement.dto.finance.PaymentCreateForm;
+import org.bytesync.hotelmanagement.dto.finance.RefundDto;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.service.FinanceService;
 import org.springframework.http.HttpStatus;
@@ -64,7 +65,7 @@ public class FinanceManagementApi {
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Expense List", expenseList));
     }
 
-    @GetMapping("/expense/details/{id}")
+    @GetMapping("/expense/detail/{id}")
     public ResponseEntity<ResponseMessage> getExpenseDetails(@PathVariable String id) {
         var expense = financeService.getExpenseDetailsById(id);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Expense Details", expense));
@@ -86,6 +87,13 @@ public class FinanceManagementApi {
     public ResponseEntity<ResponseMessage> getBalanceSheet(@PathVariable int year, @PathVariable int month) {
         var monthlyBalance = financeService.getMonthlyBalance(year, month);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Monthly Balance Sheet", monthlyBalance));
+    }
+
+    @PostMapping("/refund/{reservationId}")
+    public ResponseEntity<ResponseMessage> createRefund(@PathVariable Long reservationId, @RequestBody RefundDto refundDto) {
+        var status = HttpStatus.CREATED;
+        var message = financeService.createRefund(reservationId, refundDto);
+        return ResponseEntity.status(status).body(new ResponseMessage(status.value(), "Refund", message));
     }
 
 }

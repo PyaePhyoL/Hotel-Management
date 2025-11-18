@@ -17,9 +17,12 @@ public class Refund extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate refundDate;
-    private Double amount;
+    private Integer amount;
     private String notes;
 
     @ManyToOne
     private Reservation reservation;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Expense expense;
 }

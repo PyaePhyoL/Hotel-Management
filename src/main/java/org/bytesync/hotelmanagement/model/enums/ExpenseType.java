@@ -10,5 +10,6 @@ public enum ExpenseType {
     STAFF_BONUS,
     FIXED_ACCESS,
     FUND,
+    REFUND,
     OTHER
 }
