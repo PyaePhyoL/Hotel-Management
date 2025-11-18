@@ -14,6 +14,7 @@ public class RoomDashboardView {
     private Integer longStayRooms;
     private Integer normalStayRooms;
     private Integer sectionRooms;
+    private Integer serviceRooms;
 
     private List<RoomDto> fourth;
     private List<RoomDto> fifth;

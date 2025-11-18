@@ -19,9 +19,10 @@ public class RoomsManagementApi {
     private final RoomService roomService;
 
     @GetMapping("/list")
-    public ResponseEntity<ResponseMessage> getRooms(@RequestParam(required = false) RoomStatus status){
-        var rooms = roomService.getAllRoomsInGridView(status);
-        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Rooms Overview", rooms));
+    public ResponseEntity<ResponseMessage> getRooms(@RequestParam(required = false, defaultValue = "0") int page,
+                                                    @RequestParam(required = false, defaultValue = "10") int size) {
+        var rooms = roomService.getList(page, size);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Rooms List", rooms));
     }
 
     @GetMapping("/available")
