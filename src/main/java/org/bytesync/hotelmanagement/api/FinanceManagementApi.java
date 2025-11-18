@@ -64,6 +64,18 @@ public class FinanceManagementApi {
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Expense List", expenseList));
     }
 
+    @PutMapping("/expense/update/{id}")
+    public ResponseEntity<ResponseMessage> updateExpense(@PathVariable String id, @RequestBody ExpenseDto form) {
+        var message = financeService.updateExpense(id, form);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Expense Update", message));
+    }
+
+    @DeleteMapping("/expense/delete/{id}")
+    public ResponseEntity<ResponseMessage> deleteExpense(@PathVariable String id) {
+        var message = financeService.deleteExpense(id);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Expense Delete", message));
+    }
+
     @GetMapping("/balance/{year}/{month}")
     public ResponseEntity<ResponseMessage> getBalanceSheet(@PathVariable int year, @PathVariable int month) {
         var monthlyBalance = financeService.getMonthlyBalance(year, month);

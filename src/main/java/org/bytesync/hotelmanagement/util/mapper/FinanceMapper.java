@@ -56,4 +56,12 @@ public class FinanceMapper {
                 .notes(expense.getNotes())
                 .build();
     }
+
+    public static void updateExpense(Expense expense, ExpenseDto form) {
+        expense.setTitle(form.getTitle());
+        expense.setDate(form.getDate());
+        expense.setAmount(form.getAmount());
+        expense.setType(form.getType());
+        expense.setNotes(form.getNotes());
+    }
 }

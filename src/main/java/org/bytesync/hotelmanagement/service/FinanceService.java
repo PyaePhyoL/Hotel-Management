@@ -181,4 +181,17 @@ public class FinanceService {
 
         return payments.stream().map(Payment::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
     }
+
+    public String updateExpense(String id, ExpenseDto form) {
+        var expense = safeCall(expenseRepository.findById(id), "Expense", id);
+        FinanceMapper.updateExpense(expense, form);
+        expenseRepository.save(expense);
+        return "Expense updated successfully : " + expense.getId();
+    }
+
+    public String deleteExpense(String id) {
+        var expense = safeCall(expenseRepository.findById(id), "Expense", id);
+        expenseRepository.delete(expense);
+        return "Expense deleted successfully : " + expense.getId();
+    }
 }
