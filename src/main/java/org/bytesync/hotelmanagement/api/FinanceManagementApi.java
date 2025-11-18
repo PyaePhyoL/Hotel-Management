@@ -64,6 +64,12 @@ public class FinanceManagementApi {
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Expense List", expenseList));
     }
 
+    @GetMapping("/expense/details/{id}")
+    public ResponseEntity<ResponseMessage> getExpenseDetails(@PathVariable String id) {
+        var expense = financeService.getExpenseDetailsById(id);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Expense Details", expense));
+    }
+
     @PutMapping("/expense/update/{id}")
     public ResponseEntity<ResponseMessage> updateExpense(@PathVariable String id, @RequestBody ExpenseDto form) {
         var message = financeService.updateExpense(id, form);

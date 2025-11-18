@@ -194,4 +194,9 @@ public class FinanceService {
         expenseRepository.delete(expense);
         return "Expense deleted successfully : " + expense.getId();
     }
+
+    public ExpenseDto getExpenseDetailsById(String id) {
+        var expense = safeCall(expenseRepository.findById(id), "Expense", id);
+        return FinanceMapper.toExpenseDto(expense);
+    }
 }
