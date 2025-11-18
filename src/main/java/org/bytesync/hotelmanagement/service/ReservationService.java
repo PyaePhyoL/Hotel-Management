@@ -69,6 +69,9 @@ public class ReservationService {
 
     private void updateAssociation(Reservation reservation, Room room, Guest guest, List<ContactDto> contactDtos) {
         room.addReservation(reservation);
+        room.setCurrentStatus(
+                RoomMapper.getRoomCurrentStatusFromReservation(reservation.getStatus(), reservation.getStayType()));
+
         guest.addReservation(reservation);
         contactDtos.stream()
                 .filter(rs -> !rs.name().isBlank() || !rs.phone().isBlank())

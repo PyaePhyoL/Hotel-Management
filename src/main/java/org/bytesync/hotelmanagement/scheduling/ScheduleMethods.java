@@ -8,6 +8,8 @@ import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.enums.Status;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
+import org.bytesync.hotelmanagement.repository.RoomRepository;
+import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ import static org.bytesync.hotelmanagement.model.enums.PaymentMethod.DEPOSIT;
 public class ScheduleMethods {
 
     private final ReservationRepository reservationRepository;
+    private final RoomRepository roomRepository;
 
     @Transactional
     @Scheduled(cron = "0 * * * * *")
@@ -48,10 +51,15 @@ public class ScheduleMethods {
         var reservations = reservationRepository.findAllBookingReservations();
 
         reservations.forEach(reservation -> {
+            var room = reservation.getRoom();
             var status = checkDateTimeAndGetStatus(
                     reservation.getCheckInTime(),
                     reservation.getCheckOutTime());
-            reservation.setStatus(status);
+            if(status != reservation.getStatus()) {
+                reservation.setStatus(status);
+                room.setCurrentStatus(RoomMapper.getRoomCurrentStatusFromReservation(reservation.getStatus(), reservation.getStayType()));
+                roomRepository.save(room);
+            }
         });
 
         reservationRepository.saveAll(reservations);

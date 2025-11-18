@@ -3,7 +3,11 @@ package org.bytesync.hotelmanagement.util.mapper;
 import org.bytesync.hotelmanagement.dto.room.RoomDto;
 import org.bytesync.hotelmanagement.dto.room.RoomOverviewDetails;
 import org.bytesync.hotelmanagement.dto.room.RoomSelectList;
+import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Room;
+import org.bytesync.hotelmanagement.model.enums.RoomStatus;
+import org.bytesync.hotelmanagement.model.enums.Status;
+import org.bytesync.hotelmanagement.model.enums.StayType;
 
 public class RoomMapper {
     private RoomMapper() {
@@ -40,5 +44,12 @@ public class RoomMapper {
                 name,
                 room.getBasePrice()
         );
+    }
+
+    public static RoomStatus getRoomCurrentStatusFromReservation(Status status, StayType stayType) {
+        return status != Status.BOOKING ? (
+                stayType == StayType.NORMAL
+                        ? RoomStatus.NORMAL_STAY : RoomStatus.LONG_STAY
+        ) : RoomStatus.BOOKING;
     }
 }

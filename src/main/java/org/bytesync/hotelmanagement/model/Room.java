@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bytesync.hotelmanagement.model.enums.Floor;
-import org.bytesync.hotelmanagement.model.enums.RoomStatus;
-import org.bytesync.hotelmanagement.model.enums.RoomType;
-import org.bytesync.hotelmanagement.model.enums.StayType;
+import org.bytesync.hotelmanagement.model.enums.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +38,5 @@ public class Room {
     public void addReservation(Reservation reservation) {
         this.reservationList.add(reservation);
         this.setCurrentReservationId(reservation.getId());
-        this.currentStatus = reservation.getStayType() == StayType.NORMAL
-                ? RoomStatus.NORMAL_STAY : RoomStatus.LONG_STAY;
     }
-
 }
