@@ -96,4 +96,11 @@ public class FinanceManagementApi {
         return ResponseEntity.status(status).body(new ResponseMessage(status.value(), "Refund", message));
     }
 
+    @GetMapping("/refund/list")
+    public ResponseEntity<ResponseMessage> getRefundList(@RequestParam(required = false, defaultValue = "0") int page,
+                                                         @RequestParam(required = false, defaultValue = "10") int size) {
+        var refundList = financeService.getRefundList(page, size);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Refund List", refundList));
+    }
+
 }

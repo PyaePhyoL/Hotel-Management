@@ -235,4 +235,11 @@ public class FinanceService {
 
         expenseRepository.save(expense);
     }
+
+    public PageResult<RefundDto> getRefundList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size).withSort(Sort.by(Sort.Direction.DESC, "refundDate"));
+        Page<Refund> refundPage = refundRepository.findAll(pageable);
+        var dtos =refundPage.getContent().stream().map(FinanceMapper::toRefundDto).toList();
+        return new PageResult<>(dtos, refundPage.getTotalElements(), page, size);
+    }
 }

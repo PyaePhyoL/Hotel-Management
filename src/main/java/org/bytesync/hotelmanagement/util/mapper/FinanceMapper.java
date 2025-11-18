@@ -74,4 +74,13 @@ public class FinanceMapper {
                 .notes(refundDto.getNotes())
                 .build();
     }
+
+    public static RefundDto toRefundDto(Refund refund) {
+        return RefundDto.builder()
+                .id(refund.getId())
+                .refundDate(refund.getRefundDate())
+                .amount(refund.getAmount())
+                .notes(refund.getNotes())
+                .build();
+    }
 }
