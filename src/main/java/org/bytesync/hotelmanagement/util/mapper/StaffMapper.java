@@ -35,7 +35,9 @@ public class StaffMapper {
         staff.setBirthDate(form.birthDate());
         staff.setJoinDate(form.joinDate());
         staff.setAddress(form.address());
-
+        staff.setNotes(form.notes());
+        staff.setPhoneNumber(form.phoneNumber());
+        staff.setFatherName(form.fatherName());
     }
 
     public static StaffDto toStaffDto(Staff staff) {
