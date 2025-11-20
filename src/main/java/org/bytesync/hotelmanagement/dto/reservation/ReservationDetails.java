@@ -31,5 +31,5 @@ public class ReservationDetails {
     private Integer paidPrice;
     private Integer leftPrice;
 
-    private List<ContactDto> relations;
+    private List<ContactDto> contacts;
 }

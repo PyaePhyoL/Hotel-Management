@@ -64,4 +64,12 @@ public class ReservationManagementApi {
         var message = reservationService.changeRoom(id, roomId);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Room change", message));
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ResponseMessage> updateReservation(@PathVariable long id,
+                                                             @Valid @RequestBody ReservationForm form) {
+        var message = reservationService.update(id, form);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Reservation Updated", message));
+    }
+
 }

@@ -14,6 +14,7 @@ import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Room;
 import org.bytesync.hotelmanagement.model.enums.RoomStatus;
 import org.bytesync.hotelmanagement.model.enums.Status;
+import org.bytesync.hotelmanagement.repository.ContactRepository;
 import org.bytesync.hotelmanagement.repository.GuestRepository;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
@@ -44,6 +45,7 @@ public class ReservationService {
     private final GuestRecordService guestRecordService;
     private final RoomRepository roomRepository;
     private final GuestRepository guestRepository;
+    private final ContactRepository contactRepository;
 
     public ReservationGuestInfo getReservationGuestInfoById(Long id ){
         if (id == null || id <= 0) {
@@ -63,7 +65,7 @@ public class ReservationService {
 
         guestRecordService.createGuestRecord(reservation);
 
-        updateAssociation(reservation, room, guest, form.getRelations());
+        updateAssociation(reservation, room, guest, form.getContacts());
         return "Reservation created successfully";
     }
 
@@ -73,14 +75,18 @@ public class ReservationService {
                 RoomMapper.getRoomCurrentStatusFromReservation(reservation.getStatus(), reservation.getStayType()));
 
         guest.addReservation(reservation);
+        addContactsToReservation(reservation, contactDtos);
+
+        roomRepository.save(room);
+        guestRepository.save(guest);
+    }
+
+    private void addContactsToReservation(Reservation reservation, List<ContactDto> contactDtos) {
         contactDtos.stream()
                 .filter(rs -> !rs.name().isBlank() || !rs.phone().isBlank())
                 .forEach(dto -> {
             reservation.addRelation(ContactMapper.toEntity(dto));
         });
-
-        roomRepository.save(room);
-        guestRepository.save(guest);
     }
 
     private Reservation createReservation(ReservationForm form, Guest guest, Room room) {
@@ -179,14 +185,14 @@ public class ReservationService {
         var totalPrice = getTotalPriceInReservation(reservation);
         var paidPrice = getPaidPriceInReservation(reservation);
         var leftPrice = totalPrice - paidPrice;
-        var relations = reservation.getContacts().stream().map(ContactMapper::toDto).toList();
+        var contacts = reservation.getContacts().stream().map(ContactMapper::toDto).toList();
 
         resvDetails.setGuestDetails(guestDto);
         resvDetails.setRoomDetails(roomDto);
         resvDetails.setTotalPrice(totalPrice);
         resvDetails.setPaidPrice(paidPrice);
         resvDetails.setLeftPrice(leftPrice);
-        resvDetails.setRelations(relations);
+        resvDetails.setContacts(contacts);
 
         return resvDetails;
     }
@@ -220,5 +226,29 @@ public class ReservationService {
         return reservations.size();
     }
 
+
+    public String update(long id, ReservationForm form) {
+        var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
+        ReservationMapper.updateReservation(reservation, form);
+
+        updateContacts(reservation, form.getContacts());
+        
+        reservationRepository.save(reservation);
+
+        return "Reservation updated successfully : " + id;
+    }
+
+    public void updateContacts(Reservation reservation, List<ContactDto> contactDtos) {
+
+        var newContacts = contactDtos.stream().filter(dto -> dto.id() == null).toList();
+
+        addContactsToReservation(reservation, newContacts);
+
+        var oldContacts = contactDtos.stream().filter(dto -> dto.id() != null).toList();
+
+        oldContacts.forEach(dto -> {
+            contactRepository.findById(dto.id()).ifPresent(c -> ContactMapper.updateContent(c, dto));
+        });
+    }
 
 }

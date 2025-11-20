@@ -68,4 +68,13 @@ public class ReservationMapper {
                 .daysOfStay(reservation.getDaysOfStay())
                 .build();
     }
+
+    public static void updateReservation(Reservation reservation, ReservationForm form) {
+        reservation.setPricePerNight(form.getPricePerNight());
+        reservation.setDepositAmount(form.getDepositAmount());
+        reservation.setStayType(form.getStayType());
+        reservation.setRegisteredStaff(form.getStaffName());
+        reservation.setNoOfGuests(form.getNoOfGuests());
+        reservation.setNotes(form.getNote());
+    }
 }

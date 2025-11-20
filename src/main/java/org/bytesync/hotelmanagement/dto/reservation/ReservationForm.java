@@ -30,5 +30,5 @@ public class ReservationForm {
     private Integer discountAmount;
     private Integer depositAmount;
     private String note;
-    private List<ContactDto> relations;
+    private List<ContactDto> contacts;
 }

@@ -7,7 +7,7 @@ import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.exception.UserAlreadyExistsException;
 import org.bytesync.hotelmanagement.model.Guest;
 import org.bytesync.hotelmanagement.repository.GuestRepository;
-import org.bytesync.hotelmanagement.repository.RelationRepository;
+import org.bytesync.hotelmanagement.repository.ContactRepository;
 import org.bytesync.hotelmanagement.repository.specification.GuestSpecification;
 import org.bytesync.hotelmanagement.util.mapper.GuestMapper;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 public class GuestService {
 
     private final GuestRepository guestRepository;
-    private final RelationRepository relationRepository;
+    private final ContactRepository contactRepository;
 
 
     public String register(GuestDto form) {
@@ -95,8 +95,8 @@ public class GuestService {
     }
 
     public String deleteRelation(int rsId) {
-        var relation = safeCall(relationRepository.findById(rsId), "Relation", rsId);
-        relationRepository.delete(relation);
+        var relation = safeCall(contactRepository.findById(rsId), "Relation", rsId);
+        contactRepository.delete(relation);
         return "Relation has been deleted";
     }
 }
