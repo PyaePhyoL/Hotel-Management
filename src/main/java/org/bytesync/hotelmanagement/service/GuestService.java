@@ -68,7 +68,7 @@ public class GuestService {
 
     private void ensureGuestUpdateNoConflict(Guest guest, GuestDto form) {
         if(!guest.getName().equals(form.getName()) && guestRepository.existsByName(form.getName())) throw new UserAlreadyExistsException("Name already exists");
-        if(!guest.getEmail().equals(form.getEmail()) && guestRepository.existsByEmail(form.getEmail())) throw new UserAlreadyExistsException("Email already exists");
+        if(null != guest.getEmail() && !guest.getEmail().equals(form.getEmail()) && guestRepository.existsByEmail(form.getEmail())) throw new UserAlreadyExistsException("Email already exists");
         if(!guest.getNrc().equals(form.getNrc()) && guestRepository.existsByNrc(form.getNrc())) throw new UserAlreadyExistsException("NRC already exists");
         if(null != guest.getPassport() && !guest.getPassport().equals(form.getPassport()) && guestRepository.existsByPassport(form.getPassport())) throw new UserAlreadyExistsException("Passport already exists");
     }

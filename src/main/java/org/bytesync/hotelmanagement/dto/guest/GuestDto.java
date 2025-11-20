@@ -19,7 +19,6 @@ public class GuestDto {
     @NotBlank(message = "Name cannot be blank")
     private String name;
     @Email(message = "Email must be in correct format")
-    @NotBlank(message = "Email cannot be blank")
     private String email;
     private Set<String> phoneList;
     @NotBlank(message = "NRC cannot be blank")
@@ -29,4 +28,5 @@ public class GuestDto {
     private String maritalStatus;
     private String address;
     private LocalDate birthDate;
+    private String notes;
 }

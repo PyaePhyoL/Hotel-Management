@@ -20,6 +20,7 @@ public class GuestMapper {
                 .address(guestDto.getAddress())
                 .birthDate(guestDto.getBirthDate())
                 .isStaying(false)
+                .notes(guestDto.getNotes())
                 .build();
     }
 
@@ -36,6 +37,7 @@ public class GuestMapper {
                 .maritalStatus(guest.getMaritalStatus())
                 .address(guest.getAddress())
                 .birthDate(guest.getBirthDate())
+                .notes(guest.getNotes())
                 .build();
     }
 
@@ -49,5 +51,6 @@ public class GuestMapper {
         guest.setMaritalStatus(form.getMaritalStatus());
         guest.setAddress(form.getAddress());
         guest.setBirthDate(form.getBirthDate());
+        guest.setNotes(form.getNotes());
     }
 }
