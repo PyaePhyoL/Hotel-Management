@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.guest.GuestDto;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
+import org.bytesync.hotelmanagement.model.enums.GuestStatus;
 import org.bytesync.hotelmanagement.service.GuestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,5 +62,11 @@ public class GuestManagementApi {
     public ResponseEntity<ResponseMessage> deleteRelation(@PathVariable int rsId) {
         var message = guestService.deleteRelation(rsId);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "", message));
+    }
+
+    @PutMapping("/change-status/{id}/{status}")
+    public ResponseEntity<ResponseMessage> changeStatus(@PathVariable int id,  @PathVariable GuestStatus status) {
+        var message = guestService.changeStatus(id, status);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Change Guest Status", message));
     }
 }

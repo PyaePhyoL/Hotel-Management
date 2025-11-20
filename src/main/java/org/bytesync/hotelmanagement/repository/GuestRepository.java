@@ -29,6 +29,7 @@ public interface GuestRepository extends JpaRepository<Guest, Integer>, JpaSpeci
     g.maritalStatus,
     g.address,
     g.birthDate,
+    g.status,
     g.notes
     )
     from Guest g

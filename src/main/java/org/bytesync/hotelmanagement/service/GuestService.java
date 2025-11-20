@@ -6,6 +6,7 @@ import org.bytesync.hotelmanagement.dto.guest.GuestDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.exception.UserAlreadyExistsException;
 import org.bytesync.hotelmanagement.model.Guest;
+import org.bytesync.hotelmanagement.model.enums.GuestStatus;
 import org.bytesync.hotelmanagement.repository.GuestRepository;
 import org.bytesync.hotelmanagement.repository.ContactRepository;
 import org.bytesync.hotelmanagement.repository.specification.GuestSpecification;
@@ -33,9 +34,9 @@ public class GuestService {
 
         checkGuestExists(guest);
 
-        guestRepository.save(guest);
+        var id = guestRepository.save(guest).getId();
 
-        return "New Guest has been created";
+        return "New Guest has been created : " + id;
     }
 
     private void checkGuestExists(Guest guest) {
@@ -61,9 +62,9 @@ public class GuestService {
         var guest = guestRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Guest not found"));
         ensureGuestUpdateNoConflict(guest, form);
         GuestMapper.updateGuest(guest, form);
-        guestRepository.save(guest);
+        var gId = guestRepository.save(guest).getId();
 
-        return "Guest has been updated";
+        return "Guest has been updated : " + gId;
     }
 
     private void ensureGuestUpdateNoConflict(Guest guest, GuestDto form) {
@@ -98,6 +99,13 @@ public class GuestService {
         var relation = safeCall(contactRepository.findById(rsId), "Relation", rsId);
         contactRepository.delete(relation);
         return "Relation has been deleted";
+    }
+
+    public String changeStatus(int id, GuestStatus status) {
+        var guest  = safeCall(guestRepository.findById(id), "Guest", id);
+        guest.setStatus(status);
+        var gId = guestRepository.save(guest).getId();
+        return "Guest status has been updated : " + gId;
     }
 }
 

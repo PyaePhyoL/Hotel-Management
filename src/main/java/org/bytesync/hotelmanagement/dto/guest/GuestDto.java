@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bytesync.hotelmanagement.model.enums.GuestStatus;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -28,5 +29,6 @@ public class GuestDto {
     private String maritalStatus;
     private String address;
     private LocalDate birthDate;
+    private GuestStatus status;
     private String notes;
 }

@@ -12,6 +12,7 @@ import org.bytesync.hotelmanagement.model.DailyVoucher;
 import org.bytesync.hotelmanagement.model.Guest;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Room;
+import org.bytesync.hotelmanagement.model.enums.GuestStatus;
 import org.bytesync.hotelmanagement.model.enums.RoomStatus;
 import org.bytesync.hotelmanagement.model.enums.Status;
 import org.bytesync.hotelmanagement.repository.ContactRepository;
@@ -118,6 +119,7 @@ public class ReservationService {
                     guest.setName(form.getGuestName());
                     guest.setNrc(form.getGuestNrc());
                     guest.addPhone(form.getPhone());
+                    guest.setStatus(GuestStatus.GOOD);
                     return guestRepository.save(guest);
                 });
     }

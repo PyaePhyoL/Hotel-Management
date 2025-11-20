@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.util.mapper;
 
 import org.bytesync.hotelmanagement.dto.guest.GuestDto;
 import org.bytesync.hotelmanagement.model.Guest;
+import org.bytesync.hotelmanagement.model.enums.GuestStatus;
 
 public class GuestMapper {
 
@@ -21,6 +22,7 @@ public class GuestMapper {
                 .birthDate(guestDto.getBirthDate())
                 .isStaying(false)
                 .notes(guestDto.getNotes())
+                .status(GuestStatus.GOOD)
                 .build();
     }
 
@@ -38,6 +40,7 @@ public class GuestMapper {
                 .address(guest.getAddress())
                 .birthDate(guest.getBirthDate())
                 .notes(guest.getNotes())
+                .status(guest.getStatus())
                 .build();
     }
 
@@ -52,5 +55,6 @@ public class GuestMapper {
         guest.setAddress(form.getAddress());
         guest.setBirthDate(form.getBirthDate());
         guest.setNotes(form.getNotes());
+        guest.setStatus(form.getStatus());
     }
 }
