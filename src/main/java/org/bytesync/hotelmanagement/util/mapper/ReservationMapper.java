@@ -21,6 +21,7 @@ public class ReservationMapper {
                 .checkInTime(form.getCheckInTime())
                 .pricePerNight(form.getPricePerNight())
                 .depositAmount(form.getDepositAmount())
+                .discountAmount(form.getDiscountAmount())
                 .registeredStaff(form.getStaffName())
                 .status(ScheduleMethods.checkDateTimeAndGetStatus(form.getCheckInTime(), null))
                 .daysOfStay(0)
@@ -50,6 +51,7 @@ public class ReservationMapper {
                 .daysOfStay(reservation.getDaysOfStay())
                 .pricePerNight(reservation.getPricePerNight())
                 .depositAmount(reservation.getDepositAmount())
+                .discountAmount(reservation.getDiscountAmount())
                 .stayType(reservation.getStayType())
                 .registeredStaff(reservation.getRegisteredStaff())
                 .noOfGuests(reservation.getNoOfGuests())
@@ -72,6 +74,7 @@ public class ReservationMapper {
     public static void updateReservation(Reservation reservation, ReservationForm form) {
         reservation.setPricePerNight(form.getPricePerNight());
         reservation.setDepositAmount(form.getDepositAmount());
+        reservation.setDiscountAmount(form.getDiscountAmount());
         reservation.setStayType(form.getStayType());
         reservation.setRegisteredStaff(form.getStaffName());
         reservation.setNoOfGuests(form.getNoOfGuests());

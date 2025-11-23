@@ -27,6 +27,7 @@ public class Reservation {
     private LocalDateTime checkOutTime;
     private Integer daysOfStay;
     private Integer pricePerNight;
+    private Integer discountAmount;
     private Integer depositAmount;
     @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
     private StayType stayType;
@@ -48,7 +49,7 @@ public class Reservation {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contact> contacts = new ArrayList<>();
 
     public void addPayment(Payment payment) {

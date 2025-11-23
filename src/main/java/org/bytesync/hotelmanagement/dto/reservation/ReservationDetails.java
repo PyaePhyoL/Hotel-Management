@@ -20,6 +20,7 @@ public class ReservationDetails {
     private Integer daysOfStay;
     private Integer pricePerNight;
     private Integer depositAmount;
+    private Integer discountAmount;
     private StayType stayType;
     private String registeredStaff;
     private Integer noOfGuests;
