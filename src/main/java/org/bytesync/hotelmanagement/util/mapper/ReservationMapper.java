@@ -55,6 +55,7 @@ public class ReservationMapper {
                 .stayType(reservation.getStayType())
                 .registeredStaff(reservation.getRegisteredStaff())
                 .noOfGuests(reservation.getNoOfGuests())
+                .notes(reservation.getNotes())
                 .build();
     }
 

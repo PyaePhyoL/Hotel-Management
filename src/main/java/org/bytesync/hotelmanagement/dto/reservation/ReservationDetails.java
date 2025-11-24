@@ -33,4 +33,5 @@ public class ReservationDetails {
     private Integer leftPrice;
 
     private List<ContactDto> contacts;
+    private String notes;
 }
