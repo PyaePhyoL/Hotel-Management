@@ -135,7 +135,7 @@ public class ReservationService {
         var room = reservation.getRoom();
         var guest = reservation.getGuest();
 //        2nd make the room and guest clear
-        makeRoomAvailable(room);
+        makeRoomInService(room);
         guestCheckout(guest);
 
 //        3rd change the checkout time in guest record
@@ -160,6 +160,10 @@ public class ReservationService {
 
     public String delete(Long reservationId) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
+        if(reservation.getStatus() == Status.ACTIVE) {
+            throw new IllegalStateException("Reservation is active");
+        }
+
         makeRoomAvailable(reservation.getRoom());
         guestCheckout(reservation.getGuest());
         reservationRepository.delete(reservation);
@@ -168,6 +172,12 @@ public class ReservationService {
 
     private void makeRoomAvailable(Room room) {
         room.setCurrentStatus(RoomStatus.AVAILABLE);
+        room.setCurrentReservationId(null);
+        roomRepository.save(room);
+    }
+
+    private void makeRoomInService(Room room) {
+        room.setCurrentStatus(RoomStatus.IN_SERVICE);
         room.setCurrentReservationId(null);
         roomRepository.save(room);
     }
@@ -212,7 +222,7 @@ public class ReservationService {
         var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
         var newRoom = safeCall(roomRepository.findById(roomId), "Room", id);
         var oldRoom = reservation.getRoom();
-        makeRoomAvailable(oldRoom);
+        makeRoomInService(oldRoom);
 
         reservation.setRoom(newRoom);
         newRoom.addReservation(reservation);
