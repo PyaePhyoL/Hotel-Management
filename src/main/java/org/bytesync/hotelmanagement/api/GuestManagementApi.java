@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.guest.GuestDto;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.model.enums.GuestStatus;
-import org.bytesync.hotelmanagement.service.GuestService;
+import org.bytesync.hotelmanagement.service.guest.GuestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

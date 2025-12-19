@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.service;
+package org.bytesync.hotelmanagement.service.hotel;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,7 @@ import org.bytesync.hotelmanagement.dto.reservation.ReservationDetails;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
-import org.bytesync.hotelmanagement.model.DailyVoucher;
+import org.bytesync.hotelmanagement.model.Voucher;
 import org.bytesync.hotelmanagement.model.Guest;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Room;
@@ -20,6 +20,7 @@ import org.bytesync.hotelmanagement.repository.GuestRepository;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.repository.specification.ReservationSpecification;
+import org.bytesync.hotelmanagement.service.guest.GuestRecordService;
 import org.bytesync.hotelmanagement.util.mapper.GuestMapper;
 import org.bytesync.hotelmanagement.util.mapper.ContactMapper;
 import org.bytesync.hotelmanagement.util.mapper.ReservationMapper;
@@ -210,11 +211,11 @@ public class ReservationService {
     }
 
     public Integer getTotalPriceInReservation(Reservation reservation) {
-        return reservation.getDailyVouchers().stream().map(DailyVoucher::getPrice).reduce(0, Integer::sum);
+        return reservation.getVouchers().stream().map(Voucher::getPrice).reduce(0, Integer::sum);
     }
 
     public Integer getPaidPriceInReservation(Reservation reservation) {
-        return reservation.getDailyVouchers().stream().filter(DailyVoucher::getIsPaid).map(DailyVoucher::getPrice).reduce(0, Integer::sum);
+        return reservation.getVouchers().stream().filter(Voucher::getIsPaid).map(Voucher::getPrice).reduce(0, Integer::sum);
     }
 
     @Transactional

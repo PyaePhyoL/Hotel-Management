@@ -25,7 +25,7 @@ public class ReservationMapper {
                 .registeredStaff(form.getStaffName())
                 .status(ScheduleMethods.checkDateTimeAndGetStatus(form.getCheckInTime(), null))
                 .daysOfStay(0)
-                .dailyVouchers(new ArrayList<>())
+                .vouchers(new ArrayList<>())
                 .paymentList(new ArrayList<>())
                 .contacts(new ArrayList<>())
                 .notes(form.getNote())
@@ -56,6 +56,7 @@ public class ReservationMapper {
                 .registeredStaff(reservation.getRegisteredStaff())
                 .noOfGuests(reservation.getNoOfGuests())
                 .notes(reservation.getNotes())
+                .staffName(reservation.getRegisteredStaff())
                 .build();
     }
 

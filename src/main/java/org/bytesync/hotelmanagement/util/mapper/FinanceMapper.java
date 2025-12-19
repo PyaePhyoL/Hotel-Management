@@ -21,7 +21,7 @@ public class FinanceMapper {
                 .amount(paymentCreateForm.getAmount())
                 .paymentMethod(paymentCreateForm.getPaymentMethod())
                 .notes(paymentCreateForm.getNotes())
-                .dailyVouchers(new ArrayList<>())
+                .vouchers(new ArrayList<>())
                 .build();
     }
 

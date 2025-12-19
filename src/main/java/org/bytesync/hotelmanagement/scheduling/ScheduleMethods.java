@@ -3,7 +3,7 @@ package org.bytesync.hotelmanagement.scheduling;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bytesync.hotelmanagement.model.DailyVoucher;
+import org.bytesync.hotelmanagement.model.Voucher;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.enums.Status;
@@ -66,7 +66,7 @@ public class ScheduleMethods {
     }
 
     public static void createDailyVoucher(Reservation reservation, LocalDate date) {
-        var dailyVoucher = DailyVoucher.builder()
+        var dailyVoucher = Voucher.builder()
                 .reservation(reservation)
                 .date(date)
                 .price(reservation.getPricePerNight())
@@ -77,7 +77,7 @@ public class ScheduleMethods {
         reservation.addDailyVoucher(dailyVoucher);
     }
 
-    private static boolean processDailyPayment(Reservation reservation, DailyVoucher voucher) {
+    private static boolean processDailyPayment(Reservation reservation, Voucher voucher) {
         var deposit = reservation.getDepositAmount();
         var pricePerNight = reservation.getPricePerNight();
         var paid = false;
@@ -90,13 +90,13 @@ public class ScheduleMethods {
         return paid;
     }
 
-    private static void createPayment(Reservation reservation, DailyVoucher voucher) {
+    private static void createPayment(Reservation reservation, Voucher voucher) {
         var payment = Payment.builder()
                 .paymentDate(LocalDate.now())
                 .amount(reservation.getPricePerNight())
                 .paymentMethod(DEPOSIT)
                 .notes("Automatic paid from deposit")
-                .dailyVouchers(new ArrayList<>())
+                .vouchers(new ArrayList<>())
                 .build();
         payment.setReservation(reservation);
         payment.addDailyVoucher(voucher);

@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.service;
+package org.bytesync.hotelmanagement.service.guest;
 
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.guest.GuestRecordDto;

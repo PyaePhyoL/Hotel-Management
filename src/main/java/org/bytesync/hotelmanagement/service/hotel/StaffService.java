@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.service;
+package org.bytesync.hotelmanagement.service.hotel;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

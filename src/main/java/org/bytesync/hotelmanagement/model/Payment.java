@@ -29,15 +29,15 @@ public class Payment extends Auditable{
     private Reservation reservation;
 
     @OneToMany(mappedBy = "payment", cascade = CascadeType.PERSIST)
-    private List<DailyVoucher> dailyVouchers;
+    private List<Voucher> vouchers;
 
     public void setReservation(Reservation resv) {
         this.reservation = resv;
         resv.addPayment(this);
     }
 
-    public void addDailyVoucher(DailyVoucher voucher) {
-        this.dailyVouchers.add(voucher);
+    public void addDailyVoucher(Voucher voucher) {
+        this.vouchers.add(voucher);
         voucher.setPayment(this);
     }
 }

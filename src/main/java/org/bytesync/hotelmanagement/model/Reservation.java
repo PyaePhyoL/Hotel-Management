@@ -39,7 +39,7 @@ public class Reservation {
     private Room room;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DailyVoucher>  dailyVouchers;
+    private List<Voucher> vouchers;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Payment> paymentList;
@@ -56,8 +56,8 @@ public class Reservation {
         this.paymentList.add(payment);
     }
 
-    public void addDailyVoucher(DailyVoucher dailyVoucher) {
-        this.dailyVouchers.add(dailyVoucher);
+    public void addDailyVoucher(Voucher voucher) {
+        this.vouchers.add(voucher);
     }
 
     public void incrementDaysOfStayByOne() {

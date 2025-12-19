@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.service;
+package org.bytesync.hotelmanagement.service.hotel;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

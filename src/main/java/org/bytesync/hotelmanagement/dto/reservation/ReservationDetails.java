@@ -27,6 +27,7 @@ public class ReservationDetails {
     private Status status;
     private GuestDto guestDetails;
     private RoomDto roomDetails;
+    private String staffName;
 
     private Integer totalPrice;
     private Integer paidPrice;
