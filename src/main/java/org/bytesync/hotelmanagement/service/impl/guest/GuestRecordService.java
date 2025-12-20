@@ -7,7 +7,6 @@ import org.bytesync.hotelmanagement.model.GuestRecord;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.repository.GuestRecordRepository;
 import org.bytesync.hotelmanagement.repository.specification.GuestRecordSpecification;
-import org.bytesync.hotelmanagement.util.EntityOperationUtils;
 import org.bytesync.hotelmanagement.util.mapper.GuestRecordMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,13 +34,14 @@ public class GuestRecordService {
                 .room(reservation.getRoom())
                 .checkInTime(reservation.getCheckInDateTime())
                 .current(true)
+                .reservation(reservation)
                 .build();
         guestRecordRepository.save(guestRecord);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updateGuestRecordWhenCheckout(Long guestId, Long roomId, LocalDateTime checkoutTime) {
-        var guestRecord = safeCall(guestRecordRepository.findByGuestIdAndRoomNo(guestId, roomId), "Guest Record's guest", guestId);
+    public void updateGuestRecordWhenCheckout(Long reservationId, LocalDateTime checkoutTime) {
+        var guestRecord = safeCall(guestRecordRepository.findByReservationId(reservationId), "Guest Record's guest", reservationId);
 
         int daysOfStay = (int) ChronoUnit.DAYS.between(guestRecord.getCheckInTime(), checkoutTime);
         guestRecord.setCheckOutTime(checkoutTime);

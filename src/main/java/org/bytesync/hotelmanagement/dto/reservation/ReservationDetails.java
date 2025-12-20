@@ -18,9 +18,9 @@ public class ReservationDetails {
     private LocalDateTime checkInTime;
     private LocalDateTime checkOutTime;
     private Integer daysOfStay;
-    private Integer pricePerNight;
-    private Integer depositAmount;
-    private Integer discountAmount;
+    private Integer price;
+    private Integer deposit;
+    private Integer discount;
     private StayType stayType;
     private String registeredStaff;
     private Integer noOfGuests;

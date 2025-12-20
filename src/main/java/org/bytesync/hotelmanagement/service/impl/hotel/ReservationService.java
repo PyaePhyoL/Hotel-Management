@@ -13,10 +13,7 @@ import org.bytesync.hotelmanagement.model.enums.GuestStatus;
 import org.bytesync.hotelmanagement.model.enums.RoomStatus;
 import org.bytesync.hotelmanagement.model.enums.Status;
 import org.bytesync.hotelmanagement.model.enums.StayType;
-import org.bytesync.hotelmanagement.repository.ContactRepository;
-import org.bytesync.hotelmanagement.repository.GuestRepository;
-import org.bytesync.hotelmanagement.repository.ReservationRepository;
-import org.bytesync.hotelmanagement.repository.RoomRepository;
+import org.bytesync.hotelmanagement.repository.*;
 import org.bytesync.hotelmanagement.repository.specification.ReservationSpecification;
 import org.bytesync.hotelmanagement.service.impl.finance.VoucherService;
 import org.bytesync.hotelmanagement.service.impl.guest.GuestRecordService;
@@ -49,6 +46,7 @@ public class ReservationService implements IReservationService {
     private final GuestRepository guestRepository;
     private final ContactRepository contactRepository;
     private final VoucherService voucherService;
+    private final GuestRecordRepository guestRecordRepository;
 
     @Override
     public ReservationGuestInfo getReservationGuestInfoById(Long id ){
@@ -146,7 +144,7 @@ public class ReservationService implements IReservationService {
         guestCheckout(guest);
 
 //        3rd change the checkout time in guest record
-        guestRecordService.updateGuestRecordWhenCheckout(guest.getId(), room.getRoomNo(), checkoutTime);
+        guestRecordService.updateGuestRecordWhenCheckout(reservationId, checkoutTime);
         
         var timeString = timeFormat(checkoutTime);
         reservationRepository.save(reservation);
@@ -165,6 +163,7 @@ public class ReservationService implements IReservationService {
         return new PageResult<>(infos, result.getTotalElements(), page, size);
     }
 
+    @Transactional
     @Override
     public String cancelReservation(Long reservationId) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
@@ -175,7 +174,10 @@ public class ReservationService implements IReservationService {
         makeRoomAvailable(reservation.getRoom());
         guestCheckout(reservation.getGuest());
 
+        var guestRecord = safeCall(guestRecordRepository.findByReservationId(reservationId), "Guest Record's reservation", reservationId);
         reservation.setStatus(Status.CANCELED);
+
+        guestRecordRepository.delete(guestRecord);
         reservationRepository.save(reservation);
         return "Reservation canceled successfully";
     }
@@ -277,11 +279,15 @@ public class ReservationService implements IReservationService {
         });
     }
 
+    @Transactional
     @Override
     public String delete(Long id) {
         var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
+        var guestRecord = safeCall(guestRecordRepository.findByReservationId(id), "Guest's record reservation", id);
+
         makeRoomAvailable(reservation.getRoom());
         guestCheckout(reservation.getGuest());
+        guestRecordRepository.delete(guestRecord);
         reservationRepository.delete(reservation);
 
         return "Reservation deleted successfully";

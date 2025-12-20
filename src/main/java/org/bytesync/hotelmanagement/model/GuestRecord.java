@@ -26,6 +26,9 @@ public class GuestRecord {
     @ManyToOne
     private Room room;
 
+    @OneToOne
+    private Reservation reservation;
+
     private LocalDateTime checkInTime;
     private LocalDateTime checkOutTime;
     private Integer daysOfStay;
