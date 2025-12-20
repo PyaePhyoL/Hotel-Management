@@ -9,6 +9,7 @@ import org.bytesync.hotelmanagement.model.Staff;
 import org.bytesync.hotelmanagement.repository.StaffRepository;
 import org.bytesync.hotelmanagement.repository.specification.StaffSpecification;
 import org.bytesync.hotelmanagement.security.SecurityTokenProvider;
+import org.bytesync.hotelmanagement.service.interfaces.hotel.IStaffService;
 import org.bytesync.hotelmanagement.util.mapper.StaffMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,13 +28,14 @@ import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class StaffService {
+public class StaffService implements IStaffService {
 
     private final AuthenticationManager authenticationManager;
     private final StaffRepository staffRepository;
     private final SecurityTokenProvider securityTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
+    @Override
     public StaffInfo signIn(SignInForm form) {
         // authenticate the staff
         var authentication = authenticationManager.authenticate(form.authToken());
@@ -51,7 +53,7 @@ public class StaffService {
                 .refreshToken(securityTokenProvider.generate(REFRESH, authentication))
                 .build();
     }
-
+    @Override
     public String register(StaffRegisterForm form) {
         var staff = StaffMapper.toEntity(form);
         staff.setPassword(passwordEncoder.encode(form.password()));
@@ -69,6 +71,7 @@ public class StaffService {
         if(staffRepository.existsByNrc(staff.getNrc())) throw new UserAlreadyExistsException("NRC already exists");
     }
 
+    @Override
     public String update(Long id, StaffRegisterForm form) {
         var staff = safeCall(staffRepository.findById(id), "Staff", id);
         ensureStaffUpdateNoConflict(staff, form);
@@ -85,6 +88,7 @@ public class StaffService {
         if(!staff.getNrc().equals(form.nrc()) && staffRepository.existsByNrc(form.nrc())) throw new UserAlreadyExistsException("NRC already exists");
     }
 
+    @Override
     public StaffInfo refresh(String refreshToken) {
         var authentication = securityTokenProvider.parse(REFRESH, refreshToken);
         var staff = safeCall(staffRepository.findByEmail(authentication.getName()), "Staff", authentication.getName());
@@ -99,7 +103,7 @@ public class StaffService {
                 .build();
     }
 
-
+    @Override
     public String enable(Long id) {
         var staff = safeCall(staffRepository.findById(id), "User", id);
         staff.setEnabled(true);
@@ -107,6 +111,7 @@ public class StaffService {
         return "Enabled the staff " + staff.getName();
     }
 
+    @Override
     public String disable(Long id) {
         var staff = safeCall(staffRepository.findById(id), "User", id);
         staff.setEnabled(false);
@@ -114,6 +119,7 @@ public class StaffService {
         return "Disabled the user " + staff.getName();
     }
 
+    @Override
     public PageResult<StaffDto> getAll(int page, int size) {
         long count = staffRepository.count();
         Pageable pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "id");
@@ -121,16 +127,19 @@ public class StaffService {
         return new PageResult<>(staffs, count, page, size);
     }
 
+    @Override
     public String delete(Long id) {
         var staff = safeCall(staffRepository.findById(id), "User", id);
         staffRepository.delete(staff);
         return "Deleted the staff " + staff.getName();
     }
 
+    @Override
     public StaffDetailsDto getDetails(Long userId) {
         return safeCall(staffRepository.findDetailsById(userId), "User", userId);
     }
 
+    @Override
     public PageResult<StaffDto> search(String query, int page, int size) {
         if(query == null || query.trim().isEmpty()) {
             return new PageResult<>(List.of(), 0, page, size);

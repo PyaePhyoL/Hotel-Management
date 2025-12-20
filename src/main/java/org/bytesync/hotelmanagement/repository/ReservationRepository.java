@@ -15,7 +15,7 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long>, 
     where r.status = 'ACTIVE'
     and r.stayType = 'LONG'
 """)
-    List<Reservation> findAllActiveReservations();
+    List<Reservation> findAllActiveLongReservations();
 
     @Query("""
     select r from Reservation r

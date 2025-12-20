@@ -9,6 +9,7 @@ import org.bytesync.hotelmanagement.model.Voucher;
 import org.bytesync.hotelmanagement.enums.VoucherType;
 import org.bytesync.hotelmanagement.repository.VoucherRepository;
 import org.bytesync.hotelmanagement.repository.specification.DailyVoucherSpecification;
+import org.bytesync.hotelmanagement.service.interfaces.finance.IVoucherService;
 import org.bytesync.hotelmanagement.util.mapper.VoucherMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,10 +25,11 @@ import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getDaysBetw
 
 @Service
 @RequiredArgsConstructor
-public class VoucherService {
+public class VoucherService implements IVoucherService {
 
     private final VoucherRepository voucherRepository;
 
+    @Override
     public void createVoucher(Reservation reservation) {
 
         var baseVoucher = createBasicVoucherFromReservation(reservation);
@@ -43,8 +45,8 @@ public class VoucherService {
         voucherRepository.save(baseVoucher);
     }
 
-
-    public PageResult<VoucherDto> getVoucherListByReservation(long reservationId, boolean isPaid, int page, int size) {
+    @Override
+    public PageResult<VoucherDto> getVoucherListByReservation(Long reservationId, boolean isPaid, int page, int size) {
         var pageable = PageRequest.of(page, size).withSort(Sort.Direction.ASC, "date");
         var spec = DailyVoucherSpecification.byReservationId(reservationId, isPaid);
 
@@ -54,12 +56,14 @@ public class VoucherService {
         return new PageResult<>(dtos, vouchers.getTotalElements(), page, size);
     }
 
+    @Override
     public List<VoucherDto> getSelectedVoucherDtos(List<Long> voucherIds) {
         return getVouchers(voucherIds).stream()
                 .map(VoucherMapper::toDto)
                 .toList();
     }
 
+    @Override
     public List<Voucher> getVouchers(List<Long>  voucherIds) {
         List<Voucher> vouchers = new ArrayList<>();
         voucherIds.forEach(id -> {
@@ -68,6 +72,7 @@ public class VoucherService {
         return vouchers;
     }
 
+    @Override
     public void createExtendVoucher(Reservation reservation, int price) {
         var extendVoucher = createBasicVoucherFromReservation(reservation);
         extendVoucher.setPrice(price);

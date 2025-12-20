@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bytesync.hotelmanagement.enums.Status;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
-import org.bytesync.hotelmanagement.service.impl.finance.VoucherService;
+import org.bytesync.hotelmanagement.service.interfaces.finance.IVoucherService;
 import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -20,14 +20,14 @@ public class ScheduleMethods {
 
     private final ReservationRepository reservationRepository;
     private final RoomRepository roomRepository;
-    private final VoucherService voucherService;
+    private final IVoucherService voucherService;
 
     @Transactional
     @Scheduled(cron = "0 * * * * *")
     public void scheduleEveryDayCreatingVouchers() {
 
         log.info(" =============> Creating Voucher Schedule Task <=============");
-        var reservations = reservationRepository.findAllActiveReservations();
+        var reservations = reservationRepository.findAllActiveLongReservations();
 
         reservations.forEach(reservation -> {
             voucherService.createVoucher(reservation);

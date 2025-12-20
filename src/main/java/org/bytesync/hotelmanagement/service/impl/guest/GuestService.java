@@ -10,6 +10,7 @@ import org.bytesync.hotelmanagement.enums.GuestStatus;
 import org.bytesync.hotelmanagement.repository.GuestRepository;
 import org.bytesync.hotelmanagement.repository.ContactRepository;
 import org.bytesync.hotelmanagement.repository.specification.GuestSpecification;
+import org.bytesync.hotelmanagement.service.interfaces.guest.IGuestService;
 import org.bytesync.hotelmanagement.util.mapper.GuestMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,12 +24,12 @@ import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Service
 @RequiredArgsConstructor
-public class GuestService {
+public class GuestService implements IGuestService {
 
     private final GuestRepository guestRepository;
     private final ContactRepository contactRepository;
 
-
+    @Override
     public String register(GuestDto form) {
         Guest guest = GuestMapper.toEntity(form);
 
@@ -45,11 +46,13 @@ public class GuestService {
         if(null != guest.getPassport() && guestRepository.existsByPassport(guest.getPassport())) throw new UserAlreadyExistsException("Passport already exists");
     }
 
+    @Override
     public GuestDto getDetails(Long id) {
         var guest = safeCall(guestRepository.findById(id), "Guest", id);
         return GuestMapper.toDto(guest);
     }
 
+    @Override
     public PageResult<GuestDto> getAll(int page, int size) {
         long count = guestRepository.count();
         Pageable pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "id");
@@ -58,6 +61,7 @@ public class GuestService {
         return new PageResult<>(guestList, count, page, size);
     }
 
+    @Override
     public String update(Long id, GuestDto form) {
         var guest = guestRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Guest not found"));
         ensureGuestUpdateNoConflict(guest, form);
@@ -74,12 +78,14 @@ public class GuestService {
         if(null != guest.getPassport() && !guest.getPassport().equals(form.getPassport()) && guestRepository.existsByPassport(form.getPassport())) throw new UserAlreadyExistsException("Passport already exists");
     }
 
+    @Override
     public String delete(Long id) {
         var guest = safeCall(guestRepository.findById(id), "Guest", id);
         guestRepository.delete(guest);
         return "Guest has been deleted";
     }
 
+    @Override
     public PageResult<GuestDto> search(String query, int page, int size) {
         if(query == null || query.trim().isEmpty()) {
             return new PageResult<>(List.of(), 0, page, size);
@@ -95,12 +101,14 @@ public class GuestService {
         return new PageResult<>(dtos, result.getTotalElements(), page, size);
     }
 
+    @Override
     public String deleteRelation(Long rsId) {
         var relation = safeCall(contactRepository.findById(rsId), "Relation", rsId);
         contactRepository.delete(relation);
         return "Relation has been deleted";
     }
 
+    @Override
     public String changeStatus(Long id, GuestStatus status) {
         var guest  = safeCall(guestRepository.findById(id), "Guest", id);
         guest.setStatus(status);

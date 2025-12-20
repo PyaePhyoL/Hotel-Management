@@ -7,6 +7,7 @@ import org.bytesync.hotelmanagement.model.GuestRecord;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.repository.GuestRecordRepository;
 import org.bytesync.hotelmanagement.repository.specification.GuestRecordSpecification;
+import org.bytesync.hotelmanagement.service.interfaces.guest.IGuestRecordService;
 import org.bytesync.hotelmanagement.util.mapper.GuestRecordMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,10 +24,11 @@ import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Service
 @RequiredArgsConstructor
-public class GuestRecordService {
+public class GuestRecordService implements IGuestRecordService {
 
     private final GuestRecordRepository guestRecordRepository;
 
+    @Override
     @Transactional
     public void createGuestRecord(Reservation reservation) {
         GuestRecord guestRecord = GuestRecord.builder()
@@ -39,6 +41,7 @@ public class GuestRecordService {
         guestRecordRepository.save(guestRecord);
     }
 
+    @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateGuestRecordWhenCheckout(Long reservationId, LocalDateTime checkoutTime) {
         var guestRecord = safeCall(guestRecordRepository.findByReservationId(reservationId), "Guest Record's guest", reservationId);
@@ -50,6 +53,7 @@ public class GuestRecordService {
         guestRecordRepository.save(guestRecord);
     }
 
+    @Override
     public PageResult<GuestRecordDto> getAll(boolean isCurrent, int page, int size) {
         var pageable = PageRequest.of(page, size).withSort(Sort.Direction.ASC, "checkInTime");
         var spec = GuestRecordSpecification.currentOrAll(isCurrent);

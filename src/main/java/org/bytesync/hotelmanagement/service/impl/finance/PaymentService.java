@@ -5,6 +5,7 @@ import org.bytesync.hotelmanagement.dto.finance.*;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.repository.*;
+import org.bytesync.hotelmanagement.service.interfaces.finance.IPaymentService;
 import org.bytesync.hotelmanagement.util.mapper.FinanceMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,13 +20,13 @@ import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Service
 @RequiredArgsConstructor
-public class PaymentService {
+public class PaymentService implements IPaymentService {
 
     private final ReservationRepository reservationRepository;
     private final PaymentRepository paymentRepository;
     private final VoucherService voucherService;
 
-
+    @Override
     public String createPayment(PaymentCreateForm paymentCreateForm) {
         var reservation = safeCall(reservationRepository.findById(paymentCreateForm.getReservationId()),
                 "Reservation", paymentCreateForm.getReservationId());
@@ -43,6 +44,7 @@ public class PaymentService {
         return "Payment created successfully : " + id;
     }
 
+    @Override
     public PageResult<PaymentDto> getPaymentList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("paymentDate").descending());
         Page<Payment> all = paymentRepository.findAll(pageable);
@@ -50,6 +52,7 @@ public class PaymentService {
         return new  PageResult<>(dtos, all.getTotalElements(), page, size);
     }
 
+    @Override
     public Integer getDailyIncomeAmount() {
         var today = LocalDate.now();
         var payments =paymentRepository.findByPaymentDate(today);
@@ -57,8 +60,7 @@ public class PaymentService {
         return payments.stream().map(Payment::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
     }
 
-
-
+    @Override
     public PaymentCreateForm getSectionPaymentForm(Long reservationId) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
 

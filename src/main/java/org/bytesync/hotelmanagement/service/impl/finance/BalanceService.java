@@ -7,6 +7,7 @@ import org.bytesync.hotelmanagement.dto.finance.MonthlyBalanceSheet;
 import org.bytesync.hotelmanagement.dto.finance.PaymentDto;
 import org.bytesync.hotelmanagement.repository.ExpenseRepository;
 import org.bytesync.hotelmanagement.repository.PaymentRepository;
+import org.bytesync.hotelmanagement.service.interfaces.finance.IBalanceService;
 import org.bytesync.hotelmanagement.util.mapper.FinanceMapper;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +22,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class BalanceService {
+public class BalanceService implements IBalanceService {
 
     private final PaymentRepository paymentRepository;
     private final ExpenseRepository expenseRepository;
 
+    @Override
     public MonthlyBalanceSheet getMonthlyBalance(int year, int month) {
         MonthlyBalanceSheet monthlyBalanceSheet = new MonthlyBalanceSheet();
         monthlyBalanceSheet.setPeriod(getPeriodString(year, month));
@@ -91,12 +93,12 @@ public class BalanceService {
         return dailyBalances;
     }
 
-    public List<PaymentDto> getAllPaymentsByMonthOfYear(int year, int month) {
+    private List<PaymentDto> getAllPaymentsByMonthOfYear(int year, int month) {
         var payments = paymentRepository.findAllInMonthOfYear(year, month);
         return payments.stream().map(FinanceMapper::toPaymentDto).toList();
     }
 
-    public List<ExpenseDto> getAllExpensesByMonthOfYear(int year, int month) {
+    private List<ExpenseDto> getAllExpensesByMonthOfYear(int year, int month) {
         var expenses = expenseRepository.findAllInMonthOfYear(year, month);
         return expenses.stream().map(FinanceMapper::toExpenseDto).toList();
     }

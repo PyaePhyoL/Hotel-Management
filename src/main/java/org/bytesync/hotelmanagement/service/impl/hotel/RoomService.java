@@ -14,6 +14,7 @@ import org.bytesync.hotelmanagement.enums.RoomStatus;
 import org.bytesync.hotelmanagement.enums.RoomType;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.repository.specification.RoomSpecification;
+import org.bytesync.hotelmanagement.service.interfaces.hotel.IRoomService;
 import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,11 +28,12 @@ import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Service
 @RequiredArgsConstructor
-public class RoomService {
+public class RoomService implements IRoomService {
 
     private final RoomRepository roomRepository;
     private final ReservationService reservationService;
 
+    @Override
     public RoomDashboardView getAllRoomsInGridView(RoomStatus roomStatus) {
         var specification = RoomSpecification.roomStatusEquals(roomStatus);
         var rooms = roomRepository.findAll(specification).stream().map(RoomMapper::toDto).toList();
@@ -61,10 +63,15 @@ public class RoomService {
                 .build();
     }
 
-    public List<RoomDto> getAllAvailableRooms() {
-        return roomRepository.findAllRoomDtosByStatus(RoomStatus.AVAILABLE);
+    @Override
+    public PageResult<RoomDto> getList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size).withSort(Sort.Direction.ASC, "roomNo");
+        Page<Room> rooms = roomRepository.findAll(pageable);
+        var dtos = rooms.getContent().stream().map(RoomMapper::toDto).toList();
+        return new PageResult<>(dtos, rooms.getTotalElements(), page, size);
     }
 
+    @Override
     public RoomOverviewDetails getRoomOverviewDetailsById(Long id) {
         var room = roomRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Room Not Found"));
         ReservationGuestInfo guestInfo = null;
@@ -78,17 +85,20 @@ public class RoomService {
         return roomOverviewDetails;
     }
 
+    @Override
     public List<RoomSelectList> selectAvailableRoomList() {
         var roomList = roomRepository.findAllRoomForSelectList();
         return roomList.stream().map(RoomMapper::toRoomSelectList).toList();
     }
 
+    @Override
     public List<RoomSelectList> selectAvailableDoubleRoomList() {
         var roomList = roomRepository.findAllRoomForSelectList().stream()
                 .filter(room -> room.getRoomType().equals(RoomType.DOUBLE)).toList();
         return roomList.stream().map(RoomMapper::toRoomSelectList).toList();
     }
 
+    @Override
     public String changeRoomStatus(Long id, RoomStatus status) {
         var room = safeCall(roomRepository.findById(id), "Room", id);
         room.setCurrentStatus(status);
@@ -96,17 +106,17 @@ public class RoomService {
         return "Room Status Changed.";
     }
 
-    public String changeRoomService(Long id, Integer price) {
+    @Override
+    public String changeRoomPrice(Long id, Integer price) {
         var room = safeCall(roomRepository.findById(id), "Room", id);
         room.setBasePrice(price);
         roomRepository.save(room);
         return "Room Price Changed.";
     }
 
-    public PageResult<RoomDto> getList(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size).withSort(Sort.Direction.ASC, "roomNo");
-        Page<Room> rooms = roomRepository.findAll(pageable);
-        var dtos = rooms.getContent().stream().map(RoomMapper::toDto).toList();
-        return new PageResult<>(dtos, rooms.getTotalElements(), page, size);
+    @Override
+    public List<RoomDto> getAllAvailableRooms() {
+        return roomRepository.findAllRoomDtosByStatus(RoomStatus.AVAILABLE);
     }
+
 }
