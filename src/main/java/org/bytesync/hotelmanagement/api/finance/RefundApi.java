@@ -3,7 +3,7 @@ package org.bytesync.hotelmanagement.api.finance;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.RefundDto;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
-import org.bytesync.hotelmanagement.service.finance.RefundService;
+import org.bytesync.hotelmanagement.service.impl.finance.RefundService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

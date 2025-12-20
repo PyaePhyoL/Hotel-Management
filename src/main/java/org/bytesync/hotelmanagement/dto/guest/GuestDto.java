@@ -16,7 +16,7 @@ import java.util.Set;
 @Data
 @Builder
 public class GuestDto {
-    private Integer id;
+    private Long id;
     @NotBlank(message = "Name cannot be blank")
     private String name;
     @Email(message = "Email must be in correct format")

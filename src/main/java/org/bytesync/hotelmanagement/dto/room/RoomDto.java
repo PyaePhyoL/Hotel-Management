@@ -6,7 +6,7 @@ import org.bytesync.hotelmanagement.model.enums.RoomStatus;
 
 @Builder
 public record RoomDto(
-        Integer no,
+        Long no,
         Integer basePrice,
         Integer capacity,
         Floor floor,

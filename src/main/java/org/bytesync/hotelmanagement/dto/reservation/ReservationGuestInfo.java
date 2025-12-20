@@ -11,7 +11,7 @@ public class ReservationGuestInfo {
 
     private Long reservationId;
     private LocalDateTime checkInTime;
-    private Integer guestId;
+    private Long guestId;
     private String guestName;
     private Set<String> guestPhoneList;
     private Integer noOfGuests;

@@ -4,11 +4,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
+import org.bytesync.hotelmanagement.dto.reservation.ExtraHoursDto;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationDetails;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
 import org.bytesync.hotelmanagement.model.enums.Status;
-import org.bytesync.hotelmanagement.service.hotel.ReservationService;
+import org.bytesync.hotelmanagement.service.interfaces.hotel.IReservationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ import java.util.List;
 @RequestMapping("/reservations/api")
 public class ReservationManagementApi {
 
-    private final ReservationService reservationService;
+    private final IReservationService reservationService;
 
     @PostMapping
     public ResponseEntity<ResponseMessage<Void>> createReservation(@Valid @RequestBody ReservationForm form) {
@@ -55,7 +56,7 @@ public class ReservationManagementApi {
     }
 
     @PutMapping("/checkout/{id}")
-    public ResponseEntity<ResponseMessage<Void>> checkout(@PathVariable long id,
+    public ResponseEntity<ResponseMessage<Void>> checkout(@PathVariable Long id,
                                                     @RequestParam LocalDateTime checkout) {
         var message = reservationService.checkoutReservation(id, checkout);
         return ResponseEntity.ok(new ResponseMessage<>(
@@ -65,7 +66,7 @@ public class ReservationManagementApi {
     }
 
     @PutMapping("/cancel/{id}")
-    public ResponseEntity<ResponseMessage<Void>> cancelReservation(@PathVariable long id) {
+    public ResponseEntity<ResponseMessage<Void>> cancelReservation(@PathVariable Long id) {
         var message = reservationService.cancelReservation(id);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
@@ -74,7 +75,7 @@ public class ReservationManagementApi {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseMessage<Void>> deleteReservation(@PathVariable long id) {
+    public ResponseEntity<ResponseMessage<Void>> deleteReservation(@PathVariable Long id) {
         var message = reservationService.delete(id);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
@@ -84,7 +85,7 @@ public class ReservationManagementApi {
     }
 
     @GetMapping("/detail/{id}")
-    public ResponseEntity<ResponseMessage<ReservationDetails>> getDetailsById(@PathVariable long id) {
+    public ResponseEntity<ResponseMessage<ReservationDetails>> getDetailsById(@PathVariable Long id) {
         var detail = reservationService.getDetailsById(id);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
@@ -93,7 +94,7 @@ public class ReservationManagementApi {
     }
 
     @PutMapping("/{id}/change-room/{roomId}")
-    public ResponseEntity<ResponseMessage<Void>> changeRoom(@PathVariable long id, @PathVariable int roomId) {
+    public ResponseEntity<ResponseMessage<Void>> changeRoom(@PathVariable Long id, @PathVariable Long roomId) {
         var message = reservationService.changeRoom(id, roomId);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
@@ -102,13 +103,24 @@ public class ReservationManagementApi {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseMessage<Void>> updateReservation(@PathVariable long id,
+    public ResponseEntity<ResponseMessage<Void>> updateReservation(@PathVariable Long id,
                                                              @Valid @RequestBody ReservationForm form) {
         var message = reservationService.update(id, form);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
                 message,
                 null));
+    }
+
+    @PostMapping("/extra-hours/{id}")
+    public ResponseEntity<ResponseMessage<Void>> takeExtraHoursInSection(@PathVariable Long id,
+                                                                         @RequestBody ExtraHoursDto extraHoursDto) {
+        var message = reservationService.takeExtraHours(id, extraHoursDto);
+        return ResponseEntity.ok(new ResponseMessage<>(
+                HttpStatus.OK.value(),
+                message,
+                null
+        ));
     }
 
 }

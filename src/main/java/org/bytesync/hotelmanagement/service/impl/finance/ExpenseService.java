@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.service.finance;
+package org.bytesync.hotelmanagement.service.impl.finance;
 
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.ExpenseDto;
@@ -33,20 +33,20 @@ public class ExpenseService {
         return new  PageResult<>(dtos, all.getTotalElements(), page, size);
     }
 
-    public String updateExpense(String id, ExpenseDto form) {
+    public String updateExpense(Long id, ExpenseDto form) {
         var expense = safeCall(expenseRepository.findById(id), "Expense", id);
         FinanceMapper.updateExpense(expense, form);
         expenseRepository.save(expense);
         return "Expense updated successfully : " + expense.getId();
     }
 
-    public String deleteExpense(String id) {
+    public String deleteExpense(Long id) {
         var expense = safeCall(expenseRepository.findById(id), "Expense", id);
         expenseRepository.delete(expense);
         return "Expense deleted successfully : " + expense.getId();
     }
 
-    public ExpenseDto getExpenseDetailsById(String id) {
+    public ExpenseDto getExpenseDetailsById(Long id) {
         var expense = safeCall(expenseRepository.findById(id), "Expense", id);
         return FinanceMapper.toExpenseDto(expense);
     }

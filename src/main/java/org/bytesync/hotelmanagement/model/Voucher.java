@@ -18,10 +18,11 @@ import java.util.UUID;
 public class Voucher {
 
     @Id
-    private String voucherNo;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long voucherNo;
     private LocalDate date;
     private String guestName;
-    private Integer roomNo;
+    private Long roomNo;
     private Integer price;
     private Boolean isPaid;
     @Enumerated(EnumType.STRING)
@@ -32,8 +33,4 @@ public class Voucher {
     @ManyToOne
     private Payment payment;
 
-    @PrePersist
-    public void generateVoucherNo() {
-        this.voucherNo = UUID.randomUUID().toString().replace("-", "");
-    }
 }

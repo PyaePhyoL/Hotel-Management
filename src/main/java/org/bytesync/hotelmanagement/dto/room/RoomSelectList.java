@@ -1,7 +1,7 @@
 package org.bytesync.hotelmanagement.dto.room;
 
 public record RoomSelectList(
-        Integer no,
+        Long no,
         String name,
         Integer price
 ) {

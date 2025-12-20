@@ -20,5 +20,5 @@ public class PaymentCreateForm {
     private PaymentMethod paymentMethod;
     private String notes;
     private Long reservationId;
-    private List<String> voucherIds = new ArrayList<>();
+    private List<Long> voucherIds = new ArrayList<>();
 }

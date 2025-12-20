@@ -23,7 +23,7 @@ public class ReservationForm {
     private LocalDateTime checkInDateTime;
     private LocalDateTime checkOutDateTime;
     @NotNull(message = "Please select a room")
-    private Integer roomId;
+    private Long roomId;
     @NotBlank(message = "Please enter the name of register staff")
     private String staffName;
     @NotNull(message = "Price cannot be blank")

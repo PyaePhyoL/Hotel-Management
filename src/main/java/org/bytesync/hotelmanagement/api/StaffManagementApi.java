@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.dto.auth.*;
-import org.bytesync.hotelmanagement.service.hotel.StaffService;
+import org.bytesync.hotelmanagement.service.impl.hotel.StaffService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,13 +32,13 @@ public class StaffManagementApi {
     }
 
     @GetMapping("/detail/{userId}")
-    public ResponseEntity<ResponseMessage> getDetailsById(@PathVariable int userId) {
+    public ResponseEntity<ResponseMessage> getDetailsById(@PathVariable Long userId) {
         var userDetails = staffService.getDetails(userId);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Staff Details", userDetails));
     }
 
     @PutMapping("/update/{userId}")
-    public ResponseEntity<ResponseMessage> update(@PathVariable int userId, @RequestBody StaffRegisterForm form) {
+    public ResponseEntity<ResponseMessage> update(@PathVariable Long userId, @RequestBody StaffRegisterForm form) {
         var message = staffService.update(userId, form);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), message, null));
     }
@@ -59,19 +59,19 @@ public class StaffManagementApi {
     }
 
     @PatchMapping("/enable/{userId}")
-    public ResponseEntity<ResponseMessage>  enableStaff(@PathVariable int userId) {
+    public ResponseEntity<ResponseMessage>  enableStaff(@PathVariable Long userId) {
         var message = staffService.enable(userId);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), message, null));
     }
 
     @PatchMapping("/disable/{userId}")
-    public ResponseEntity<ResponseMessage>  disableStaff(@PathVariable int userId) {
+    public ResponseEntity<ResponseMessage>  disableStaff(@PathVariable Long userId) {
         var message = staffService.disable(userId);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), message, null));
     }
 
     @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<ResponseMessage> deleteStaff(@PathVariable int userId) {
+    public ResponseEntity<ResponseMessage> deleteStaff(@PathVariable Long userId) {
         var message = staffService.delete(userId);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), message, null));
     }

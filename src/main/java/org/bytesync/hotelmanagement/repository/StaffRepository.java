@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface StaffRepository extends JpaRepository<Staff, Integer>, JpaSpecificationExecutor<Staff> {
+public interface StaffRepository extends JpaRepository<Staff, Long>, JpaSpecificationExecutor<Staff> {
 
     @Query("""
     select u from Staff u
@@ -58,5 +58,5 @@ public interface StaffRepository extends JpaRepository<Staff, Integer>, JpaSpeci
     ) from Staff u
     where u.id = :id
 """)
-    Optional<StaffDetailsDto> findDetailsById(Integer id);
+    Optional<StaffDetailsDto> findDetailsById(Long id);
 }

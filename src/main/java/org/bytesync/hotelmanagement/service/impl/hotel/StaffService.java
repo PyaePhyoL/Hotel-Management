@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.service.hotel;
+package org.bytesync.hotelmanagement.service.impl.hotel;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +69,7 @@ public class StaffService {
         if(staffRepository.existsByNrc(staff.getNrc())) throw new UserAlreadyExistsException("NRC already exists");
     }
 
-    public String update(Integer id, StaffRegisterForm form) {
+    public String update(Long id, StaffRegisterForm form) {
         var staff = safeCall(staffRepository.findById(id), "Staff", id);
         ensureStaffUpdateNoConflict(staff, form);
 
@@ -100,14 +100,14 @@ public class StaffService {
     }
 
 
-    public String enable(Integer id) {
+    public String enable(Long id) {
         var staff = safeCall(staffRepository.findById(id), "User", id);
         staff.setEnabled(true);
         staffRepository.save(staff);
         return "Enabled the staff " + staff.getName();
     }
 
-    public String disable(Integer id) {
+    public String disable(Long id) {
         var staff = safeCall(staffRepository.findById(id), "User", id);
         staff.setEnabled(false);
         staffRepository.save(staff);
@@ -121,13 +121,13 @@ public class StaffService {
         return new PageResult<>(staffs, count, page, size);
     }
 
-    public String delete(Integer id) {
+    public String delete(Long id) {
         var staff = safeCall(staffRepository.findById(id), "User", id);
         staffRepository.delete(staff);
         return "Deleted the staff " + staff.getName();
     }
 
-    public StaffDetailsDto getDetails(Integer userId) {
+    public StaffDetailsDto getDetails(Long userId) {
         return safeCall(staffRepository.findDetailsById(userId), "User", userId);
     }
 

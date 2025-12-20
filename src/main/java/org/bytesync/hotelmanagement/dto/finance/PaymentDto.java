@@ -15,5 +15,5 @@ public class PaymentDto {
     private String notes;
     private Long reservationId;
     private String guestName;
-    private Integer roomNo;
+    private Long roomNo;
 }

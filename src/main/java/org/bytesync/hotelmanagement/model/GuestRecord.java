@@ -17,8 +17,8 @@ import java.util.UUID;
 public class GuestRecord {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     private Guest guest;
@@ -30,4 +30,5 @@ public class GuestRecord {
     private LocalDateTime checkOutTime;
     private Integer daysOfStay;
     private Boolean current;
+
 }

@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface RoomRepository extends JpaRepository<Room,Integer>, JpaSpecificationExecutor<Room> {
+public interface RoomRepository extends JpaRepository<Room,Long>, JpaSpecificationExecutor<Room> {
 
     @Query("""
     select new org.bytesync.hotelmanagement.dto.room.RoomDto(

@@ -1,13 +1,10 @@
-package org.bytesync.hotelmanagement.service.hotel;
+package org.bytesync.hotelmanagement.service.impl.hotel;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
-import org.bytesync.hotelmanagement.dto.reservation.ReservationDetails;
-import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
-import org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo;
-import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
+import org.bytesync.hotelmanagement.dto.reservation.*;
 import org.bytesync.hotelmanagement.model.Voucher;
 import org.bytesync.hotelmanagement.model.Guest;
 import org.bytesync.hotelmanagement.model.Reservation;
@@ -15,13 +12,15 @@ import org.bytesync.hotelmanagement.model.Room;
 import org.bytesync.hotelmanagement.model.enums.GuestStatus;
 import org.bytesync.hotelmanagement.model.enums.RoomStatus;
 import org.bytesync.hotelmanagement.model.enums.Status;
+import org.bytesync.hotelmanagement.model.enums.StayType;
 import org.bytesync.hotelmanagement.repository.ContactRepository;
 import org.bytesync.hotelmanagement.repository.GuestRepository;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.repository.specification.ReservationSpecification;
-import org.bytesync.hotelmanagement.service.finance.VoucherService;
-import org.bytesync.hotelmanagement.service.guest.GuestRecordService;
+import org.bytesync.hotelmanagement.service.impl.finance.VoucherService;
+import org.bytesync.hotelmanagement.service.impl.guest.GuestRecordService;
+import org.bytesync.hotelmanagement.service.interfaces.hotel.IReservationService;
 import org.bytesync.hotelmanagement.util.mapper.GuestMapper;
 import org.bytesync.hotelmanagement.util.mapper.ContactMapper;
 import org.bytesync.hotelmanagement.util.mapper.ReservationMapper;
@@ -42,7 +41,7 @@ import static org.bytesync.hotelmanagement.util.EntityOperationUtils.timeFormat;
 
 @Service
 @RequiredArgsConstructor
-public class ReservationService {
+public class ReservationService implements IReservationService {
 
     private final ReservationRepository reservationRepository;
     private final GuestRecordService guestRecordService;
@@ -51,6 +50,7 @@ public class ReservationService {
     private final ContactRepository contactRepository;
     private final VoucherService voucherService;
 
+    @Override
     public ReservationGuestInfo getReservationGuestInfoById(Long id ){
         if (id == null || id <= 0) {
             return null;
@@ -61,6 +61,7 @@ public class ReservationService {
                 .orElse(null);
     }
 
+    @Override
     @Transactional
     public String create(ReservationForm form) {
         var guest = findOrCreateGuest(form);
@@ -104,7 +105,7 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
-    private Room findRoom(Integer roomNo) {
+    private Room findRoom(Long roomNo) {
         var room = roomRepository.findById(roomNo)
                 .orElseThrow(() -> new EntityNotFoundException("Room not found"));
         if(room.getCurrentStatus() != RoomStatus.AVAILABLE) {
@@ -130,13 +131,13 @@ public class ReservationService {
                 });
     }
 
-
+    @Override
     @Transactional
     public String checkoutReservation(Long reservationId, LocalDateTime checkoutTime) {
 //        1st change the status in Reservation
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
         reservation.setCheckOutDateTime(checkoutTime);
-        reservation.setStatus(Status.PAST);
+        reservation.setStatus(Status.FINISHED);
 
         var room = reservation.getRoom();
         var guest = reservation.getGuest();
@@ -153,7 +154,7 @@ public class ReservationService {
         return "Room-%s is checked out at %s".formatted(room.getRoomNo(), timeString);
     }
 
-
+    @Override
     public PageResult<ReservationInfo> getAll(int page, int size, List<Status> statusList) {
         Pageable pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "id");
         var spec = ReservationSpecification.filterByStatus(statusList);
@@ -164,6 +165,7 @@ public class ReservationService {
         return new PageResult<>(infos, result.getTotalElements(), page, size);
     }
 
+    @Override
     public String cancelReservation(Long reservationId) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
         if(reservation.getStatus() == Status.ACTIVE) {
@@ -196,7 +198,8 @@ public class ReservationService {
         guestRepository.save(guest);
     }
 
-    public ReservationDetails getDetailsById(long id) {
+    @Override
+    public ReservationDetails getDetailsById(Long id) {
         var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
 
         var resvDetails = ReservationMapper.toReservationDetails(reservation);
@@ -217,16 +220,17 @@ public class ReservationService {
         return resvDetails;
     }
 
-    public Integer getTotalPriceInReservation(Reservation reservation) {
+    private Integer getTotalPriceInReservation(Reservation reservation) {
         return reservation.getVouchers().stream().map(Voucher::getPrice).reduce(0, Integer::sum);
     }
 
-    public Integer getPaidPriceInReservation(Reservation reservation) {
+    private Integer getPaidPriceInReservation(Reservation reservation) {
         return reservation.getVouchers().stream().filter(Voucher::getIsPaid).map(Voucher::getPrice).reduce(0, Integer::sum);
     }
 
+    @Override
     @Transactional
-    public String changeRoom(long id, int roomId) {
+    public String changeRoom(Long id, Long roomId) {
         var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
         var newRoom = safeCall(roomRepository.findById(roomId), "Room", id);
         var oldRoom = reservation.getRoom();
@@ -240,14 +244,15 @@ public class ReservationService {
 
     }
 
+    @Override
     public Integer getDailyCheckIns() {
         var today =  LocalDate.now();
         var reservations = reservationRepository.findByCheckInDate(today);
         return reservations.size();
     }
 
-
-    public String update(long id, ReservationForm form) {
+    @Override
+    public String update(Long id, ReservationForm form) {
         var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
         ReservationMapper.updateReservation(reservation, form);
 
@@ -258,6 +263,7 @@ public class ReservationService {
         return "Reservation updated successfully : " + id;
     }
 
+    @Override
     public void updateContacts(Reservation reservation, List<ContactDto> contactDtos) {
 
         var newContacts = contactDtos.stream().filter(dto -> dto.id() == null).toList();
@@ -271,12 +277,37 @@ public class ReservationService {
         });
     }
 
-    public String delete(long id) {
+    @Override
+    public String delete(Long id) {
         var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
         makeRoomAvailable(reservation.getRoom());
         guestCheckout(reservation.getGuest());
         reservationRepository.delete(reservation);
 
         return "Reservation deleted successfully";
+    }
+
+    @Override
+    public String takeExtraHours(Long id, ExtraHoursDto extraHoursDto) {
+        var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
+        var newCheckoutTime = reservation.getCheckOutDateTime().plusHours(extraHoursDto.hour());
+        var price = extraHoursDto.price() * extraHoursDto.hour();
+
+        reservation.setCheckOutDateTime(newCheckoutTime);
+        reservation.increasePrice(price);
+
+        if(reservation.getStayType() != StayType.SECTION) {
+            throw new IllegalArgumentException("This is not a section type");
+        }
+
+        if(reservation.getStatus() == Status.FINISHED) {
+            throw new IllegalArgumentException("This is finished already");
+        }
+
+        voucherService.createExtraVoucher(reservation, price);
+
+        reservationRepository.save(reservation);
+
+        return "New Checkout time : " + timeFormat(reservation.getCheckOutDateTime());
     }
 }

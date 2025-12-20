@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class ExpenseDto {
-    private String id;
+    private Long id;
     @NotNull(message = "Date cannot be null")
     private LocalDate date;
     @NotBlank(message = "Title cannot be blank")

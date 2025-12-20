@@ -7,9 +7,9 @@ import java.util.UUID;
 
 @Builder
 public record GuestRecordDto(
-        UUID id,
+        Long id,
         String guestName,
-        Integer roomNo,
+        Long roomNo,
         LocalDateTime checkInTime,
         LocalDateTime checkOutTime,
         Integer daysOfStay

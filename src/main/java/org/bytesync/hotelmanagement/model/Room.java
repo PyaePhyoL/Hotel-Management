@@ -19,7 +19,8 @@ import java.util.List;
 public class Room {
 
     @Id
-    private Integer roomNo;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long roomNo;
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
     private Integer basePrice;

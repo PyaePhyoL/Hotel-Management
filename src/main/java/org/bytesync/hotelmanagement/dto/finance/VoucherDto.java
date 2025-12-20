@@ -6,12 +6,12 @@ import java.time.LocalDate;
 
 @Builder
 public record VoucherDto(
-    String voucherNo,
-    String paymentId,
+    Long voucherNo,
+    Long paymentId,
     LocalDate date,
     Long reservationId,
     String guestName,
-    Integer roomNo,
+    Long roomNo,
     Integer price,
     Boolean isPaid
 ) {

@@ -10,7 +10,7 @@ import org.bytesync.hotelmanagement.model.enums.RoomType;
 @Data
 @Builder
 public class RoomOverviewDetails {
-    private Integer no;
+    private Long no;
     private RoomType roomType;
     private Integer basePrice;
     private Integer capacity;

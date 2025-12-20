@@ -3,7 +3,7 @@ package org.bytesync.hotelmanagement.api;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.model.enums.RoomStatus;
-import org.bytesync.hotelmanagement.service.hotel.RoomService;
+import org.bytesync.hotelmanagement.service.impl.hotel.RoomService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +30,7 @@ public class RoomsManagementApi {
     }
 
     @GetMapping("/details/{id}")
-    public ResponseEntity<ResponseMessage> getRoomDetails(@PathVariable Integer id){
+    public ResponseEntity<ResponseMessage> getRoomDetails(@PathVariable Long id){
         var roomDetails = roomService.getRoomOverviewDetailsById(id);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Room Details", roomDetails));
     }
@@ -48,14 +48,14 @@ public class RoomsManagementApi {
     }
 
     @PatchMapping("/change-status/{id}/{status}")
-    public ResponseEntity<ResponseMessage> changeRoomStatus(@PathVariable Integer id,
+    public ResponseEntity<ResponseMessage> changeRoomStatus(@PathVariable Long id,
                                                             @PathVariable RoomStatus status){
         var message = roomService.changeRoomStatus(id, status);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Room Status change", message));
     }
 
     @PatchMapping("/change-price/{id}")
-    public ResponseEntity<ResponseMessage> changeRoomPrice(@PathVariable Integer id, @RequestParam Integer price){
+    public ResponseEntity<ResponseMessage> changeRoomPrice(@PathVariable Long id, @RequestParam Integer price){
         var message = roomService.changeRoomService(id, price);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Room Price change", message));
     }

@@ -6,6 +6,7 @@ import org.bytesync.hotelmanagement.model.enums.PaymentMethod;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -17,8 +18,8 @@ import java.util.List;
 public class Payment extends Auditable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private LocalDate paymentDate;
     private Integer amount;
     @Enumerated(EnumType.STRING)
@@ -40,4 +41,5 @@ public class Payment extends Auditable{
         this.vouchers.add(voucher);
         voucher.setPayment(this);
     }
+
 }

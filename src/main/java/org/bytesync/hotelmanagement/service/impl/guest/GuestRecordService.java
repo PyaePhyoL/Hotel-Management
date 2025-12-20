@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.service.guest;
+package org.bytesync.hotelmanagement.service.impl.guest;
 
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.guest.GuestRecordDto;
@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
+
 @Service
 @RequiredArgsConstructor
 public class GuestRecordService {
@@ -38,8 +40,8 @@ public class GuestRecordService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updateGuestRecordWhenCheckout(Integer guestId, Integer roomId, LocalDateTime checkoutTime) {
-        var guestRecord = EntityOperationUtils.safeCall(guestRecordRepository.findByGuestIdAndRoomNo(guestId, roomId), "Guest Record's guest", guestId);
+    public void updateGuestRecordWhenCheckout(Long guestId, Long roomId, LocalDateTime checkoutTime) {
+        var guestRecord = safeCall(guestRecordRepository.findByGuestIdAndRoomNo(guestId, roomId), "Guest Record's guest", guestId);
 
         int daysOfStay = (int) ChronoUnit.DAYS.between(guestRecord.getCheckInTime(), checkoutTime);
         guestRecord.setCheckOutTime(checkoutTime);

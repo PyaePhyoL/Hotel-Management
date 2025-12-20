@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.service.hotel;
+package org.bytesync.hotelmanagement.service.impl.hotel;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +65,7 @@ public class RoomService {
         return roomRepository.findAllRoomDtosByStatus(RoomStatus.AVAILABLE);
     }
 
-    public RoomOverviewDetails getRoomOverviewDetailsById(Integer id) {
+    public RoomOverviewDetails getRoomOverviewDetailsById(Long id) {
         var room = roomRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Room Not Found"));
         ReservationGuestInfo guestInfo = null;
         if(room.getCurrentReservationId() != null) {
@@ -89,14 +89,14 @@ public class RoomService {
         return roomList.stream().map(RoomMapper::toRoomSelectList).toList();
     }
 
-    public String changeRoomStatus(Integer id, RoomStatus status) {
+    public String changeRoomStatus(Long id, RoomStatus status) {
         var room = safeCall(roomRepository.findById(id), "Room", id);
         room.setCurrentStatus(status);
         roomRepository.save(room);
         return "Room Status Changed.";
     }
 
-    public String changeRoomService(Integer id, Integer price) {
+    public String changeRoomService(Long id, Integer price) {
         var room = safeCall(roomRepository.findById(id), "Room", id);
         room.setBasePrice(price);
         roomRepository.save(room);

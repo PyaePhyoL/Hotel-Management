@@ -68,4 +68,8 @@ public class Reservation {
         this.contacts.add(contact);
         contact.setReservation(this);
     }
+
+    public void increasePrice(int price) {
+        this.price += price;
+    }
 }

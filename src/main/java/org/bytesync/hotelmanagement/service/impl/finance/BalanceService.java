@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.service.finance;
+package org.bytesync.hotelmanagement.service.impl.finance;
 
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.DailyBalance;

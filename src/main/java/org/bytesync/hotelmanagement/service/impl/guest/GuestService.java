@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.service.guest;
+package org.bytesync.hotelmanagement.service.impl.guest;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +45,7 @@ public class GuestService {
         if(null != guest.getPassport() && guestRepository.existsByPassport(guest.getPassport())) throw new UserAlreadyExistsException("Passport already exists");
     }
 
-    public GuestDto getDetails(int id) {
+    public GuestDto getDetails(Long id) {
         var guest = safeCall(guestRepository.findById(id), "Guest", id);
         return GuestMapper.toDto(guest);
     }
@@ -58,7 +58,7 @@ public class GuestService {
         return new PageResult<>(guestList, count, page, size);
     }
 
-    public String update(int id, GuestDto form) {
+    public String update(Long id, GuestDto form) {
         var guest = guestRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Guest not found"));
         ensureGuestUpdateNoConflict(guest, form);
         GuestMapper.updateGuest(guest, form);
@@ -74,7 +74,7 @@ public class GuestService {
         if(null != guest.getPassport() && !guest.getPassport().equals(form.getPassport()) && guestRepository.existsByPassport(form.getPassport())) throw new UserAlreadyExistsException("Passport already exists");
     }
 
-    public String delete(int id) {
+    public String delete(Long id) {
         var guest = safeCall(guestRepository.findById(id), "Guest", id);
         guestRepository.delete(guest);
         return "Guest has been deleted";
@@ -95,13 +95,13 @@ public class GuestService {
         return new PageResult<>(dtos, result.getTotalElements(), page, size);
     }
 
-    public String deleteRelation(int rsId) {
+    public String deleteRelation(Long rsId) {
         var relation = safeCall(contactRepository.findById(rsId), "Relation", rsId);
         contactRepository.delete(relation);
         return "Relation has been deleted";
     }
 
-    public String changeStatus(int id, GuestStatus status) {
+    public String changeStatus(Long id, GuestStatus status) {
         var guest  = safeCall(guestRepository.findById(id), "Guest", id);
         guest.setStatus(status);
         var gId = guestRepository.save(guest).getId();

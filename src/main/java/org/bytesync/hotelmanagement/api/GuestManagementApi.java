@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.guest.GuestDto;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.model.enums.GuestStatus;
-import org.bytesync.hotelmanagement.service.guest.GuestService;
+import org.bytesync.hotelmanagement.service.impl.guest.GuestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +25,7 @@ public class GuestManagementApi {
     }
 
     @GetMapping("/detail/{id}")
-    public ResponseEntity<ResponseMessage> getDetailsById(@PathVariable int id) {
+    public ResponseEntity<ResponseMessage> getDetailsById(@PathVariable Long id) {
         var guest = guestService.getDetails(id);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Guest Details", guest));
 
@@ -39,13 +39,13 @@ public class GuestManagementApi {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseMessage> update(@PathVariable int id, @RequestBody GuestDto form) {
+    public ResponseEntity<ResponseMessage> update(@PathVariable Long id, @RequestBody GuestDto form) {
         var message = guestService.update(id, form);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), message, null));
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseMessage> delete(@PathVariable int id) {
+    public ResponseEntity<ResponseMessage> delete(@PathVariable Long id) {
         var message = guestService.delete(id);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Delete Guest", message));
     }
@@ -59,13 +59,13 @@ public class GuestManagementApi {
     }
 
     @DeleteMapping("/delete/relation/{rsId}")
-    public ResponseEntity<ResponseMessage> deleteRelation(@PathVariable int rsId) {
+    public ResponseEntity<ResponseMessage> deleteRelation(@PathVariable Long rsId) {
         var message = guestService.deleteRelation(rsId);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "", message));
     }
 
     @PutMapping("/change-status/{id}/{status}")
-    public ResponseEntity<ResponseMessage> changeStatus(@PathVariable int id,  @PathVariable GuestStatus status) {
+    public ResponseEntity<ResponseMessage> changeStatus(@PathVariable Long id,  @PathVariable GuestStatus status) {
         var message = guestService.changeStatus(id, status);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Change Guest Status", message));
     }

@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Builder
 public record StaffDto(
-        long id,
+        Long id,
         String name,
         String email,
         LocalDate joinDate,

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.model.enums.ExpenseType;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -17,12 +18,13 @@ import java.time.LocalDate;
 public class Expense {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private LocalDate date;
     private String title;
     @Enumerated(EnumType.STRING)
     private ExpenseType type;
     private Integer amount;
     private String notes;
+
 }

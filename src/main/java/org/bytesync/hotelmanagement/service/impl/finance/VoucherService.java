@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.service.finance;
+package org.bytesync.hotelmanagement.service.impl.finance;
 
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.VoucherDto;
@@ -56,18 +56,24 @@ public class VoucherService {
         return new PageResult<>(dtos, vouchers.getTotalElements(), page, size);
     }
 
-    public List<VoucherDto> getSelectedVoucherDtos(List<String> voucherIds) {
+    public List<VoucherDto> getSelectedVoucherDtos(List<Long> voucherIds) {
         return getDailyVouchers(voucherIds).stream()
                 .map(VoucherMapper::toDto)
                 .toList();
     }
 
-    public List<Voucher> getDailyVouchers(List<String>  voucherIds) {
+    public List<Voucher> getDailyVouchers(List<Long>  voucherIds) {
         List<Voucher> vouchers = new ArrayList<>();
         voucherIds.forEach(id -> {
             voucherRepository.findById(id).ifPresent(vouchers::add);
         });
         return vouchers;
+    }
+
+    public void createExtraVoucher(Reservation reservation, int price) {
+        var baseVoucher = createBasicVoucherFromReservation(reservation);
+        baseVoucher.setPrice(price);
+        voucherRepository.save(baseVoucher);
     }
 
     private Voucher createBasicVoucherFromReservation(Reservation reservation) {
@@ -128,6 +134,5 @@ public class VoucherService {
 
         return days * reservation.getPrice();
     }
-
 
 }

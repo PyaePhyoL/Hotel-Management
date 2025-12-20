@@ -22,7 +22,7 @@ public class Staff extends Auditable implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(50)")
     private String name;
     @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(50)")

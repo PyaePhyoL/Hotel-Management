@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record ContactDto(
-        Integer id,
+        Long id,
         String name,
         String phone,
         String relation

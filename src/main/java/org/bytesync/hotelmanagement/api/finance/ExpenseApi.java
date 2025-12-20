@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.ExpenseDto;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
-import org.bytesync.hotelmanagement.service.finance.ExpenseService;
+import org.bytesync.hotelmanagement.service.impl.finance.ExpenseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,19 +32,19 @@ public class ExpenseApi {
     }
 
     @GetMapping("/detail/{id}")
-    public ResponseEntity<ResponseMessage> getExpenseDetails(@PathVariable String id) {
+    public ResponseEntity<ResponseMessage> getExpenseDetails(@PathVariable Long id) {
         var expense = expenseService.getExpenseDetailsById(id);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Expense Details", expense));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseMessage> updateExpense(@PathVariable String id, @RequestBody ExpenseDto form) {
+    public ResponseEntity<ResponseMessage> updateExpense(@PathVariable Long id, @RequestBody ExpenseDto form) {
         var message = expenseService.updateExpense(id, form);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Expense Update", message));
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseMessage> deleteExpense(@PathVariable String id) {
+    public ResponseEntity<ResponseMessage> deleteExpense(@PathVariable Long id) {
         var message = expenseService.deleteExpense(id);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "Expense Delete", message));
     }

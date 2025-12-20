@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface GuestRecordRepository extends JpaRepository<GuestRecord, UUID>, JpaSpecificationExecutor<GuestRecord> {
+public interface GuestRecordRepository extends JpaRepository<GuestRecord, Long>, JpaSpecificationExecutor<GuestRecord> {
 
 
     @Query("""
@@ -16,5 +16,5 @@ public interface GuestRecordRepository extends JpaRepository<GuestRecord, UUID>,
     where r.guest.id = :guestId
     and r.room.roomNo = :roomNo
 """)
-    Optional<GuestRecord> findByGuestIdAndRoomNo(Integer guestId, Integer roomNo);
+    Optional<GuestRecord> findByGuestIdAndRoomNo(Long guestId, Long roomNo);
 }

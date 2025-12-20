@@ -17,5 +17,5 @@ public class ReservationInfo {
     private Status status;
     private Integer daysOfStay;
     private String guestName;
-    private Integer roomNo;
+    private Long roomNo;
 }

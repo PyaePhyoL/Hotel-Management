@@ -5,7 +5,7 @@ import org.bytesync.hotelmanagement.model.enums.Role;
 import java.time.LocalDate;
 
 public record StaffDetailsDto(
-        Integer id,
+        Long id,
         String name,
         String email,
         String phoneNumber,

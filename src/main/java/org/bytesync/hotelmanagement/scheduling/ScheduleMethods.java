@@ -6,12 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.bytesync.hotelmanagement.model.enums.Status;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
-import org.bytesync.hotelmanagement.service.finance.VoucherService;
+import org.bytesync.hotelmanagement.service.impl.finance.VoucherService;
 import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -67,7 +66,7 @@ public class ScheduleMethods {
         } else if(now.isAfter(checkIn) || now.isEqual(checkIn)) {
             return Status.ACTIVE;
         } else if(null != checkOut && now.isAfter(checkOut)) {
-            return Status.PAST;
+            return Status.FINISHED;
         } else {
             return null;
         }
