@@ -242,6 +242,9 @@ public class ReservationService implements IReservationService {
 
         reservation.setRoom(newRoom);
         newRoom.addReservation(reservation);
+        newRoom.setCurrentStatus(
+                RoomMapper.getRoomCurrentStatusFromReservation(reservation.getStatus(), reservation.getStayType()));
+
         roomRepository.save(newRoom);
         reservationRepository.save(reservation);
         return "Room-%s is changed with Room-%s".formatted(oldRoom.getRoomNo(), newRoom.getRoomNo());
