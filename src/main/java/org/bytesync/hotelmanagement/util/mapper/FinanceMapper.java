@@ -4,6 +4,7 @@ import org.bytesync.hotelmanagement.dto.finance.ExpenseDto;
 import org.bytesync.hotelmanagement.dto.finance.PaymentCreateForm;
 import org.bytesync.hotelmanagement.dto.finance.PaymentDto;
 import org.bytesync.hotelmanagement.dto.finance.RefundDto;
+import org.bytesync.hotelmanagement.enums.RefundType;
 import org.bytesync.hotelmanagement.model.Expense;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.model.Refund;
@@ -67,11 +68,12 @@ public class FinanceMapper {
         expense.setNotes(form.getNotes());
     }
 
-    public static Refund toRefund(RefundDto refundDto) {
+    public static Refund toRefund(RefundDto refundDto, RefundType refundType) {
         return Refund.builder()
                 .refundDate(refundDto.getRefundDate())
                 .amount(refundDto.getAmount())
                 .notes(refundDto.getNotes())
+                .type(refundType)
                 .build();
     }
 

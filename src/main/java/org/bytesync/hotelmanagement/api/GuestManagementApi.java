@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.guest.GuestDto;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
-import org.bytesync.hotelmanagement.model.enums.GuestStatus;
+import org.bytesync.hotelmanagement.enums.GuestStatus;
 import org.bytesync.hotelmanagement.service.impl.guest.GuestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

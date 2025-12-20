@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.bytesync.hotelmanagement.dto.guest.ContactDto;
-import org.bytesync.hotelmanagement.model.enums.StayType;
+import org.bytesync.hotelmanagement.enums.StayType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,8 +24,6 @@ public class ReservationForm {
     private LocalDateTime checkOutDateTime;
     @NotNull(message = "Please select a room")
     private Long roomId;
-    @NotBlank(message = "Please enter the name of register staff")
-    private String staffName;
     @NotNull(message = "Price cannot be blank")
     private Integer price;
     private Integer discount;

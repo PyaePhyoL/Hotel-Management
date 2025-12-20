@@ -59,4 +59,10 @@ public interface StaffRepository extends JpaRepository<Staff, Long>, JpaSpecific
     where u.id = :id
 """)
     Optional<StaffDetailsDto> findDetailsById(Long id);
+
+    @Query("""
+    select s.name from Staff s
+    where s.email = :email
+""")
+    Optional<String> findUsernameByEmail(String email);
 }

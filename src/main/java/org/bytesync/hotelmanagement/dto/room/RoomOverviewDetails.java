@@ -3,9 +3,9 @@ package org.bytesync.hotelmanagement.dto.room;
 import lombok.Builder;
 import lombok.Data;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo;
-import org.bytesync.hotelmanagement.model.enums.Floor;
-import org.bytesync.hotelmanagement.model.enums.RoomStatus;
-import org.bytesync.hotelmanagement.model.enums.RoomType;
+import org.bytesync.hotelmanagement.enums.Floor;
+import org.bytesync.hotelmanagement.enums.RoomStatus;
+import org.bytesync.hotelmanagement.enums.RoomType;
 
 @Data
 @Builder

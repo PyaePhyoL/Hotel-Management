@@ -8,7 +8,7 @@ import org.bytesync.hotelmanagement.dto.reservation.ExtraHoursDto;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationDetails;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
-import org.bytesync.hotelmanagement.model.enums.Status;
+import org.bytesync.hotelmanagement.enums.Status;
 import org.bytesync.hotelmanagement.service.interfaces.hotel.IReservationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -112,10 +112,21 @@ public class ReservationManagementApi {
                 null));
     }
 
-    @PostMapping("/extra-hours/{id}")
-    public ResponseEntity<ResponseMessage<Void>> takeExtraHoursInSection(@PathVariable Long id,
-                                                                         @RequestBody ExtraHoursDto extraHoursDto) {
-        var message = reservationService.takeExtraHours(id, extraHoursDto);
+    @PostMapping("/extend-hours/{id}")
+    public ResponseEntity<ResponseMessage<Void>> extendHoursInSection(@PathVariable Long id,
+                                                                      @RequestBody ExtraHoursDto extraHoursDto) {
+        var message = reservationService.extendHours(id, extraHoursDto);
+        return ResponseEntity.ok(new ResponseMessage<>(
+                HttpStatus.OK.value(),
+                message,
+                null
+        ));
+    }
+
+    @PostMapping("/extend-days/{id}")
+    public ResponseEntity<ResponseMessage<Void>> extendDays(@PathVariable Long id,
+                                                            @RequestParam Integer days) {
+        var message = reservationService.extendDays(id, days);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
                 message,

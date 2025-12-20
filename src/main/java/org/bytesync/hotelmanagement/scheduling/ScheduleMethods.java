@@ -3,7 +3,7 @@ package org.bytesync.hotelmanagement.scheduling;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bytesync.hotelmanagement.model.enums.Status;
+import org.bytesync.hotelmanagement.enums.Status;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.service.impl.finance.VoucherService;

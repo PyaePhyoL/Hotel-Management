@@ -3,7 +3,7 @@ package org.bytesync.hotelmanagement.dto.auth;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.bytesync.hotelmanagement.model.enums.Role;
+import org.bytesync.hotelmanagement.enums.Role;
 
 import java.time.LocalDate;
 

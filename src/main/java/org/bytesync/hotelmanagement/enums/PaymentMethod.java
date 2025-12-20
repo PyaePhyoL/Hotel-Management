@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.model.enums;
+package org.bytesync.hotelmanagement.enums;
 
 public enum PaymentMethod {
     DEPOSIT, CASH, KPAY, EXPENDITURE

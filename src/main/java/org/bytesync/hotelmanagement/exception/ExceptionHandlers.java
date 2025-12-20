@@ -23,8 +23,8 @@ public class ExceptionHandlers {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    ResponseMessage handle(EntityNotFoundException e) {
-        return new ResponseMessage(
+    ResponseMessage<Void> handle(EntityNotFoundException e) {
+        return new ResponseMessage<>(
                 HttpStatus.NOT_FOUND.value(),
                 e.getMessage(),
                 null
@@ -33,14 +33,14 @@ public class ExceptionHandlers {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    ResponseMessage handle(AuthenticationException e) {
+    ResponseMessage<Void> handle(AuthenticationException e) {
         var message = switch (e) {
             case UsernameNotFoundException ue -> "Please check your log in email";
             case BadCredentialsException be -> "Please check your credentials";
             case DisabledException de -> "Your account is disabled";
             default -> e.getMessage();
         };
-        return new ResponseMessage(
+        return new ResponseMessage<>(
                 HttpStatus.UNAUTHORIZED.value(),
                 message,
                 null
@@ -49,8 +49,8 @@ public class ExceptionHandlers {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    ResponseMessage handle(UserAlreadyExistsException e) {
-        return new ResponseMessage(
+    ResponseMessage<Void> handle(UserAlreadyExistsException e) {
+        return new ResponseMessage<>(
                 HttpStatus.CONFLICT.value(),
                 e.getMessage(),
                 null
@@ -58,8 +58,8 @@ public class ExceptionHandlers {
     }
 
     @ExceptionHandler @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ResponseMessage handle(HttpMessageNotReadableException e) {
-        return new ResponseMessage(
+    ResponseMessage<Void> handle(HttpMessageNotReadableException e) {
+        return new ResponseMessage<>(
                 HttpStatus.BAD_REQUEST.value(),
                 e.getMessage(),
                 null
@@ -67,12 +67,12 @@ public class ExceptionHandlers {
     }
 
     @ExceptionHandler @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ResponseMessage handle(MethodArgumentNotValidException e) {
+    ResponseMessage<Void> handle(MethodArgumentNotValidException e) {
         var errors = e.getBindingResult().getFieldErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(", "));
 
-        return new ResponseMessage(
+        return new ResponseMessage<>(
                 HttpStatus.BAD_REQUEST.value(),
                 errors,
                 null
@@ -80,9 +80,19 @@ public class ExceptionHandlers {
     }
 
     @ExceptionHandler @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ResponseMessage handle(IllegalStateException e) {
-        return new ResponseMessage(
+    ResponseMessage<Void> handle(IllegalStateException e) {
+        return new ResponseMessage<>(
                 HttpStatus.BAD_REQUEST.value(),
+                e.getMessage(),
+                null
+        );
+    }
+
+    @ExceptionHandler(TokenExpirationForAccessException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    ResponseMessage<Void> handle(TokenExpirationForAccessException e) {
+        return new ResponseMessage<>(
+                HttpStatus.FORBIDDEN.value(),
                 e.getMessage(),
                 null
         );

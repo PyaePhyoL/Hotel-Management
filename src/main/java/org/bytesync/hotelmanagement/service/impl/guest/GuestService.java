@@ -6,7 +6,7 @@ import org.bytesync.hotelmanagement.dto.guest.GuestDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.exception.UserAlreadyExistsException;
 import org.bytesync.hotelmanagement.model.Guest;
-import org.bytesync.hotelmanagement.model.enums.GuestStatus;
+import org.bytesync.hotelmanagement.enums.GuestStatus;
 import org.bytesync.hotelmanagement.repository.GuestRepository;
 import org.bytesync.hotelmanagement.repository.ContactRepository;
 import org.bytesync.hotelmanagement.repository.specification.GuestSpecification;

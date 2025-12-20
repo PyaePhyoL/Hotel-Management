@@ -1,24 +1,24 @@
 package org.bytesync.hotelmanagement.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.bytesync.hotelmanagement.model.enums.Status;
-import org.bytesync.hotelmanagement.model.enums.StayType;
+import lombok.*;
+import org.bytesync.hotelmanagement.enums.Status;
+import org.bytesync.hotelmanagement.enums.StayType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getDaysBetween;
+
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "reservations")
-public class Reservation {
+public class Reservation extends Auditable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,6 @@ public class Reservation {
     private Integer deposit;
     @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
     private StayType stayType;
-    private String registeredStaff;
     private Integer noOfGuests;
     @ManyToOne
     private Guest guest;
@@ -39,10 +38,13 @@ public class Reservation {
     private Room room;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Voucher> vouchers;
+    private List<Voucher> voucherList;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Payment> paymentList;
+
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Refund> refundList;
 
     @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
     private Status status;
@@ -50,14 +52,18 @@ public class Reservation {
     private String notes;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Contact> contacts = new ArrayList<>();
+    private List<Contact> contactList;
 
     public void addPayment(Payment payment) {
         this.paymentList.add(payment);
     }
 
-    public void addDailyVoucher(Voucher voucher) {
-        this.vouchers.add(voucher);
+    public void addVoucher(Voucher voucher) {
+        this.voucherList.add(voucher);
+    }
+
+    public void addRefund(Refund refund) {
+        this.refundList.add(refund);
     }
 
     public void incrementDaysOfStayByOne() {
@@ -65,11 +71,16 @@ public class Reservation {
     }
 
     public void addRelation(Contact contact) {
-        this.contacts.add(contact);
+        this.contactList.add(contact);
         contact.setReservation(this);
     }
 
     public void increasePrice(int price) {
         this.price += price;
+    }
+
+    public void setNewCheckOutDateTime(LocalDateTime newCheckOutDateTime) {
+        this.daysOfStay = getDaysBetween(this.checkInDateTime.toLocalDate(),
+                newCheckOutDateTime.toLocalDate());
     }
 }

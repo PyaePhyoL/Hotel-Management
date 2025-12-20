@@ -2,7 +2,7 @@ package org.bytesync.hotelmanagement.dto.finance;
 
 import lombok.Builder;
 import lombok.Data;
-import org.bytesync.hotelmanagement.model.enums.PaymentMethod;
+import org.bytesync.hotelmanagement.enums.PaymentMethod;
 
 import java.time.LocalDate;
 

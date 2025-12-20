@@ -1,9 +1,8 @@
 package org.bytesync.hotelmanagement.repository;
 
 import org.bytesync.hotelmanagement.dto.room.RoomDto;
-import org.bytesync.hotelmanagement.dto.room.RoomSelectList;
 import org.bytesync.hotelmanagement.model.Room;
-import org.bytesync.hotelmanagement.model.enums.RoomStatus;
+import org.bytesync.hotelmanagement.enums.RoomStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

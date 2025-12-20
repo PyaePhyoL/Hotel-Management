@@ -6,8 +6,13 @@ import org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.scheduling.ScheduleMethods;
+import org.bytesync.hotelmanagement.util.EntityOperationUtils;
 
+import java.time.chrono.ChronoLocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getDaysBetween;
 
 public class ReservationMapper {
 
@@ -15,6 +20,14 @@ public class ReservationMapper {
     }
 
     public static Reservation toEntity(ReservationForm form) {
+
+        var days = (form.getCheckOutDateTime() != null)
+                    ? getDaysBetween(
+                                form.getCheckInDateTime().toLocalDate(),
+                                form.getCheckOutDateTime().toLocalDate())
+                    : 0;
+
+
         return Reservation.builder()
                 .noOfGuests(form.getNoOfGuests())
                 .stayType(form.getStayType())
@@ -23,12 +36,12 @@ public class ReservationMapper {
                 .price(form.getPrice())
                 .deposit(form.getDeposit())
                 .discount(form.getDiscount())
-                .registeredStaff(form.getStaffName())
                 .status(ScheduleMethods.checkDateTimeAndGetStatus(form.getCheckInDateTime(), null))
-                .daysOfStay(0)
-                .vouchers(new ArrayList<>())
+                .daysOfStay(days)
+                .voucherList(new ArrayList<>())
                 .paymentList(new ArrayList<>())
-                .contacts(new ArrayList<>())
+                .contactList(new ArrayList<>())
+                .refundList(new ArrayList<>())
                 .notes(form.getNote())
                 .build();
     }
@@ -56,10 +69,10 @@ public class ReservationMapper {
                 .deposit(reservation.getDeposit())
                 .discount(reservation.getDiscount())
                 .stayType(reservation.getStayType())
-                .registeredStaff(reservation.getRegisteredStaff())
+                .status(reservation.getStatus())
+                .registeredStaff(reservation.getCreatedBy())
                 .noOfGuests(reservation.getNoOfGuests())
                 .notes(reservation.getNotes())
-                .staffName(reservation.getRegisteredStaff())
                 .build();
     }
 
@@ -81,7 +94,6 @@ public class ReservationMapper {
         reservation.setDeposit(form.getDeposit());
         reservation.setDiscount(form.getDiscount());
         reservation.setStayType(form.getStayType());
-        reservation.setRegisteredStaff(form.getStaffName());
         reservation.setNoOfGuests(form.getNoOfGuests());
         reservation.setNotes(form.getNote());
     }

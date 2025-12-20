@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.bytesync.hotelmanagement.enums.RefundType;
 
 import java.time.LocalDate;
 
@@ -19,10 +20,16 @@ public class Refund extends Auditable {
     private LocalDate refundDate;
     private Integer amount;
     private String notes;
+    private RefundType type;
 
     @ManyToOne
     private Reservation reservation;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Expense expense;
+
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
+        reservation.addRefund(this);
+    }
 }

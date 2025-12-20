@@ -1,9 +1,10 @@
-package org.bytesync.hotelmanagement.model.enums;
+package org.bytesync.hotelmanagement.enums;
 
 public enum VoucherType {
     SECTION,
     DAILY,
-    CASH_DOWN;
+    CASH_DOWN,
+    EXTEND;
 
     public static VoucherType getVoucherTypeFromStayType(StayType stayType) {
         return switch (stayType) {

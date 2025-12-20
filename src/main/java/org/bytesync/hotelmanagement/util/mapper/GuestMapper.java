@@ -2,7 +2,7 @@ package org.bytesync.hotelmanagement.util.mapper;
 
 import org.bytesync.hotelmanagement.dto.guest.GuestDto;
 import org.bytesync.hotelmanagement.model.Guest;
-import org.bytesync.hotelmanagement.model.enums.GuestStatus;
+import org.bytesync.hotelmanagement.enums.GuestStatus;
 
 public class GuestMapper {
 

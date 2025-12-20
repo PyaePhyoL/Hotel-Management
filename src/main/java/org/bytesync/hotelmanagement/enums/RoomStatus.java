@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.model.enums;
+package org.bytesync.hotelmanagement.enums;
 
 public enum RoomStatus {
     AVAILABLE, BOOKING, SECTION_STAY, NORMAL_STAY, LONG_STAY, IN_SERVICE, STORE;

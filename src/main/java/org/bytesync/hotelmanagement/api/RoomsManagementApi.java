@@ -2,7 +2,7 @@ package org.bytesync.hotelmanagement.api;
 
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
-import org.bytesync.hotelmanagement.model.enums.RoomStatus;
+import org.bytesync.hotelmanagement.enums.RoomStatus;
 import org.bytesync.hotelmanagement.service.impl.hotel.RoomService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

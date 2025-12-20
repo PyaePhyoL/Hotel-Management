@@ -5,14 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.reservation.*;
-import org.bytesync.hotelmanagement.model.Voucher;
-import org.bytesync.hotelmanagement.model.Guest;
-import org.bytesync.hotelmanagement.model.Reservation;
-import org.bytesync.hotelmanagement.model.Room;
-import org.bytesync.hotelmanagement.model.enums.GuestStatus;
-import org.bytesync.hotelmanagement.model.enums.RoomStatus;
-import org.bytesync.hotelmanagement.model.enums.Status;
-import org.bytesync.hotelmanagement.model.enums.StayType;
+import org.bytesync.hotelmanagement.model.*;
+import org.bytesync.hotelmanagement.enums.GuestStatus;
+import org.bytesync.hotelmanagement.enums.RoomStatus;
+import org.bytesync.hotelmanagement.enums.Status;
+import org.bytesync.hotelmanagement.enums.StayType;
 import org.bytesync.hotelmanagement.repository.*;
 import org.bytesync.hotelmanagement.repository.specification.ReservationSpecification;
 import org.bytesync.hotelmanagement.service.impl.finance.VoucherService;
@@ -33,8 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
-import static org.bytesync.hotelmanagement.util.EntityOperationUtils.timeFormat;
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -134,7 +130,7 @@ public class ReservationService implements IReservationService {
     public String checkoutReservation(Long reservationId, LocalDateTime checkoutTime) {
 //        1st change the status in Reservation
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
-        reservation.setCheckOutDateTime(checkoutTime);
+        reservation.setNewCheckOutDateTime(checkoutTime);
         reservation.setStatus(Status.FINISHED);
 
         var room = reservation.getRoom();
@@ -210,24 +206,30 @@ public class ReservationService implements IReservationService {
         var totalPrice = getTotalPriceInReservation(reservation);
         var paidPrice = getPaidPriceInReservation(reservation);
         var leftPrice = totalPrice - paidPrice;
-        var contacts = reservation.getContacts().stream().map(ContactMapper::toDto).toList();
+        var refundPrice = getTotalRefundInReservation(reservation);
+        var contacts = reservation.getContactList().stream().map(ContactMapper::toDto).toList();
 
         resvDetails.setGuestDetails(guestDto);
         resvDetails.setRoomDetails(roomDto);
         resvDetails.setTotalPrice(totalPrice);
         resvDetails.setPaidPrice(paidPrice);
         resvDetails.setLeftPrice(leftPrice);
+        resvDetails.setRefundPrice(refundPrice);
         resvDetails.setContacts(contacts);
 
         return resvDetails;
     }
 
     private Integer getTotalPriceInReservation(Reservation reservation) {
-        return reservation.getVouchers().stream().map(Voucher::getPrice).reduce(0, Integer::sum);
+        return reservation.getVoucherList().stream().map(Voucher::getPrice).reduce(0, Integer::sum);
     }
 
     private Integer getPaidPriceInReservation(Reservation reservation) {
-        return reservation.getVouchers().stream().filter(Voucher::getIsPaid).map(Voucher::getPrice).reduce(0, Integer::sum);
+        return reservation.getVoucherList().stream().filter(Voucher::getIsPaid).map(Voucher::getPrice).reduce(0, Integer::sum);
+    }
+
+    private Integer getTotalRefundInReservation(Reservation reservation) {
+        return reservation.getRefundList().stream().map(Refund::getAmount).reduce(0, Integer::sum);
     }
 
     @Override
@@ -294,12 +296,12 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public String takeExtraHours(Long id, ExtraHoursDto extraHoursDto) {
+    public String extendHours(Long id, ExtraHoursDto extraHoursDto) {
         var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
         var newCheckoutTime = reservation.getCheckOutDateTime().plusHours(extraHoursDto.hour());
         var price = extraHoursDto.price() * extraHoursDto.hour();
 
-        reservation.setCheckOutDateTime(newCheckoutTime);
+        reservation.setNewCheckOutDateTime(newCheckoutTime);
         reservation.increasePrice(price);
 
         if(reservation.getStayType() != StayType.SECTION) {
@@ -310,7 +312,23 @@ public class ReservationService implements IReservationService {
             throw new IllegalArgumentException("This is finished already");
         }
 
-        voucherService.createExtraVoucher(reservation, price);
+        voucherService.createExtendVoucher(reservation, price);
+
+        reservationRepository.save(reservation);
+
+        return "New Checkout time : " + timeFormat(reservation.getCheckOutDateTime());
+    }
+
+    @Override
+    public String extendDays(Long id, Integer days) {
+        var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
+        var newCheckoutTime = reservation.getCheckOutDateTime().plusDays(days);
+
+        var price = days * reservation.getPrice();
+
+        reservation.setNewCheckOutDateTime(newCheckoutTime);
+
+        voucherService.createExtendVoucher(reservation, price);
 
         reservationRepository.save(reservation);
 

@@ -12,6 +12,7 @@ public class VoucherMapper {
         var payment = voucher.getPayment();
         return VoucherDto.builder()
                 .voucherNo(voucher.getVoucherNo())
+                .type(voucher.getType())
                 .paymentId(null == payment ? null : payment.getId())
                 .date(voucher.getDate())
                 .reservationId(voucher.getReservation().getId())

@@ -2,11 +2,10 @@ package org.bytesync.hotelmanagement.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.bytesync.hotelmanagement.model.enums.PaymentMethod;
+import org.bytesync.hotelmanagement.enums.PaymentMethod;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data

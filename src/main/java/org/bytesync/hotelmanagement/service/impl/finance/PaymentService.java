@@ -30,7 +30,7 @@ public class PaymentService {
         var reservation = safeCall(reservationRepository.findById(paymentCreateForm.getReservationId()),
                 "Reservation", paymentCreateForm.getReservationId());
 
-        var dailyVouchers = voucherService.getDailyVouchers(paymentCreateForm.getVoucherIds());
+        var dailyVouchers = voucherService.getVouchers(paymentCreateForm.getVoucherIds());
 
         var payment = FinanceMapper.toPayment(paymentCreateForm);
 

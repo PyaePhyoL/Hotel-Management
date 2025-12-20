@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bytesync.hotelmanagement.model.enums.GuestStatus;
+import org.bytesync.hotelmanagement.enums.GuestStatus;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

@@ -39,10 +39,5 @@ public class AuthenticationConfig {
         return daoAuthenticationProvider;
     }
 
-    @Bean
-    public AuditorAware<String> auditorAware() {
-        return new AuditAwareImpl();
-    }
-
 
 }

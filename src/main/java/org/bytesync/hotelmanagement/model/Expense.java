@@ -5,10 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.bytesync.hotelmanagement.model.enums.ExpenseType;
+import org.bytesync.hotelmanagement.enums.ExpenseType;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Data
 @Builder

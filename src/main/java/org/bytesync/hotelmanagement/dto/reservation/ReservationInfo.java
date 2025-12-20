@@ -2,8 +2,8 @@ package org.bytesync.hotelmanagement.dto.reservation;
 
 import lombok.Builder;
 import lombok.Data;
-import org.bytesync.hotelmanagement.model.enums.Status;
-import org.bytesync.hotelmanagement.model.enums.StayType;
+import org.bytesync.hotelmanagement.enums.Status;
+import org.bytesync.hotelmanagement.enums.StayType;
 
 import java.time.LocalDateTime;
 

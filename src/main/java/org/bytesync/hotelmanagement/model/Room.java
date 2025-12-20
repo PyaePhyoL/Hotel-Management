@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bytesync.hotelmanagement.model.enums.*;
+import org.bytesync.hotelmanagement.enums.Floor;
+import org.bytesync.hotelmanagement.enums.RoomStatus;
+import org.bytesync.hotelmanagement.enums.RoomType;
 
 import java.util.ArrayList;
 import java.util.List;

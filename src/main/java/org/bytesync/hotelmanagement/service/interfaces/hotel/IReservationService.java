@@ -4,7 +4,7 @@ import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.reservation.*;
 import org.bytesync.hotelmanagement.model.Reservation;
-import org.bytesync.hotelmanagement.model.enums.Status;
+import org.bytesync.hotelmanagement.enums.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,5 +33,7 @@ public interface IReservationService {
 
     String delete(Long id);
 
-    String takeExtraHours(Long id, ExtraHoursDto extraHoursDto);
+    String extendHours(Long id, ExtraHoursDto extraHoursDto);
+
+    String extendDays(Long id, Integer days);
 }

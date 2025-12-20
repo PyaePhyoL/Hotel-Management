@@ -6,8 +6,7 @@ import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Voucher;
-import org.bytesync.hotelmanagement.model.enums.StayType;
-import org.bytesync.hotelmanagement.model.enums.VoucherType;
+import org.bytesync.hotelmanagement.enums.VoucherType;
 import org.bytesync.hotelmanagement.repository.VoucherRepository;
 import org.bytesync.hotelmanagement.repository.specification.DailyVoucherSpecification;
 import org.bytesync.hotelmanagement.util.mapper.VoucherMapper;
@@ -17,11 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.bytesync.hotelmanagement.model.enums.PaymentMethod.DEPOSIT;
+import static org.bytesync.hotelmanagement.enums.PaymentMethod.DEPOSIT;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getDaysBetween;
 
 @Service
@@ -40,13 +38,13 @@ public class VoucherService {
             case SECTION ->  {}
         }
 
-        reservation.addDailyVoucher(baseVoucher);
+        reservation.addVoucher(baseVoucher);
 
         voucherRepository.save(baseVoucher);
     }
 
 
-    public PageResult<VoucherDto> getDailyVouchersByReservation(long reservationId, boolean isPaid, int page, int size) {
+    public PageResult<VoucherDto> getVoucherListByReservation(long reservationId, boolean isPaid, int page, int size) {
         var pageable = PageRequest.of(page, size).withSort(Sort.Direction.ASC, "date");
         var spec = DailyVoucherSpecification.byReservationId(reservationId, isPaid);
 
@@ -57,12 +55,12 @@ public class VoucherService {
     }
 
     public List<VoucherDto> getSelectedVoucherDtos(List<Long> voucherIds) {
-        return getDailyVouchers(voucherIds).stream()
+        return getVouchers(voucherIds).stream()
                 .map(VoucherMapper::toDto)
                 .toList();
     }
 
-    public List<Voucher> getDailyVouchers(List<Long>  voucherIds) {
+    public List<Voucher> getVouchers(List<Long>  voucherIds) {
         List<Voucher> vouchers = new ArrayList<>();
         voucherIds.forEach(id -> {
             voucherRepository.findById(id).ifPresent(vouchers::add);
@@ -70,10 +68,11 @@ public class VoucherService {
         return vouchers;
     }
 
-    public void createExtraVoucher(Reservation reservation, int price) {
-        var baseVoucher = createBasicVoucherFromReservation(reservation);
-        baseVoucher.setPrice(price);
-        voucherRepository.save(baseVoucher);
+    public void createExtendVoucher(Reservation reservation, int price) {
+        var extendVoucher = createBasicVoucherFromReservation(reservation);
+        extendVoucher.setPrice(price);
+        extendVoucher.setType(VoucherType.EXTEND);
+        voucherRepository.save(extendVoucher);
     }
 
     private Voucher createBasicVoucherFromReservation(Reservation reservation) {

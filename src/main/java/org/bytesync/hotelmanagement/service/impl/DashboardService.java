@@ -2,7 +2,7 @@ package org.bytesync.hotelmanagement.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.MainDashboard;
-import org.bytesync.hotelmanagement.model.enums.RoomStatus;
+import org.bytesync.hotelmanagement.enums.RoomStatus;
 import org.bytesync.hotelmanagement.service.impl.finance.PaymentService;
 import org.bytesync.hotelmanagement.service.impl.hotel.ReservationService;
 import org.bytesync.hotelmanagement.service.impl.hotel.RoomService;

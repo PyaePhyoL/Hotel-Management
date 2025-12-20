@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bytesync.hotelmanagement.model.enums.PaymentMethod;
+import org.bytesync.hotelmanagement.enums.PaymentMethod;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

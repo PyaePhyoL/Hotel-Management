@@ -1,7 +1,7 @@
 package org.bytesync.hotelmanagement.repository.specification;
 
 import org.bytesync.hotelmanagement.model.Room;
-import org.bytesync.hotelmanagement.model.enums.RoomStatus;
+import org.bytesync.hotelmanagement.enums.RoomStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 public class RoomSpecification {
