@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SecurityTokenProvider {
 
+    private final UserDetailsService userDetailsService;
     @Value("${application.security.jwt.issuer}")
     private String issuer;
     @Value("${application.security.jwt.secret-key}")
@@ -71,7 +73,9 @@ public class SecurityTokenProvider {
             var role = jws.getPayload().get("roles", String.class);
             var authorities = Arrays.stream(role.split(",")).map(SimpleGrantedAuthority::new).toList();
 
-            return UsernamePasswordAuthenticationToken.authenticated(username, null, authorities );
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            return UsernamePasswordAuthenticationToken.authenticated(userDetails, null, authorities );
         } catch (ExpiredJwtException e) {
             throw type == Type.ACCESS
                     ? new TokenExpirationForAccessException()

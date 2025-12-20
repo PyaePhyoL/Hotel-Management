@@ -31,12 +31,12 @@ public class PaymentService implements IPaymentService {
         var reservation = safeCall(reservationRepository.findById(paymentCreateForm.getReservationId()),
                 "Reservation", paymentCreateForm.getReservationId());
 
-        var dailyVouchers = voucherService.getVouchers(paymentCreateForm.getVoucherIds());
+        var vouchers = voucherService.getVouchers(paymentCreateForm.getVoucherIds());
 
         var payment = FinanceMapper.toPayment(paymentCreateForm);
 
         payment.setReservation(reservation);
-        dailyVouchers.forEach(voucher -> {
+        vouchers.forEach(voucher -> {
             voucher.setIsPaid(true);
             payment.addDailyVoucher(voucher);
         });
@@ -60,13 +60,4 @@ public class PaymentService implements IPaymentService {
         return payments.stream().map(Payment::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
     }
 
-    @Override
-    public PaymentCreateForm getSectionPaymentForm(Long reservationId) {
-        var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
-
-        PaymentCreateForm form = new PaymentCreateForm();
-        form.setPaymentDate(LocalDate.now());
-        form.setAmount(reservation.getPrice());
-        return form;
-    }
 }

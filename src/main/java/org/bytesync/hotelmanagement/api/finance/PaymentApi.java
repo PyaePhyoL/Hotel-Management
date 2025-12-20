@@ -35,9 +35,4 @@ public class PaymentApi {
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", paymentList));
     }
 
-    @GetMapping("/section/form/{reservationId}")
-    public ResponseEntity<ResponseMessage<PaymentCreateForm>> getSectionPaymentForm(@PathVariable Long reservationId) {
-        var form = paymentService.getSectionPaymentForm(reservationId);
-        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", form));
-    }
 }

@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.dto.finance;
 
 import lombok.Builder;
 import lombok.Data;
+import org.bytesync.hotelmanagement.enums.RefundType;
 
 import java.time.LocalDate;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 public class RefundDto {
     private Long id;
     private LocalDate refundDate;
+    private RefundType type;
     private Integer amount;
     private String notes;
 }

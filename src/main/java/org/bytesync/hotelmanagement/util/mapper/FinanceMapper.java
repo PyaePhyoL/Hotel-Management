@@ -82,6 +82,7 @@ public class FinanceMapper {
                 .id(refund.getId())
                 .refundDate(refund.getRefundDate())
                 .amount(refund.getAmount())
+                .type(refund.getType())
                 .notes(refund.getNotes())
                 .build();
     }

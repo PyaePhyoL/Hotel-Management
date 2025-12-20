@@ -12,6 +12,4 @@ public interface IPaymentService {
 
     Integer getDailyIncomeAmount();
 
-    PaymentCreateForm getSectionPaymentForm(Long reservationId);
-
 }
