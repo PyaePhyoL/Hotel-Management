@@ -20,6 +20,7 @@ import org.bytesync.hotelmanagement.repository.GuestRepository;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.repository.specification.ReservationSpecification;
+import org.bytesync.hotelmanagement.service.finance.VoucherService;
 import org.bytesync.hotelmanagement.service.guest.GuestRecordService;
 import org.bytesync.hotelmanagement.util.mapper.GuestMapper;
 import org.bytesync.hotelmanagement.util.mapper.ContactMapper;
@@ -48,6 +49,7 @@ public class ReservationService {
     private final RoomRepository roomRepository;
     private final GuestRepository guestRepository;
     private final ContactRepository contactRepository;
+    private final VoucherService voucherService;
 
     public ReservationGuestInfo getReservationGuestInfoById(Long id ){
         if (id == null || id <= 0) {
@@ -65,9 +67,12 @@ public class ReservationService {
         var room = findRoom(form.getRoomId());
         var reservation = createReservation(form, guest, room);
 
+        voucherService.createVoucher(reservation);
+
         guestRecordService.createGuestRecord(reservation);
 
         updateAssociation(reservation, room, guest, form.getContacts());
+
         return "Reservation created successfully";
     }
 
@@ -130,7 +135,7 @@ public class ReservationService {
     public String checkoutReservation(Long reservationId, LocalDateTime checkoutTime) {
 //        1st change the status in Reservation
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
-        reservation.setCheckOutTime(checkoutTime);
+        reservation.setCheckOutDateTime(checkoutTime);
         reservation.setStatus(Status.PAST);
 
         var room = reservation.getRoom();
@@ -149,17 +154,17 @@ public class ReservationService {
     }
 
 
-    public PageResult<ReservationInfo> getAll(int page, int size, Status status) {
+    public PageResult<ReservationInfo> getAll(int page, int size, List<Status> statusList) {
         Pageable pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "id");
-        var spec = ReservationSpecification.filterByStatus(Status.ACTIVE);
-        Page<Reservation> result = reservationRepository.findAll(pageable);
+        var spec = ReservationSpecification.filterByStatus(statusList);
+        Page<Reservation> result = reservationRepository.findAll(spec, pageable);
 
         List<ReservationInfo> infos = result.stream().map(ReservationMapper::toReservationInfo).toList();
 
         return new PageResult<>(infos, result.getTotalElements(), page, size);
     }
 
-    public String delete(Long reservationId) {
+    public String cancelReservation(Long reservationId) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
         if(reservation.getStatus() == Status.ACTIVE) {
             throw new IllegalStateException("Reservation is active");
@@ -167,8 +172,10 @@ public class ReservationService {
 
         makeRoomAvailable(reservation.getRoom());
         guestCheckout(reservation.getGuest());
-        reservationRepository.delete(reservation);
-        return "Reservation deleted successfully";
+
+        reservation.setStatus(Status.CANCELED);
+        reservationRepository.save(reservation);
+        return "Reservation canceled successfully";
     }
 
     private void makeRoomAvailable(Room room) {
@@ -264,4 +271,12 @@ public class ReservationService {
         });
     }
 
+    public String delete(long id) {
+        var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
+        makeRoomAvailable(reservation.getRoom());
+        guestCheckout(reservation.getGuest());
+        reservationRepository.delete(reservation);
+
+        return "Reservation deleted successfully";
+    }
 }

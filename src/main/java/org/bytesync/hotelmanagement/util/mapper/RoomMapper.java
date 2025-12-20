@@ -48,8 +48,11 @@ public class RoomMapper {
 
     public static RoomStatus getRoomCurrentStatusFromReservation(Status status, StayType stayType) {
         return status != Status.BOOKING ? (
-                stayType == StayType.NORMAL
-                        ? RoomStatus.NORMAL_STAY : RoomStatus.LONG_STAY
+                switch (stayType) {
+                    case NORMAL -> RoomStatus.NORMAL_STAY;
+                    case SECTION ->  RoomStatus.SECTION_STAY;
+                    case LONG ->  RoomStatus.LONG_STAY;
+                }
         ) : RoomStatus.BOOKING;
     }
 }

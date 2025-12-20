@@ -31,7 +31,7 @@ public class GuestRecordService {
         GuestRecord guestRecord = GuestRecord.builder()
                 .guest(reservation.getGuest())
                 .room(reservation.getRoom())
-                .checkInTime(reservation.getCheckInTime())
+                .checkInTime(reservation.getCheckInDateTime())
                 .current(true)
                 .build();
         guestRecordRepository.save(guestRecord);

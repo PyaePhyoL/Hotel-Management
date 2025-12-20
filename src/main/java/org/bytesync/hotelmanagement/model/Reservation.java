@@ -23,12 +23,12 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime checkInTime;
-    private LocalDateTime checkOutTime;
+    private LocalDateTime checkInDateTime;
+    private LocalDateTime checkOutDateTime;
     private Integer daysOfStay;
-    private Integer pricePerNight;
-    private Integer discountAmount;
-    private Integer depositAmount;
+    private Integer price;
+    private Integer discount;
+    private Integer deposit;
     @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
     private StayType stayType;
     private String registeredStaff;

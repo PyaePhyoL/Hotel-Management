@@ -20,15 +20,16 @@ public class ReservationForm {
     private String phone;
     private Integer noOfGuests;
     private StayType stayType;
-    private LocalDateTime checkInTime;
+    private LocalDateTime checkInDateTime;
+    private LocalDateTime checkOutDateTime;
     @NotNull(message = "Please select a room")
     private Integer roomId;
     @NotBlank(message = "Please enter the name of register staff")
     private String staffName;
     @NotNull(message = "Price cannot be blank")
-    private Integer pricePerNight;
-    private Integer discountAmount;
-    private Integer depositAmount;
+    private Integer price;
+    private Integer discount;
+    private Integer deposit;
     private String note;
     private List<ContactDto> contacts;
 }

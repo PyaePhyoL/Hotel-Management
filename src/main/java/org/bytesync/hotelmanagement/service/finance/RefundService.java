@@ -28,7 +28,7 @@ public class RefundService {
     @Transactional
     public String createRefund(Long reservationId, RefundDto refundDto) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
-        var deposit = reservation.getDepositAmount();
+        var deposit = reservation.getDeposit();
         if(deposit < refundDto.getAmount()) {
             throw new NotEnoughMoneyException("Not enough money");
         }
@@ -37,7 +37,7 @@ public class RefundService {
         refundRepository.save(refund);
 
         var leftDeposit = deposit - refund.getAmount();
-        reservation.setDepositAmount(leftDeposit);
+        reservation.setDeposit(leftDeposit);
         reservationRepository.save(reservation);
         return "Refund successfully : " + reservation.getId();
     }

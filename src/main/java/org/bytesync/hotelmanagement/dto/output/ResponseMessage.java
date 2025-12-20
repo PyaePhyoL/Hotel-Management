@@ -1,8 +1,8 @@
 package org.bytesync.hotelmanagement.dto.output;
 
-public record ResponseMessage(
+public record ResponseMessage<T>(
         Integer code,
         String message,
-        Object response
+        T response
 ) {
 }

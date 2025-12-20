@@ -1,16 +1,16 @@
 package org.bytesync.hotelmanagement.util.mapper;
 
-import org.bytesync.hotelmanagement.dto.finance.DailyVoucherDto;
+import org.bytesync.hotelmanagement.dto.finance.VoucherDto;
 import org.bytesync.hotelmanagement.model.Voucher;
 
-public class DailyVoucherMapper {
+public class VoucherMapper {
 
-    private DailyVoucherMapper() {
+    private VoucherMapper() {
     }
 
-    public static DailyVoucherDto toDto(Voucher voucher) {
+    public static VoucherDto toDto(Voucher voucher) {
         var payment = voucher.getPayment();
-        return DailyVoucherDto.builder()
+        return VoucherDto.builder()
                 .voucherNo(voucher.getVoucherNo())
                 .paymentId(null == payment ? null : payment.getId())
                 .date(voucher.getDate())

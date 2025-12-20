@@ -18,12 +18,13 @@ public class ReservationMapper {
         return Reservation.builder()
                 .noOfGuests(form.getNoOfGuests())
                 .stayType(form.getStayType())
-                .checkInTime(form.getCheckInTime())
-                .pricePerNight(form.getPricePerNight())
-                .depositAmount(form.getDepositAmount())
-                .discountAmount(form.getDiscountAmount())
+                .checkInDateTime(form.getCheckInDateTime())
+                .checkOutDateTime(form.getCheckOutDateTime())
+                .price(form.getPrice())
+                .deposit(form.getDeposit())
+                .discount(form.getDiscount())
                 .registeredStaff(form.getStaffName())
-                .status(ScheduleMethods.checkDateTimeAndGetStatus(form.getCheckInTime(), null))
+                .status(ScheduleMethods.checkDateTimeAndGetStatus(form.getCheckInDateTime(), null))
                 .daysOfStay(0)
                 .vouchers(new ArrayList<>())
                 .paymentList(new ArrayList<>())
@@ -35,8 +36,10 @@ public class ReservationMapper {
     public static ReservationInfo toReservationInfo(Reservation reservation) {
         return ReservationInfo.builder()
                 .id(reservation.getId())
-                .checkInTime(reservation.getCheckInTime())
-                .checkOutTime(reservation.getCheckOutTime())
+                .checkInTime(reservation.getCheckInDateTime())
+                .checkOutTime(reservation.getCheckOutDateTime())
+                .stayType(reservation.getStayType())
+                .status(reservation.getStatus())
                 .daysOfStay(reservation.getDaysOfStay())
                 .guestName(reservation.getGuest().getName())
                 .roomNo(reservation.getRoom().getRoomNo())
@@ -46,12 +49,12 @@ public class ReservationMapper {
     public static ReservationDetails toReservationDetails(Reservation reservation) {
         return ReservationDetails.builder()
                 .id(reservation.getId())
-                .checkInTime(reservation.getCheckInTime())
-                .checkOutTime(reservation.getCheckOutTime())
+                .checkInTime(reservation.getCheckInDateTime())
+                .checkOutTime(reservation.getCheckOutDateTime())
                 .daysOfStay(reservation.getDaysOfStay())
-                .pricePerNight(reservation.getPricePerNight())
-                .depositAmount(reservation.getDepositAmount())
-                .discountAmount(reservation.getDiscountAmount())
+                .pricePerNight(reservation.getPrice())
+                .depositAmount(reservation.getDeposit())
+                .discountAmount(reservation.getDiscount())
                 .stayType(reservation.getStayType())
                 .registeredStaff(reservation.getRegisteredStaff())
                 .noOfGuests(reservation.getNoOfGuests())
@@ -64,7 +67,7 @@ public class ReservationMapper {
         var guest = reservation.getGuest();
         return ReservationGuestInfo.builder()
                 .reservationId(reservation.getId())
-                .checkInTime(reservation.getCheckInTime())
+                .checkInTime(reservation.getCheckInDateTime())
                 .guestId(guest.getId())
                 .guestName(guest.getName())
                 .guestPhoneList(guest.getPhoneList())
@@ -74,9 +77,9 @@ public class ReservationMapper {
     }
 
     public static void updateReservation(Reservation reservation, ReservationForm form) {
-        reservation.setPricePerNight(form.getPricePerNight());
-        reservation.setDepositAmount(form.getDepositAmount());
-        reservation.setDiscountAmount(form.getDiscountAmount());
+        reservation.setPrice(form.getPrice());
+        reservation.setDeposit(form.getDeposit());
+        reservation.setDiscount(form.getDiscount());
         reservation.setStayType(form.getStayType());
         reservation.setRegisteredStaff(form.getStaffName());
         reservation.setNoOfGuests(form.getNoOfGuests());

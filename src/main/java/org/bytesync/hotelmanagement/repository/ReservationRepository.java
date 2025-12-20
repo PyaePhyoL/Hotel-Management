@@ -25,7 +25,7 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long>, 
 
     @Query("""
     select r from Reservation r
-    where FUNCTION('DATE', r.checkInTime) = :today
+    where FUNCTION('DATE', r.checkInDateTime) = :today
 """)
     List<Reservation> findByCheckInDate(LocalDate today);
 }

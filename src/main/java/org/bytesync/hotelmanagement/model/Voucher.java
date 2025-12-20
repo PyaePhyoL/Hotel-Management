@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.model.enums.VoucherType;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -17,13 +18,13 @@ import java.time.LocalDate;
 public class Voucher {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private String voucherNo;
     private LocalDate date;
     private String guestName;
     private Integer roomNo;
     private Integer price;
     private Boolean isPaid;
+    @Enumerated(EnumType.STRING)
     private VoucherType type;
 
     @ManyToOne
@@ -31,5 +32,8 @@ public class Voucher {
     @ManyToOne
     private Payment payment;
 
-
+    @PrePersist
+    public void generateVoucherNo() {
+        this.voucherNo = UUID.randomUUID().toString().replace("-", "");
+    }
 }
