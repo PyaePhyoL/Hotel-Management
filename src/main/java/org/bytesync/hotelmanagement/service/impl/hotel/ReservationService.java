@@ -23,12 +23,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.*;
 
@@ -336,5 +338,14 @@ public class ReservationService implements IReservationService {
         reservationRepository.save(reservation);
 
         return "New Checkout time : " + timeFormat(reservation.getCheckOutDateTime());
+    }
+
+    @Override
+    public PageResult<ReservationInfo> search(String query, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size).withSort(Sort.by(Sort.Direction.DESC, "checkInDateTime"));
+        Specification<Reservation> spec = ReservationSpecification.search(query);
+        Page<Reservation> reservations = reservationRepository.findAll(spec, pageable);
+        List<ReservationInfo> infoList = reservations.getContent().stream().map(ReservationMapper::toReservationInfo).toList();
+        return new PageResult<>(infoList, reservations.getTotalElements(), page, size);
     }
 }

@@ -134,4 +134,18 @@ public class ReservationManagementApi {
         ));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<ResponseMessage<PageResult<ReservationInfo>>> searchReservations(
+            @RequestParam(defaultValue = "") String query,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size
+    ) {
+       var list = reservationService.search(query, page, size);
+       return ResponseEntity.ok(new ResponseMessage<>(
+               HttpStatus.OK.value(),
+               "",
+               list
+       ));
+    }
+
 }

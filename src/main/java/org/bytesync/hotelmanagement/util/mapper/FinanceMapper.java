@@ -4,6 +4,7 @@ import org.bytesync.hotelmanagement.dto.finance.ExpenseDto;
 import org.bytesync.hotelmanagement.dto.finance.PaymentCreateForm;
 import org.bytesync.hotelmanagement.dto.finance.PaymentDto;
 import org.bytesync.hotelmanagement.dto.finance.RefundDto;
+import org.bytesync.hotelmanagement.enums.PaymentMethod;
 import org.bytesync.hotelmanagement.enums.RefundType;
 import org.bytesync.hotelmanagement.model.Expense;
 import org.bytesync.hotelmanagement.model.Payment;
@@ -17,9 +18,14 @@ public class FinanceMapper {
     }
 
     public static Payment toPayment(PaymentCreateForm paymentCreateForm) {
+        var amount = 0;
+        if(paymentCreateForm.getPaymentMethod() != PaymentMethod.EXPENDITURE) {
+            amount = paymentCreateForm.getAmount();
+        }
+
         return Payment.builder()
                 .paymentDate(paymentCreateForm.getPaymentDate())
-                .amount(paymentCreateForm.getAmount())
+                .amount(amount)
                 .paymentMethod(paymentCreateForm.getPaymentMethod())
                 .notes(paymentCreateForm.getNotes())
                 .vouchers(new ArrayList<>())

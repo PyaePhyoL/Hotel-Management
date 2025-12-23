@@ -36,4 +36,6 @@ public interface IReservationService {
     String extendHours(Long id, ExtraHoursDto extraHoursDto);
 
     String extendDays(Long id, Integer days);
+
+    PageResult<ReservationInfo> search(String query, int page, int size);
 }

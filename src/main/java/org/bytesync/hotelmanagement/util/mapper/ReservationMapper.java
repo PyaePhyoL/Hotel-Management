@@ -55,6 +55,7 @@ public class ReservationMapper {
                 .status(reservation.getStatus())
                 .daysOfStay(reservation.getDaysOfStay())
                 .guestName(reservation.getGuest().getName())
+                .guestPhone(reservation.getGuest().getPhoneList().stream().findFirst().orElse("Unknown number"))
                 .roomNo(reservation.getRoom().getRoomNo())
                 .build();
     }

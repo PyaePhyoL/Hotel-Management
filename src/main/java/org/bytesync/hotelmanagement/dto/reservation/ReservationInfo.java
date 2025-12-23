@@ -17,5 +17,6 @@ public class ReservationInfo {
     private Status status;
     private Integer daysOfStay;
     private String guestName;
+    private String guestPhone;
     private Long roomNo;
 }
