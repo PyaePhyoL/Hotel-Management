@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class PaymentDto {
+    private Long id;
     private LocalDate paymentDate;
     private Integer amount;
     private PaymentMethod paymentMethod;

@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.service.interfaces.finance;
 
 import org.bytesync.hotelmanagement.dto.finance.VoucherDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
+import org.bytesync.hotelmanagement.enums.VoucherType;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Voucher;
 
@@ -17,5 +18,5 @@ public interface IVoucherService {
 
     List<Voucher> getVouchers(List<Long>  voucherIds);
 
-    void createExtendVoucher(Reservation reservation, int price);
+    void createAdditionalVoucher(Reservation reservation, int price, VoucherType type);
 }

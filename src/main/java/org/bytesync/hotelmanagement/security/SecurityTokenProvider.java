@@ -11,12 +11,15 @@ import org.bytesync.hotelmanagement.exception.InvalidTokenException;
 import org.bytesync.hotelmanagement.exception.TokenExpirationForAccessException;
 import org.bytesync.hotelmanagement.exception.TokenExpirationForRefreshException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +52,7 @@ public class SecurityTokenProvider {
         Map<String, Object> claims = new HashMap<>();
         claims.put("type", type.name());
         claims.put("roles", authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")));
+                .map(GrantedAuthority::getAuthority).toList());
 
         return Jwts.builder()
                 .issuer(issuer)
@@ -70,8 +73,12 @@ public class SecurityTokenProvider {
                     .parseSignedClaims(token);
 
             var username = jws.getPayload().getSubject();
-            var role = jws.getPayload().get("roles", String.class);
-            var authorities = Arrays.stream(role.split(",")).map(SimpleGrantedAuthority::new).toList();
+
+            @SuppressWarnings("unchecked")
+            var roles = (List<String>) jws.getPayload().get("roles", List.class);
+            var authorities = roles.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .toList();
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 

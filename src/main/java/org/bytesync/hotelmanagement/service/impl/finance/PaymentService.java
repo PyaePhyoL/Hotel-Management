@@ -3,6 +3,7 @@ package org.bytesync.hotelmanagement.service.impl.finance;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.*;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
+import org.bytesync.hotelmanagement.enums.PaymentMethod;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.repository.*;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IPaymentService;
@@ -58,6 +59,20 @@ public class PaymentService implements IPaymentService {
         var payments =paymentRepository.findByPaymentDate(today);
 
         return payments.stream().map(Payment::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
+    }
+
+    @Override
+    public String updateExpenditureAmount(Long id, PaymentDto paymentDto) {
+        var payment = safeCall(paymentRepository.findById(id), "Payment", id);
+
+        if(payment.getPaymentMethod() != PaymentMethod.EXPEDIA) {
+            throw new IllegalArgumentException("Payment method is not from Expedia");
+        }
+
+        payment.setAmount(paymentDto.getAmount());
+        payment.setNotes(paymentDto.getNotes());
+        paymentRepository.save(payment);
+        return "Payment updated successfully : " + id;
     }
 
 }

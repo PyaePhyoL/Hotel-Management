@@ -35,4 +35,11 @@ public class PaymentApi {
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", paymentList));
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ResponseMessage<Void>> updateExpenditureAmount(@PathVariable Long id,
+                                                                         @RequestBody PaymentDto paymentDto) {
+        var message = paymentService.updateExpenditureAmount(id, paymentDto);
+        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), message, null));
+    }
+
 }

@@ -23,9 +23,9 @@ public interface IReservationService {
 
     String cancelReservation(Long reservationId);
 
-    String changeRoom(Long id, Long roomId);
+    String changeRoom(Long reservationId, Long roomId, Integer extraPrice);
 
-    Integer getDailyCheckIns();
+    Integer getActiveReservationCount();
 
     String update(Long id, ReservationForm form);
 

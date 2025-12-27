@@ -34,11 +34,7 @@ public class VoucherService implements IVoucherService {
 
         var baseVoucher = createBasicVoucherFromReservation(reservation);
 
-        switch (baseVoucher.getType()) {
-            case DAILY -> changeForDailyVoucher(baseVoucher);
-            case CASH_DOWN -> changeForCashDownVoucher(baseVoucher);
-            case SECTION ->  {}
-        }
+        changeForDailyVoucher(baseVoucher);
 
         reservation.addVoucher(baseVoucher);
 
@@ -73,10 +69,10 @@ public class VoucherService implements IVoucherService {
     }
 
     @Override
-    public void createExtendVoucher(Reservation reservation, int price) {
+    public void createAdditionalVoucher(Reservation reservation, int price, VoucherType type) {
         var extendVoucher = createBasicVoucherFromReservation(reservation);
         extendVoucher.setPrice(price);
-        extendVoucher.setType(VoucherType.EXTEND);
+        extendVoucher.setType(type);
         voucherRepository.save(extendVoucher);
     }
 
@@ -94,6 +90,7 @@ public class VoucherService implements IVoucherService {
     }
 
     private void changeForDailyVoucher(Voucher baseVoucher) {
+        if(baseVoucher.getType() != VoucherType.DAILY) return;
         boolean isPaid = processDailyPayment(baseVoucher);
         baseVoucher.setIsPaid(isPaid);
     }
@@ -126,17 +123,5 @@ public class VoucherService implements IVoucherService {
         payment.addDailyVoucher(dailyVoucher);
     }
 
-    private void changeForCashDownVoucher(Voucher voucher) {
-        var price = calculatePriceForNormalStay(voucher.getReservation());
-        voucher.setPrice(price);
-    }
-
-    private int calculatePriceForNormalStay(Reservation reservation) {
-        int days = getDaysBetween(
-                reservation.getCheckInDateTime().toLocalDate(),
-                reservation.getCheckOutDateTime().toLocalDate());
-
-        return days * reservation.getPrice();
-    }
 
 }

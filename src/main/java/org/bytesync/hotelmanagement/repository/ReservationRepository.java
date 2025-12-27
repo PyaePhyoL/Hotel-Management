@@ -28,4 +28,10 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long>, 
     where FUNCTION('DATE', r.checkInDateTime) = :today
 """)
     List<Reservation> findByCheckInDate(LocalDate today);
+
+    @Query("""
+    select COUNT(r) from Reservation r
+    where r.status = 'ACTIVE'
+""")
+    Integer countAllActive();
 }

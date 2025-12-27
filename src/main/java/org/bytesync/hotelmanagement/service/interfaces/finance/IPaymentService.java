@@ -12,4 +12,5 @@ public interface IPaymentService {
 
     Integer getDailyIncomeAmount();
 
+    String updateExpenditureAmount(Long id, PaymentDto paymentDto);
 }

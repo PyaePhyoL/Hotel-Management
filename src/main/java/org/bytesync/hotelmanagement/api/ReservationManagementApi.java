@@ -93,9 +93,11 @@ public class ReservationManagementApi {
                 detail));
     }
 
-    @PutMapping("/{id}/change-room/{roomId}")
-    public ResponseEntity<ResponseMessage<Void>> changeRoom(@PathVariable Long id, @PathVariable Long roomId) {
-        var message = reservationService.changeRoom(id, roomId);
+    @PutMapping("/{reservationId}/change-room/{roomId}")
+    public ResponseEntity<ResponseMessage<Void>> changeRoom(@PathVariable Long reservationId,
+                                                            @PathVariable Long roomId,
+                                                            @RequestParam(required = false, defaultValue = "0") Integer extraPrice) {
+        var message = reservationService.changeRoom(reservationId, roomId, extraPrice);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
                 message,

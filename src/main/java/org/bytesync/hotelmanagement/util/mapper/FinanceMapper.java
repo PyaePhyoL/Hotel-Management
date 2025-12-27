@@ -19,7 +19,7 @@ public class FinanceMapper {
 
     public static Payment toPayment(PaymentCreateForm paymentCreateForm) {
         var amount = 0;
-        if(paymentCreateForm.getPaymentMethod() != PaymentMethod.EXPENDITURE) {
+        if(paymentCreateForm.getPaymentMethod() != PaymentMethod.EXPEDIA) {
             amount = paymentCreateForm.getAmount();
         }
 
@@ -35,6 +35,7 @@ public class FinanceMapper {
     public static PaymentDto toPaymentDto(Payment payment) {
         var reservation = payment.getReservation();
         return PaymentDto.builder()
+                .id(payment.getId())
                 .paymentDate(payment.getPaymentDate())
                 .amount(payment.getAmount())
                 .paymentMethod(payment.getPaymentMethod())

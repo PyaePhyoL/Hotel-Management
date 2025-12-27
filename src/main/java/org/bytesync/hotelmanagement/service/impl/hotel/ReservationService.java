@@ -5,11 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.reservation.*;
+import org.bytesync.hotelmanagement.enums.*;
 import org.bytesync.hotelmanagement.model.*;
-import org.bytesync.hotelmanagement.enums.GuestStatus;
-import org.bytesync.hotelmanagement.enums.RoomStatus;
-import org.bytesync.hotelmanagement.enums.Status;
-import org.bytesync.hotelmanagement.enums.StayType;
 import org.bytesync.hotelmanagement.repository.*;
 import org.bytesync.hotelmanagement.repository.specification.ReservationSpecification;
 import org.bytesync.hotelmanagement.service.impl.finance.VoucherService;
@@ -24,14 +21,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static org.bytesync.hotelmanagement.enums.GuestStatus.BLACKLIST;
+import static org.bytesync.hotelmanagement.enums.VoucherType.EXTEND;
+import static org.bytesync.hotelmanagement.enums.VoucherType.getVoucherTypeFromStayType;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.*;
 
 @Service
@@ -59,6 +58,7 @@ public class ReservationService implements IReservationService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTION')")
     public String create(ReservationForm form) {
         var guest = findOrCreateGuest(form);
         var room = findRoom(form.getRoomId());
@@ -116,6 +116,13 @@ public class ReservationService implements IReservationService {
                 .map(guest -> {
                     // may be phone number might be new
                     guest.addPhone(form.getPhone());
+
+                    if(guest.getIsStaying())
+                        throw new IllegalStateException("This guest has another reservation");
+
+                    if(guest.getStatus() == BLACKLIST)
+                        throw new IllegalArgumentException("This guest is blacklisted");
+
                     return guest;
                 }).orElseGet(() -> {
                     Guest guest = new Guest();
@@ -129,6 +136,7 @@ public class ReservationService implements IReservationService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTION')")
     public String checkoutReservation(Long reservationId, LocalDateTime checkoutTime) {
 //        1st change the status in Reservation
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
@@ -163,6 +171,7 @@ public class ReservationService implements IReservationService {
 
     @Transactional
     @Override
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'RECEPTION')")
     public String cancelReservation(Long reservationId) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
         if(reservation.getStatus() == Status.ACTIVE) {
@@ -236,9 +245,9 @@ public class ReservationService implements IReservationService {
 
     @Override
     @Transactional
-    public String changeRoom(Long id, Long roomId) {
-        var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
-        var newRoom = safeCall(roomRepository.findById(roomId), "Room", id);
+    public String changeRoom(Long reservationId, Long roomId, Integer extraPrice) {
+        var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
+        var newRoom = safeCall(roomRepository.findById(roomId), "Room", reservationId);
         var oldRoom = reservation.getRoom();
         makeRoomInService(oldRoom);
 
@@ -247,17 +256,34 @@ public class ReservationService implements IReservationService {
         newRoom.setCurrentStatus(
                 RoomMapper.getRoomCurrentStatusFromReservation(reservation.getStatus(), reservation.getStayType()));
 
+        if(extraPrice != null  && extraPrice > 0) {
+            updateReservationPrice(reservationId, extraPrice);
+        }
+
         roomRepository.save(newRoom);
         reservationRepository.save(reservation);
         return "Room-%s is changed with Room-%s".formatted(oldRoom.getRoomNo(), newRoom.getRoomNo());
 
     }
 
+    public void updateReservationPrice(Long reservationId, Integer price) {
+        var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
+        var stayType = reservation.getStayType();
+        var voucherType = getVoucherTypeFromStayType(stayType);
+
+        if(stayType == StayType.NORMAL) {
+            voucherService.createAdditionalVoucher(reservation, price, voucherType);
+
+        } else if(stayType == StayType.LONG) {
+            reservation.setPrice(price);
+        }
+
+        reservationRepository.save(reservation);
+    }
+
     @Override
-    public Integer getDailyCheckIns() {
-        var today =  LocalDate.now();
-        var reservations = reservationRepository.findByCheckInDate(today);
-        return reservations.size();
+    public Integer getActiveReservationCount() {
+        return reservationRepository.countAllActive();
     }
 
     @Override
@@ -286,6 +312,7 @@ public class ReservationService implements IReservationService {
         });
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @Transactional
     @Override
     public String delete(Long id) {
@@ -317,7 +344,7 @@ public class ReservationService implements IReservationService {
             throw new IllegalArgumentException("This is finished already");
         }
 
-        voucherService.createExtendVoucher(reservation, price);
+        voucherService.createAdditionalVoucher(reservation, price, EXTEND);
 
         reservationRepository.save(reservation);
 
@@ -333,7 +360,7 @@ public class ReservationService implements IReservationService {
 
         reservation.setNewCheckOutDateTime(newCheckoutTime);
 
-        voucherService.createExtendVoucher(reservation, price);
+        voucherService.createAdditionalVoucher(reservation, price, EXTEND);
 
         reservationRepository.save(reservation);
 

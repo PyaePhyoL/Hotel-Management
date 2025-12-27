@@ -1,5 +1,5 @@
 package org.bytesync.hotelmanagement.enums;
 
 public enum PaymentMethod {
-    DEPOSIT, CASH, KPAY, EXPENDITURE
+    DEPOSIT, CASH, KPAY, EXPEDIA
 }
