@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -46,6 +45,14 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/guests/api/change-status/**").hasAnyRole("ADMIN", "RECEPTION")
                                 .requestMatchers(HttpMethod.DELETE, "/guests/api/delete/*").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/guests/api/delete/relation/**").hasAnyRole("ADMIN", "RECEPTION")
+
+                                .requestMatchers(HttpMethod.PATCH, "/rooms/api/change-price/**").hasAnyRole("ADMIN")
+
+                                .requestMatchers(HttpMethod.POST, "/users/api/register").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/users/api/update/**").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.PATCH, "/users/api/enable/**").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.PATCH, "/users/api/disable/**").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/users/api/delete/**").hasAnyRole("ADMIN")
 
                                 .anyRequest().authenticated()
                 )
