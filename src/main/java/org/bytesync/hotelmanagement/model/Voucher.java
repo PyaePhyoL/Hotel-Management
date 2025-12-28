@@ -32,4 +32,6 @@ public class Voucher {
     @ManyToOne
     private Payment payment;
 
+    private String notes;
+
 }

@@ -20,6 +20,7 @@ public class VoucherMapper {
                 .roomNo(voucher.getRoomNo())
                 .price(voucher.getPrice())
                 .isPaid(voucher.getIsPaid())
+                .notes(voucher.getNotes())
                 .build();
     }
 }

@@ -4,7 +4,9 @@ public enum VoucherType {
     SECTION,
     DAILY,
     CASH_DOWN,
-    EXTEND;
+    EXTEND,
+    FOOD_BEVERAGE,
+    SERVICE;
 
     public static VoucherType getVoucherTypeFromStayType(StayType stayType) {
         return switch (stayType) {

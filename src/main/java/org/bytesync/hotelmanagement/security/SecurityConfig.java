@@ -54,6 +54,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PATCH, "/users/api/disable/**").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/users/api/delete/**").hasAnyRole("ADMIN")
 
+                                .requestMatchers(HttpMethod.POST, "/finance/api/vouchers").hasAnyRole("ADMIN", "RECEPTION", "MANAGER")
+                                .requestMatchers(HttpMethod.POST, "/finance/api/vouchers/selected").hasAnyRole("ADMIN", "RECEPTION", "MANAGER")
                                 .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)

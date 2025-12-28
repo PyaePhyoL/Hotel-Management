@@ -30,7 +30,7 @@ public class ScheduleMethods {
         var reservations = reservationRepository.findAllActiveLongReservations();
 
         reservations.forEach(reservation -> {
-            voucherService.createVoucher(reservation);
+            voucherService.createVoucherFromReservation(reservation);
             reservation.incrementDaysOfStayByOne();
         });
     }

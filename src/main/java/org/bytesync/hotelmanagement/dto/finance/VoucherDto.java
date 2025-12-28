@@ -15,7 +15,8 @@ public record VoucherDto(
     String guestName,
     Long roomNo,
     Integer price,
-    Boolean isPaid
+    Boolean isPaid,
+    String notes
 ) {
 
 }

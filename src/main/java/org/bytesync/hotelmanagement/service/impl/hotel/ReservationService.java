@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.service.impl.hotel;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.bytesync.hotelmanagement.dto.finance.VoucherCreatForm;
 import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.reservation.*;
@@ -62,7 +63,7 @@ public class ReservationService implements IReservationService {
         var room = findRoom(form.getRoomId());
         var reservation = createReservation(form, guest, room);
 
-        voucherService.createVoucher(reservation);
+        voucherService.createVoucherFromReservation(reservation);
 
         guestRecordService.createGuestRecord(reservation);
 
@@ -252,7 +253,7 @@ public class ReservationService implements IReservationService {
         newRoom.setCurrentStatus(
                 RoomMapper.getRoomCurrentStatusFromReservation(reservation.getStatus(), reservation.getStayType()));
 
-        if(extraPrice != null  && extraPrice > 0) {
+        if(extraPrice != null) {
             updateReservationPrice(reservationId, extraPrice);
         }
 
@@ -268,8 +269,9 @@ public class ReservationService implements IReservationService {
         var voucherType = getVoucherTypeFromStayType(stayType);
 
         if(stayType == StayType.NORMAL) {
-            voucherService.createAdditionalVoucher(reservation, price, voucherType);
-
+            if(price > 0) {
+                voucherService.createAdditionalVoucher(new VoucherCreatForm(reservationId, voucherType, price, ""));
+            }
         } else if(stayType == StayType.LONG) {
             reservation.setPrice(price);
         }
@@ -338,8 +340,8 @@ public class ReservationService implements IReservationService {
         if(reservation.getStatus() == Status.FINISHED) {
             throw new IllegalArgumentException("This is finished already");
         }
-
-        voucherService.createAdditionalVoucher(reservation, price, EXTEND);
+        var notes = String.format("Extend for %d hour(s)", extraHoursDto.hour());
+        voucherService.createAdditionalVoucher(new VoucherCreatForm(id, EXTEND, price, notes));
 
         reservationRepository.save(reservation);
 
@@ -355,7 +357,8 @@ public class ReservationService implements IReservationService {
 
         reservation.setNewCheckOutDateTime(newCheckoutTime);
 
-        voucherService.createAdditionalVoucher(reservation, price, EXTEND);
+        var notes =  String.format("Extend for %d day(s)".formatted(days));
+        voucherService.createAdditionalVoucher(new VoucherCreatForm(id, EXTEND, price, notes));
 
         reservationRepository.save(reservation);
 

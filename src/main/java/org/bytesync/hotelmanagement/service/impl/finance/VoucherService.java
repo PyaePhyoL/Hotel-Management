@@ -1,12 +1,14 @@
 package org.bytesync.hotelmanagement.service.impl.finance;
 
 import lombok.RequiredArgsConstructor;
+import org.bytesync.hotelmanagement.dto.finance.VoucherCreatForm;
 import org.bytesync.hotelmanagement.dto.finance.VoucherDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Voucher;
 import org.bytesync.hotelmanagement.enums.VoucherType;
+import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.VoucherRepository;
 import org.bytesync.hotelmanagement.repository.specification.DailyVoucherSpecification;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IVoucherService;
@@ -22,15 +24,17 @@ import java.util.List;
 
 import static org.bytesync.hotelmanagement.enums.PaymentMethod.DEPOSIT;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getDaysBetween;
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Service
 @RequiredArgsConstructor
 public class VoucherService implements IVoucherService {
 
     private final VoucherRepository voucherRepository;
+    private final ReservationRepository reservationRepository;
 
     @Override
-    public void createVoucher(Reservation reservation) {
+    public void createVoucherFromReservation(Reservation reservation) {
 
         var baseVoucher = createBasicVoucherFromReservation(reservation);
 
@@ -39,6 +43,16 @@ public class VoucherService implements IVoucherService {
         reservation.addVoucher(baseVoucher);
 
         voucherRepository.save(baseVoucher);
+    }
+
+    @Override
+    public void createAdditionalVoucher(VoucherCreatForm form) {
+        var reservation = safeCall(reservationRepository.findById(form.reservationId()), "Reservation", form.reservationId());
+        var extendVoucher = createBasicVoucherFromReservation(reservation);
+        extendVoucher.setPrice(form.price());
+        extendVoucher.setType(form.type());
+        extendVoucher.setNotes(form.notes());
+        voucherRepository.save(extendVoucher);
     }
 
     @Override
@@ -66,14 +80,6 @@ public class VoucherService implements IVoucherService {
             voucherRepository.findById(id).ifPresent(vouchers::add);
         });
         return vouchers;
-    }
-
-    @Override
-    public void createAdditionalVoucher(Reservation reservation, int price, VoucherType type) {
-        var extendVoucher = createBasicVoucherFromReservation(reservation);
-        extendVoucher.setPrice(price);
-        extendVoucher.setType(type);
-        voucherRepository.save(extendVoucher);
     }
 
     private Voucher createBasicVoucherFromReservation(Reservation reservation) {
