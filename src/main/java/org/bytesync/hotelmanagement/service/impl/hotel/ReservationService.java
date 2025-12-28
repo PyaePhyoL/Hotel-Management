@@ -21,7 +21,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +57,6 @@ public class ReservationService implements IReservationService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTION')")
     public String create(ReservationForm form) {
         var guest = findOrCreateGuest(form);
         var room = findRoom(form.getRoomId());
@@ -136,7 +134,6 @@ public class ReservationService implements IReservationService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTION')")
     public String checkoutReservation(Long reservationId, LocalDateTime checkoutTime) {
 //        1st change the status in Reservation
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
@@ -171,7 +168,6 @@ public class ReservationService implements IReservationService {
 
     @Transactional
     @Override
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'RECEPTION')")
     public String cancelReservation(Long reservationId) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
         if(reservation.getStatus() == Status.ACTIVE) {
@@ -312,7 +308,6 @@ public class ReservationService implements IReservationService {
         });
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
     @Transactional
     @Override
     public String delete(Long id) {

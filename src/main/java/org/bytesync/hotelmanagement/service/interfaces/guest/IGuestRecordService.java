@@ -13,4 +13,6 @@ public interface IGuestRecordService {
     void updateGuestRecordWhenCheckout(Long reservationId, LocalDateTime checkoutTime);
 
     PageResult<GuestRecordDto> getAll(boolean isCurrent, int page, int size);
+
+    PageResult<GuestRecordDto> search(String query, int page, int size);
 }

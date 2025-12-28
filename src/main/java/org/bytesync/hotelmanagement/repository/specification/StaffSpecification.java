@@ -5,7 +5,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class StaffSpecification {
 
-    public static Specification<Staff> keyword(String keyword) {
+    public static Specification<Staff> search(String keyword) {
         return (root, cq, cb) -> {
             String likeKeyword = "%" + keyword.toLowerCase() + "%";
 

@@ -35,6 +35,8 @@ public class GuestRecordService implements IGuestRecordService {
                 .guest(reservation.getGuest())
                 .room(reservation.getRoom())
                 .checkInTime(reservation.getCheckInDateTime())
+                .checkOutTime(reservation.getCheckOutDateTime())
+                .daysOfStay(reservation.getDaysOfStay())
                 .current(true)
                 .reservation(reservation)
                 .build();
@@ -55,8 +57,17 @@ public class GuestRecordService implements IGuestRecordService {
 
     @Override
     public PageResult<GuestRecordDto> getAll(boolean isCurrent, int page, int size) {
-        var pageable = PageRequest.of(page, size).withSort(Sort.Direction.ASC, "checkInTime");
+        var pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "checkInTime");
         var spec = GuestRecordSpecification.currentOrAll(isCurrent);
+        Page<GuestRecord> records = guestRecordRepository.findAll(spec, pageable);
+        List<GuestRecordDto> dtos = records.stream().map(GuestRecordMapper::toDto).toList();
+        return new PageResult<>(dtos, records.getNumberOfElements(), page, size);
+    }
+
+    @Override
+    public PageResult<GuestRecordDto> search(String query, int page, int size) {
+        var pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "checkInTime");
+        var spec = GuestRecordSpecification.search(query);
         Page<GuestRecord> records = guestRecordRepository.findAll(spec, pageable);
         List<GuestRecordDto> dtos = records.stream().map(GuestRecordMapper::toDto).toList();
         return new PageResult<>(dtos, records.getNumberOfElements(), page, size);

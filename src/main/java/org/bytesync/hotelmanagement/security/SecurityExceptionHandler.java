@@ -21,11 +21,27 @@ public class SecurityExceptionHandler implements AuthenticationEntryPoint, Acces
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write("""
+            {
+              "error": "401",
+              "message": "Authentication required"
+            }
+        """);
         handlerExceptionResolver.resolveException(request, response, null, authException);
     }
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setContentType("application/json");
+        response.getWriter().write("""
+            {
+              "code": "403",
+              "message": "Not enough permission",
+            }
+        """);
         handlerExceptionResolver.resolveException(request, response, null, accessDeniedException);
     }
 }

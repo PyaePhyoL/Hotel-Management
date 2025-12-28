@@ -92,7 +92,7 @@ public class GuestService implements IGuestService {
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-        var specification = GuestSpecification.keyword(query.trim());
+        var specification = GuestSpecification.search(query.trim());
 
         Page<Guest> result = guestRepository.findAll(specification, pageable);
 

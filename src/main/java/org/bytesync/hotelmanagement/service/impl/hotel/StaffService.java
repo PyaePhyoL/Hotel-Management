@@ -146,7 +146,7 @@ public class StaffService implements IStaffService {
         }
 
         Pageable pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "id");
-        var spec = StaffSpecification.keyword(query);
+        var spec = StaffSpecification.search(query);
 
         Page<Staff> results = staffRepository.findAll(spec, pageable);
         List<StaffDto> dtos = results.stream().map(StaffMapper::toStaffDto).toList();

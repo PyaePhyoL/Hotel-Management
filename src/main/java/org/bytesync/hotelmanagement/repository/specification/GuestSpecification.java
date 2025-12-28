@@ -7,18 +7,20 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class GuestSpecification {
 
-    public static Specification<Guest> keyword(String keyword) {
+    public static Specification<Guest> search(String query) {
         return (root, cq, cb) -> {
-            String likeKeyword = "%" + keyword.toLowerCase() + "%";
+            String likeKeyword = "%" + query.toLowerCase() + "%";
             Join<Guest, String> phoneJoin = root.join("phoneList", JoinType.LEFT);
 
             return cb.or(
                     cb.like(cb.lower(root.get("name")), likeKeyword),
                     cb.like(cb.lower(root.get("email")), likeKeyword),
-                    cb.like(cb.lower(phoneJoin), likeKeyword),
                     cb.like(cb.lower(root.get("nrc")), likeKeyword),
-                    cb.like(cb.lower(root.get("passport")), likeKeyword)
-            );
+                    cb.like(cb.lower(root.get("passport")), likeKeyword),
+                    cb.like(cb.lower(root.get("occupation")), likeKeyword),
+                    cb.like(cb.lower(root.get("address")), likeKeyword),
+                    cb.like(cb.lower(phoneJoin), likeKeyword)
+                    );
         };
     }
 }

@@ -35,4 +35,12 @@ public class GuestRecordsApi {
         var records = guestRecordService.getAll(false, page, size);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", records));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseMessage<PageResult<GuestRecordDto>>> searchGuestRecords(@RequestParam String query,
+                                                                                          @RequestParam(required = false, defaultValue = "0") int page,
+                                                                                          @RequestParam(required = false, defaultValue = "10") int size) {
+        var records = guestRecordService.search(query, page, size);
+        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", records));
+    }
 }
