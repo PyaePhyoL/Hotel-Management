@@ -45,4 +45,10 @@ public class VouchersApi {
                 null));
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ResponseMessage<String>> updateVoucher(@PathVariable Long id, @RequestBody VoucherDto voucherDto) {
+        var message = voucherService.updateVoucher(id, voucherDto);
+        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), message, null));
+    }
+
 }

@@ -1,9 +1,11 @@
 package org.bytesync.hotelmanagement.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -23,12 +25,10 @@ public class SecurityExceptionHandler implements AuthenticationEntryPoint, Acces
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
-        response.getWriter().write("""
-            {
-              "error": "401",
-              "message": "Authentication required"
-            }
-        """);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(response.getOutputStream(),
+                new ResponseMessage<>(401, "Authentication required", null));
+
         handlerExceptionResolver.resolveException(request, response, null, authException);
     }
 
@@ -36,12 +36,10 @@ public class SecurityExceptionHandler implements AuthenticationEntryPoint, Acces
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType("application/json");
-        response.getWriter().write("""
-            {
-              "code": "403",
-              "message": "Not enough permission",
-            }
-        """);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(response.getOutputStream(),
+                new ResponseMessage<>(403, "Not enough permission", null));
+
         handlerExceptionResolver.resolveException(request, response, null, accessDeniedException);
     }
 }

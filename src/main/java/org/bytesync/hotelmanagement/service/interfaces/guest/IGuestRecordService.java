@@ -14,5 +14,5 @@ public interface IGuestRecordService {
 
     PageResult<GuestRecordDto> getAll(boolean isCurrent, int page, int size);
 
-    PageResult<GuestRecordDto> search(String query, int page, int size);
+    PageResult<GuestRecordDto> search(String query, int page, int size, boolean isCurrent);
 }

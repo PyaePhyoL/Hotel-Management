@@ -76,7 +76,7 @@ public class StaffManagementApi {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ResponseMessage<PageResult<StaffDto>>> search(@RequestParam(defaultValue = " ") String query,
+    public ResponseEntity<ResponseMessage<PageResult<StaffDto>>> search(@RequestParam(defaultValue = "") String query,
                                                         @RequestParam(required = false, defaultValue = "0") int page,
                                                         @RequestParam(required = false, defaultValue = "10") int size ){
         var contents = staffService.search(query, page, size);

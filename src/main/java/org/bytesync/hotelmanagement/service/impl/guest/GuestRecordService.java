@@ -65,9 +65,9 @@ public class GuestRecordService implements IGuestRecordService {
     }
 
     @Override
-    public PageResult<GuestRecordDto> search(String query, int page, int size) {
+    public PageResult<GuestRecordDto> search(String query, int page, int size, boolean isCurrent) {
         var pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "checkInTime");
-        var spec = GuestRecordSpecification.search(query);
+        var spec = GuestRecordSpecification.search(query, isCurrent);
         Page<GuestRecord> records = guestRecordRepository.findAll(spec, pageable);
         List<GuestRecordDto> dtos = records.stream().map(GuestRecordMapper::toDto).toList();
         return new PageResult<>(dtos, records.getNumberOfElements(), page, size);
