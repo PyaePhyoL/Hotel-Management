@@ -139,10 +139,11 @@ public class ReservationManagementApi {
     @GetMapping("/search")
     public ResponseEntity<ResponseMessage<PageResult<ReservationInfo>>> searchReservations(
             @RequestParam(defaultValue = "") String query,
+            @RequestParam(required = false, defaultValue = "true") boolean status,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
-       var list = reservationService.search(query, page, size);
+       var list = reservationService.search(query, page, size, status);
        return ResponseEntity.ok(new ResponseMessage<>(
                HttpStatus.OK.value(),
                "",

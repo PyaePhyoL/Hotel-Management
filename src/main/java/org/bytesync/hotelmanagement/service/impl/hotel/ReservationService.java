@@ -366,9 +366,9 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public PageResult<ReservationInfo> search(String query, int page, int size) {
+    public PageResult<ReservationInfo> search(String query, int page, int size, boolean status) {
         Pageable pageable = PageRequest.of(page, size).withSort(Sort.by(Sort.Direction.DESC, "checkInDateTime"));
-        Specification<Reservation> spec = ReservationSpecification.search(query);
+        Specification<Reservation> spec = ReservationSpecification.search(query, status);
         Page<Reservation> reservations = reservationRepository.findAll(spec, pageable);
         List<ReservationInfo> infoList = reservations.getContent().stream().map(ReservationMapper::toReservationInfo).toList();
         return new PageResult<>(infoList, reservations.getTotalElements(), page, size);

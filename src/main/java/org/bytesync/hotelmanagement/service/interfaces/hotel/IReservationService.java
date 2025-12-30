@@ -37,5 +37,5 @@ public interface IReservationService {
 
     String extendDays(Long id, Integer days);
 
-    PageResult<ReservationInfo> search(String query, int page, int size);
+    PageResult<ReservationInfo> search(String query, int page, int size, boolean status);
 }
