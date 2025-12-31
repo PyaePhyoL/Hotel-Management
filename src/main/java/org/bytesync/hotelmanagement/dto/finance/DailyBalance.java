@@ -13,5 +13,6 @@ public class DailyBalance {
     private LocalDate date;
     private Integer totalIncomes;
     private Integer totalExpenses;
+    private Integer totalRefunds;
     private Integer dailyProfit;
 }

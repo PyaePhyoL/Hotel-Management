@@ -19,6 +19,8 @@ public class Refund extends Auditable {
     private Long id;
     private LocalDate refundDate;
     private Integer amount;
+
+    @Column(columnDefinition = "TEXT")
     private String notes;
     private RefundType type;
 

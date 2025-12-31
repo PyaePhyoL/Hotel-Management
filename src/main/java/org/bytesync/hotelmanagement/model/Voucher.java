@@ -32,6 +32,7 @@ public class Voucher {
     @ManyToOne
     private Payment payment;
 
+    @Column(columnDefinition = "TEXT")
     private String notes;
 
 }

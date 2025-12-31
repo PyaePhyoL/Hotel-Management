@@ -23,6 +23,8 @@ public class Payment extends Auditable{
     private Integer amount;
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+
+    @Column(columnDefinition = "TEXT")
     private String notes;
 
     @ManyToOne(fetch = FetchType.LAZY)

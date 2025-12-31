@@ -15,9 +15,11 @@ public class MonthlyBalanceSheet {
     private String period;
     private Integer totalIncome;
     private Integer totalExpense;
+    private Integer totalRefund;
     private Integer profit;
 
     private List<DailyBalance> dailyBalances;
     private List<PaymentDto> incomes;
     private List<ExpenseDto> expenses;
+    private List<RefundDto> refunds;
 }

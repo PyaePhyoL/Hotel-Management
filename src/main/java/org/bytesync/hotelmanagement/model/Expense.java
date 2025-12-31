@@ -24,6 +24,8 @@ public class Expense {
     @Enumerated(EnumType.STRING)
     private ExpenseType type;
     private Integer amount;
+
+    @Column(columnDefinition = "TEXT")
     private String notes;
 
 }
