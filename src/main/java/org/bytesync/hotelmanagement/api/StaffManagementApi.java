@@ -82,4 +82,10 @@ public class StaffManagementApi {
         var contents = staffService.search(query, page, size);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", contents));
     }
+
+    @PutMapping("/change-password/{id}")
+    public ResponseEntity<ResponseMessage<String>> changePassword(@PathVariable Long id, @Valid @RequestBody ChangePasswordDto dto) {
+        var message = staffService.changePassword(id, dto);
+        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), message, null));
+    }
 }

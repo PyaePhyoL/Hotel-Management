@@ -15,8 +15,6 @@ public record StaffRegisterForm(
         String email,
         @NotBlank(message = "Phone Number cannot be blank")
         String phoneNumber,
-        @NotBlank(message = "Password cannot be blank")
-        String password,
         String position,
         @NotNull(message = "Role cannot be blank")
         Role role,

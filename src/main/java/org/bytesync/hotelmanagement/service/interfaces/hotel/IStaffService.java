@@ -24,4 +24,6 @@ public interface IStaffService {
     StaffDetailsDto getDetails(Long userId);
 
     PageResult<StaffDto> search(String query, int page, int size);
+
+    String changePassword(Long id, ChangePasswordDto dto);
 }

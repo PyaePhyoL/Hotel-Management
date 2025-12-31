@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.bytesync.hotelmanagement.security.SecurityTokenProvider.Type.ACCESS;
 import static org.bytesync.hotelmanagement.security.SecurityTokenProvider.Type.REFRESH;
@@ -56,7 +57,7 @@ public class StaffService implements IStaffService {
     @Override
     public String register(StaffRegisterForm form) {
         var staff = StaffMapper.toEntity(form);
-        staff.setPassword(passwordEncoder.encode(form.password()));
+        staff.setPassword(passwordEncoder.encode("chanmyae"));
 
         checkUserExists(staff);
 
@@ -152,5 +153,24 @@ public class StaffService implements IStaffService {
         List<StaffDto> dtos = results.stream().map(StaffMapper::toStaffDto).toList();
 
         return new PageResult<>(dtos, results.getTotalElements(), page, size);
+    }
+
+    @Override
+    public String changePassword(Long id, ChangePasswordDto dto) {
+        var staff = safeCall(staffRepository.findById(id), "Staff", id);
+
+        if (!passwordEncoder.matches(dto.oldPassword(), staff.getPassword())) {
+            throw new IllegalArgumentException("Old password does not match");
+        }
+
+        if(!Objects.equals(dto.newPassword(), dto.confirmPassword())) {
+            throw new IllegalArgumentException("New passwords do not match");
+        }
+
+        var newPassword = passwordEncoder.encode(dto.newPassword());
+        staff.setPassword(newPassword);
+        staffRepository.save(staff);
+
+        return "Password has been changed";
     }
 }

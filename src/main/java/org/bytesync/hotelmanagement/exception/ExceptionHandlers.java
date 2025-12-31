@@ -88,6 +88,15 @@ public class ExceptionHandlers {
         );
     }
 
+    @ExceptionHandler @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ResponseMessage<Void> handle(IllegalArgumentException e) {
+        return new ResponseMessage<>(
+                HttpStatus.BAD_REQUEST.value(),
+                e.getMessage(),
+                null
+        );
+    }
+
     @ExceptionHandler(TokenExpirationForAccessException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     ResponseMessage<Void> handle(TokenExpirationForAccessException e) {
