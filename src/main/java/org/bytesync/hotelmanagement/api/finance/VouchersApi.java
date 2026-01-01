@@ -51,4 +51,10 @@ public class VouchersApi {
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), message, null));
     }
 
+    @GetMapping("/details/{id}")
+    public ResponseEntity<ResponseMessage<VoucherDto>> getVoucherDetails(@PathVariable Long id) {
+        var voucher = voucherService.getVoucherDetails(id);
+        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", voucher));
+    }
+
 }

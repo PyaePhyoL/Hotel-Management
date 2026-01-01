@@ -21,4 +21,6 @@ public interface IVoucherService {
     List<Voucher> getVouchers(List<Long>  voucherIds);
 
     String updateVoucher(Long id, VoucherDto voucherDto);
+
+    VoucherDto getVoucherDetails(Long id);
 }

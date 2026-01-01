@@ -94,6 +94,12 @@ public class VoucherService implements IVoucherService {
         return "Voucher updated";
     }
 
+    @Override
+    public VoucherDto getVoucherDetails(Long id) {
+        var voucher = safeCall(voucherRepository.findById(id), "Voucher", id);
+        return VoucherMapper.toDto(voucher);
+    }
+
     private Voucher createBasicVoucherFromReservation(Reservation reservation) {
         var voucherType = VoucherType.getVoucherTypeFromStayType(reservation.getStayType());
         return Voucher.builder()
