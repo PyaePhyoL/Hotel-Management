@@ -21,4 +21,8 @@ public interface IGuestService {
     String deleteRelation(Long rsId);
 
     String changeStatus(Long id, GuestStatus status);
+
+    String updatePhotoUrl(Long id, String photo);
+
+    String updateNrcUrl(Long id, String nrc);
 }

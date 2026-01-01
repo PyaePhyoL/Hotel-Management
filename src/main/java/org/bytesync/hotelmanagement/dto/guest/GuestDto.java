@@ -31,4 +31,6 @@ public class GuestDto {
     private LocalDate birthDate;
     private GuestStatus status;
     private String notes;
+    private String photoUrl;
+    private String nrcUrl;
 }

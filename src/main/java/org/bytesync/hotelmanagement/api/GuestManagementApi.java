@@ -70,4 +70,16 @@ public class GuestManagementApi {
         var message = guestService.changeStatus(id, status);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), message, null));
     }
+
+    @PutMapping("/update-photo/{id}")
+    public ResponseEntity<ResponseMessage<String>> updatePhotoUrl(@PathVariable Long id, @RequestParam String photo) {
+        var message = guestService.updatePhotoUrl(id, photo);
+        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), message, null));
+    }
+
+    @PutMapping("/update-nrc/{id}")
+    public ResponseEntity<ResponseMessage<String>> updateNrcUrl(@PathVariable Long id, @RequestParam String nrc) {
+        var message = guestService.updateNrcUrl(id, nrc);
+        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), message, null));
+    }
 }

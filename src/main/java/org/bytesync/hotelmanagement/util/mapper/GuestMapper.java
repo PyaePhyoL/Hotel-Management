@@ -41,6 +41,8 @@ public class GuestMapper {
                 .birthDate(guest.getBirthDate())
                 .notes(guest.getNotes())
                 .status(guest.getStatus())
+                .photoUrl(guest.getPhotoUrl())
+                .nrcUrl(guest.getNrcUrl())
                 .build();
     }
 

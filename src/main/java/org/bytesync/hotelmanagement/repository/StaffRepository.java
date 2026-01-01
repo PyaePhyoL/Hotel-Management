@@ -24,6 +24,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long>, JpaSpecific
     @Query("""
     select new org.bytesync.hotelmanagement.dto.auth.StaffDto(
     u.id,
+    u.photoUrl,
     u.name,
     u.email,
     u.joinDate,
@@ -54,7 +55,9 @@ public interface StaffRepository extends JpaRepository<Staff, Long>, JpaSpecific
     u.address,
     u.fatherName,
     u.notes,
-    u.enabled
+    u.enabled,
+    u.photoUrl,
+    u.nrcUrl
     ) from Staff u
     where u.id = :id
 """)

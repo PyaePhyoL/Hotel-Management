@@ -47,6 +47,9 @@ public class Guest {
     @Enumerated(EnumType.STRING)
     private GuestStatus status;
 
+    private String photoUrl;
+    private String nrcUrl;
+
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();
 

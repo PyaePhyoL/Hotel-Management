@@ -26,4 +26,8 @@ public interface IStaffService {
     PageResult<StaffDto> search(String query, int page, int size);
 
     String changePassword(Long id, ChangePasswordDto dto);
+
+    String updatePhotoUrl(Long id, String photo);
+
+    String updateNrcUrl(Long id, String nrc);
 }

@@ -88,4 +88,16 @@ public class StaffManagementApi {
         var message = staffService.changePassword(id, dto);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), message, null));
     }
+
+    @PutMapping("/update-photo/{id}")
+    public ResponseEntity<ResponseMessage<String>> updatePhotoUrl(@PathVariable Long id, @RequestParam String photo) {
+        var message = staffService.updatePhotoUrl(id, photo);
+        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), message, null));
+    }
+
+    @PutMapping("/update-nrc/{id}")
+    public ResponseEntity<ResponseMessage<String>> updateNrcUrl(@PathVariable Long id, @RequestParam String nrc) {
+        var message = staffService.updateNrcUrl(id, nrc);
+        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), message, null));
+    }
 }

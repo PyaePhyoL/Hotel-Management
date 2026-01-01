@@ -47,6 +47,8 @@ public class Staff extends Auditable implements UserDetails {
     private String notes;
     private boolean enabled;
 
+    private String photoUrl;
+    private String nrcUrl;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

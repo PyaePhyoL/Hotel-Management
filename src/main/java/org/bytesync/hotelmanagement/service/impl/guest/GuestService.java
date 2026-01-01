@@ -115,5 +115,21 @@ public class GuestService implements IGuestService {
         var gId = guestRepository.save(guest).getId();
         return "Guest status has been updated : " + gId;
     }
+
+    @Override
+    public String updatePhotoUrl(Long id, String photo) {
+        var guest = safeCall(guestRepository.findById(id), "Guest", id);
+        guest.setPhotoUrl(photo);
+        guestRepository.save(guest);
+        return "Guest's photo has been updated";
+    }
+
+    @Override
+    public String updateNrcUrl(Long id, String nrc) {
+        var guest = safeCall(guestRepository.findById(id), "Guest", id);
+        guest.setNrcUrl(nrc);
+        guestRepository.save(guest);
+        return "Guest's NRC has been updated";
+    }
 }
 

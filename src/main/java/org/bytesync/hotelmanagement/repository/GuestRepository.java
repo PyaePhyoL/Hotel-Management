@@ -30,7 +30,9 @@ public interface GuestRepository extends JpaRepository<Guest, Long>, JpaSpecific
     g.address,
     g.birthDate,
     g.status,
-    g.notes
+    g.notes,
+    g.photoUrl,
+    g.nrcUrl
     )
     from Guest g
 """)

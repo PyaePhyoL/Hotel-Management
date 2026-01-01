@@ -17,6 +17,8 @@ public record StaffDetailsDto(
         String address,
         String fatherName,
         String notes,
-        boolean enabled
+        boolean enabled,
+        String photoUrl,
+        String nrcUrl
 ) {
 }

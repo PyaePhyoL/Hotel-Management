@@ -173,4 +173,20 @@ public class StaffService implements IStaffService {
 
         return "Password has been changed";
     }
+
+    @Override
+    public String updatePhotoUrl(Long id, String photo) {
+        var staff = safeCall(staffRepository.findById(id), "Staff", id);
+        staff.setPhotoUrl(photo);
+        staffRepository.save(staff);
+        return "Staff's photo has been updated";
+    }
+
+    @Override
+    public String updateNrcUrl(Long id, String nrc) {
+        var staff = safeCall(staffRepository.findById(id), "Staff", id);
+        staff.setNrcUrl(nrc);
+        staffRepository.save(staff);
+        return "Staff's NRC has been updated";
+    }
 }
