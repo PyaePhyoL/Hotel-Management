@@ -25,3 +25,10 @@ server:
   port: 9090
   address: 127.0.0.1
 
+aws:
+  s3:
+    bucket: "chanmyae-hotel"
+    region: "ap-southeast-1"
+    access-key: ""
+    secret-key: ""
+
