@@ -61,9 +61,9 @@ public class StaffService implements IStaffService {
 
         checkUserExists(staff);
 
-        staffRepository.saveAndFlush(staff);
+        var id = staffRepository.save(staff).getId();
 
-        return "New Staff has been created";
+        return "New Staff has been created : " + id;
     }
 
     private void checkUserExists(Staff staff) {
