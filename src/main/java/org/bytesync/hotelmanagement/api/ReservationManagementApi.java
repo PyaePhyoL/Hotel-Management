@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.dto.reservation.*;
@@ -101,10 +102,10 @@ public class ReservationManagementApi {
                 null));
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/update-contacts/{id}")
     public ResponseEntity<ResponseMessage<Void>> updateReservation(@PathVariable Long id,
-                                                             @Valid @RequestBody ReservationForm form) {
-        var message = reservationService.update(id, form);
+                                                                     @RequestBody List<ContactDto> contactDtos) {
+        var message = reservationService.updateContacts(id, contactDtos);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
                 message,

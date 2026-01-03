@@ -229,7 +229,7 @@ public class ReservationService implements IReservationService {
     }
 
     private Integer getTotalPriceInReservation(Reservation reservation) {
-        return reservation.getVoucherList().stream().map(Voucher::getPrice).reduce(0, Integer::sum);
+        return reservation.getPaymentList().stream().map(Payment::getAmount).reduce(0, Integer::sum);
     }
 
     private Integer getPaidPriceInReservation(Reservation reservation) {
@@ -286,20 +286,11 @@ public class ReservationService implements IReservationService {
         return reservationRepository.countAllActive();
     }
 
-    @Override
-    public String update(Long id, ReservationForm form) {
-        var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
-        ReservationMapper.updateReservation(reservation, form);
-
-        updateContacts(reservation, form.getContacts());
-        
-        reservationRepository.save(reservation);
-
-        return "Reservation updated successfully : " + id;
-    }
 
     @Override
-    public void updateContacts(Reservation reservation, List<ContactDto> contactDtos) {
+    public String updateContacts(Long reservationId, List<ContactDto> contactDtos) {
+
+        var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
 
         var newContacts = contactDtos.stream().filter(dto -> dto.id() == null).toList();
 
@@ -310,6 +301,10 @@ public class ReservationService implements IReservationService {
         oldContacts.forEach(dto -> {
             contactRepository.findById(dto.id()).ifPresent(c -> ContactMapper.updateContent(c, dto));
         });
+
+        reservationRepository.save(reservation);
+
+        return "Reservation's contacts have been updated";
     }
 
     @Transactional

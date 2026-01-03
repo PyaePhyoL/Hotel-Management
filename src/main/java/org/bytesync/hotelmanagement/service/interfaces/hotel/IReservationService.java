@@ -29,9 +29,7 @@ public interface IReservationService {
 
     Integer getActiveReservationCount();
 
-    String update(Long id, ReservationForm form);
-
-    void updateContacts(Reservation reservation, List<ContactDto> contactDtos);
+    String updateContacts(Long reservationId, List<ContactDto> contactDtos);
 
     String delete(Long id);
 
