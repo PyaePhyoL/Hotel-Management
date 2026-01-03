@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.api.finance;
 
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.PaymentCreateForm;
+import org.bytesync.hotelmanagement.dto.finance.PaymentDetailsDto;
 import org.bytesync.hotelmanagement.dto.finance.PaymentDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
@@ -40,6 +41,20 @@ public class PaymentApi {
                                                                          @RequestBody PaymentDto paymentDto) {
         var message = paymentService.updateExpenditureAmount(id, paymentDto);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), message, null));
+    }
+
+    @GetMapping("/list/{id}")
+    public ResponseEntity<ResponseMessage<PageResult<PaymentDto>>> getPaymentListByReservation(@PathVariable Long id,
+                                                                                               @RequestParam(required = false, defaultValue = "0") int page,
+                                                                                               @RequestParam(required = false, defaultValue = "10") int size) {
+        var paymentList = paymentService.getPaymentListByReservation(id, page, size);
+        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", paymentList));
+    }
+
+    @GetMapping("/details/{id}")
+    public ResponseEntity<ResponseMessage<PaymentDetailsDto>> getPaymentDetailsById(@PathVariable Long id) {
+        var paymentDetails = paymentService.getPaymentDetailsById(id);
+        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", paymentDetails));
     }
 
 }

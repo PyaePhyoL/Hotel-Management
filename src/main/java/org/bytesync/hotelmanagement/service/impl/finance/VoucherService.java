@@ -12,7 +12,7 @@ import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.VoucherRepository;
 import org.bytesync.hotelmanagement.repository.specification.DailyVoucherSpecification;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IVoucherService;
-import org.bytesync.hotelmanagement.util.mapper.VoucherMapper;
+import org.bytesync.hotelmanagement.util.mapper.FinanceMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.bytesync.hotelmanagement.enums.PaymentMethod.DEPOSIT;
-import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getDaysBetween;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Service
@@ -62,14 +61,14 @@ public class VoucherService implements IVoucherService {
 
         Page<Voucher> vouchers = voucherRepository.findAll(spec, pageable);
         List<VoucherDto> dtos = vouchers.stream()
-                .map(VoucherMapper::toDto).toList();
+                .map(FinanceMapper::toVoucherDto).toList();
         return new PageResult<>(dtos, vouchers.getTotalElements(), page, size);
     }
 
     @Override
     public List<VoucherDto> getSelectedVoucherDtos(List<Long> voucherIds) {
         return getVouchers(voucherIds).stream()
-                .map(VoucherMapper::toDto)
+                .map(FinanceMapper::toVoucherDto)
                 .toList();
     }
 
@@ -97,7 +96,7 @@ public class VoucherService implements IVoucherService {
     @Override
     public VoucherDto getVoucherDetails(Long id) {
         var voucher = safeCall(voucherRepository.findById(id), "Voucher", id);
-        return VoucherMapper.toDto(voucher);
+        return FinanceMapper.toVoucherDto(voucher);
     }
 
     private Voucher createBasicVoucherFromReservation(Reservation reservation) {

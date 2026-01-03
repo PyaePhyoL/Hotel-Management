@@ -6,15 +6,18 @@ import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.enums.PaymentMethod;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.repository.*;
+import org.bytesync.hotelmanagement.repository.specification.PaymentSpecification;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IPaymentService;
 import org.bytesync.hotelmanagement.util.mapper.FinanceMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
@@ -73,6 +76,22 @@ public class PaymentService implements IPaymentService {
         payment.setNotes(paymentDto.getNotes());
         paymentRepository.save(payment);
         return "Payment updated successfully : " + id;
+    }
+
+    @Override
+    public PageResult<PaymentDto> getPaymentListByReservation(Long id, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("paymentDate").descending());
+        Specification<Payment> spec = PaymentSpecification.filterByReservation(id);
+        Page<Payment> paymentPage = paymentRepository.findAll(spec, pageable);
+
+        List<PaymentDto> dtoList = paymentPage.getContent().stream().map(FinanceMapper::toPaymentDto).toList();
+        return new PageResult<>(dtoList, paymentPage.getTotalElements(), page, size);
+    }
+
+    @Override
+    public PaymentDetailsDto getPaymentDetailsById(Long id) {
+        var payment = safeCall(paymentRepository.findById(id), "Payment", id);
+        return FinanceMapper.toPaymentDetailsDto(payment);
     }
 
 }
