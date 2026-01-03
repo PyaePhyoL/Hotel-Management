@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.bytesync.hotelmanagement.enums.GuestStatus.BLACKLIST;
@@ -292,6 +293,8 @@ public class ReservationService implements IReservationService {
 
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
 
+        reservation.getContactList().clear();
+
         var newContacts = contactDtos.stream().filter(dto -> dto.id() == null).toList();
 
         addContactsToReservation(reservation, newContacts);
@@ -299,7 +302,10 @@ public class ReservationService implements IReservationService {
         var oldContacts = contactDtos.stream().filter(dto -> dto.id() != null).toList();
 
         oldContacts.forEach(dto -> {
-            contactRepository.findById(dto.id()).ifPresent(c -> ContactMapper.updateContent(c, dto));
+            contactRepository.findById(dto.id()).ifPresent(contact -> {
+                ContactMapper.updateContent(contact, dto);
+                reservation.getContactList().add(contact);
+            });
         });
 
         reservationRepository.save(reservation);

@@ -103,8 +103,8 @@ public class ReservationManagementApi {
     }
 
     @PutMapping("/update-contacts/{id}")
-    public ResponseEntity<ResponseMessage<Void>> updateReservation(@PathVariable Long id,
-                                                                     @RequestBody List<ContactDto> contactDtos) {
+    public ResponseEntity<ResponseMessage<Void>> updateReservationContacts(@PathVariable Long id,
+                                                                           @RequestBody List<ContactDto> contactDtos) {
         var message = reservationService.updateContacts(id, contactDtos);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
