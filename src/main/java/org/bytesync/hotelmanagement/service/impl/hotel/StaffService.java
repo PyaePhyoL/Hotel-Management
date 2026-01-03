@@ -79,8 +79,8 @@ public class StaffService implements IStaffService {
 
         StaffMapper.update(staff, form);
 
-        staffRepository.save(staff);
-        return "Staff has been updated";
+        var sid = staffRepository.save(staff).getId();
+        return "Staff has been updated : " + sid;
     }
 
     private void ensureStaffUpdateNoConflict(Staff staff, StaffRegisterForm form) {

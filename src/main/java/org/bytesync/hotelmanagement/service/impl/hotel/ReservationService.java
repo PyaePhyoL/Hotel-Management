@@ -263,7 +263,8 @@ public class ReservationService implements IReservationService {
 
     }
 
-    public void updateReservationPrice(Long reservationId, Integer price) {
+    @Override
+    public String updateReservationPrice(Long reservationId, Integer price) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
         var stayType = reservation.getStayType();
         var voucherType = getVoucherTypeFromStayType(stayType);
@@ -277,6 +278,7 @@ public class ReservationService implements IReservationService {
         }
 
         reservationRepository.save(reservation);
+        return "Price per night has been updated";
     }
 
     @Override
@@ -349,20 +351,20 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public String extendDays(Long id, Integer days) {
+    public String extendDays(Long id, ExtraDaysDto extraDaysDto) {
         var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
-        var newCheckoutTime = reservation.getCheckOutDateTime().plusDays(days);
+        var newCheckoutTime = reservation.getCheckOutDateTime().plusDays(extraDaysDto.day());
 
-        var price = days * reservation.getPrice();
+        var price = extraDaysDto.price();
 
         reservation.setNewCheckOutDateTime(newCheckoutTime);
 
-        var notes =  String.format("Extend for %d day(s)".formatted(days));
+        var notes =  String.format("Extend for %d day(s)".formatted(extraDaysDto.day()));
         voucherService.createAdditionalVoucher(new VoucherCreatForm(id, EXTEND, price, notes));
 
         reservationRepository.save(reservation);
 
-        return "New Checkout time : " + timeFormat(reservation.getCheckOutDateTime());
+        return "New Checkout Date : " + dateFormat(reservation.getCheckOutDateTime());
     }
 
     @Override
@@ -372,5 +374,15 @@ public class ReservationService implements IReservationService {
         Page<Reservation> reservations = reservationRepository.findAll(spec, pageable);
         List<ReservationInfo> infoList = reservations.getContent().stream().map(ReservationMapper::toReservationInfo).toList();
         return new PageResult<>(infoList, reservations.getTotalElements(), page, size);
+    }
+
+    @Override
+    public String updateGuestNumber(Long id, Integer guests) {
+        var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
+
+        reservation.setNoOfGuests(guests);
+        reservationRepository.save(reservation);
+
+        return "No. of guests updated successfully";
     }
 }

@@ -19,6 +19,10 @@ public class EntityOperationUtils {
         return DateTimeFormatter.ofPattern("HH:mm:ss").format(localDateTime);
     }
 
+    public static String dateFormat(LocalDateTime localDateTime) {
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(localDateTime);
+    }
+
     public static int getDaysBetween(LocalDate startDate, LocalDate endDate) {
         return (int) ChronoUnit.DAYS.between(startDate, endDate);
     }

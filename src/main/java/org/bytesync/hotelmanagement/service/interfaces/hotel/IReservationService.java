@@ -25,6 +25,8 @@ public interface IReservationService {
 
     String changeRoom(Long reservationId, Long roomId, Integer extraPrice);
 
+    String updateReservationPrice(Long reservationId, Integer price);
+
     Integer getActiveReservationCount();
 
     String update(Long id, ReservationForm form);
@@ -35,7 +37,9 @@ public interface IReservationService {
 
     String extendHours(Long id, ExtraHoursDto extraHoursDto);
 
-    String extendDays(Long id, Integer days);
+    String extendDays(Long id, ExtraDaysDto extraDaysDto);
 
     PageResult<ReservationInfo> search(String query, int page, int size, boolean status);
+
+    String updateGuestNumber(Long id, Integer guests);
 }

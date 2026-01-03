@@ -4,10 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
-import org.bytesync.hotelmanagement.dto.reservation.ExtraHoursDto;
-import org.bytesync.hotelmanagement.dto.reservation.ReservationDetails;
-import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
-import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
+import org.bytesync.hotelmanagement.dto.reservation.*;
 import org.bytesync.hotelmanagement.enums.Status;
 import org.bytesync.hotelmanagement.service.interfaces.hotel.IReservationService;
 import org.springframework.http.HttpStatus;
@@ -127,8 +124,8 @@ public class ReservationManagementApi {
 
     @PostMapping("/extend-days/{id}")
     public ResponseEntity<ResponseMessage<Void>> extendDays(@PathVariable Long id,
-                                                            @RequestParam Integer days) {
-        var message = reservationService.extendDays(id, days);
+                                                            @RequestBody ExtraDaysDto extraDaysDto) {
+        var message = reservationService.extendDays(id, extraDaysDto);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
                 message,
@@ -149,6 +146,26 @@ public class ReservationManagementApi {
                "",
                list
        ));
+    }
+
+    @PutMapping("/update-long-stay-price/{id}")
+    public ResponseEntity<ResponseMessage<Void>> updateLongStayPrice(@PathVariable Long id, @RequestParam Integer price) {
+        var message = reservationService.updateReservationPrice(id, price);
+        return ResponseEntity.ok(new ResponseMessage<>(
+                HttpStatus.OK.value(),
+                message,
+                null
+        ));
+    }
+
+    @PutMapping("/update-guest-number/{id}")
+    public ResponseEntity<ResponseMessage<Void>> updateGuestNumber(@PathVariable Long id, @RequestParam Integer guests) {
+        var message = reservationService.updateGuestNumber(id, guests);
+        return ResponseEntity.ok(new ResponseMessage<>(
+                HttpStatus.OK.value(),
+                message,
+                null
+        ));
     }
 
 }
