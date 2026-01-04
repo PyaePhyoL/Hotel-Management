@@ -391,4 +391,12 @@ public class ReservationService implements IReservationService {
 
         return "No. of guests updated successfully";
     }
+
+    @Override
+    public String updateDeposit(Long id, Integer deposit) {
+        var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
+        reservation.setDeposit(deposit);
+        reservationRepository.save(reservation);
+        return "Deposit amount updated successfully";
+    }
 }

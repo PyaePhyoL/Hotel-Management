@@ -169,4 +169,14 @@ public class ReservationManagementApi {
         ));
     }
 
+    @PutMapping("/update-deposit/{id}")
+    public ResponseEntity<ResponseMessage<Void>> updateDeposit(@PathVariable Long id, @RequestParam Integer deposit) {
+        var message = reservationService.updateDeposit(id, deposit);
+        return ResponseEntity.ok(new ResponseMessage<>(
+                HttpStatus.OK.value(),
+                message,
+                null
+        ));
+    }
+
 }

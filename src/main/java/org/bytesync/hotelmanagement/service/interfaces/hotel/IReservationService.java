@@ -40,4 +40,6 @@ public interface IReservationService {
     PageResult<ReservationInfo> search(String query, int page, int size, boolean status);
 
     String updateGuestNumber(Long id, Integer guests);
+
+    String updateDeposit(Long id, Integer deposit);
 }
