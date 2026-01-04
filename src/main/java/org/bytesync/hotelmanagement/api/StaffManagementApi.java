@@ -27,7 +27,7 @@ public class StaffManagementApi {
     @PostMapping("/signin")
     public ResponseEntity<ResponseMessage<StaffInfo>> signin(@RequestBody SignInForm form) {
         var staffInfo = staffService.signIn(form);
-        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", staffInfo));
+        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "Login Successfully", staffInfo));
     }
 
     @GetMapping("/detail/{userId}")
