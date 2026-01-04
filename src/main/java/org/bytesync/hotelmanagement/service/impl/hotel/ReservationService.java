@@ -250,7 +250,7 @@ public class ReservationService implements IReservationService {
     @Transactional
     public String changeRoom(Long reservationId, Long roomId, Integer extraPrice) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
-        var newRoom = safeCall(roomRepository.findById(roomId), "Room", reservationId);
+        var newRoom = findRoom(roomId);
         var oldRoom = reservation.getRoom();
         makeRoomInService(oldRoom);
 

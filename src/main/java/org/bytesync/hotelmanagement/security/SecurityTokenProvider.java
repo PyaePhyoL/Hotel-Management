@@ -10,29 +10,28 @@ import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.exception.InvalidTokenException;
 import org.bytesync.hotelmanagement.exception.TokenExpirationForAccessException;
 import org.bytesync.hotelmanagement.exception.TokenExpirationForRefreshException;
+import org.bytesync.hotelmanagement.repository.StaffRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Component
 @RequiredArgsConstructor
 public class SecurityTokenProvider {
 
     private final UserDetailsService userDetailsService;
+    private final StaffRepository staffRepository;
     @Value("${application.security.jwt.issuer}")
     private String issuer;
     @Value("${application.security.jwt.secret-key}")
@@ -48,11 +47,16 @@ public class SecurityTokenProvider {
 
 //  generate tokens both access and refresh
     public String generate(Type type, Authentication authentication) {
+        var email = authentication.getName();
+        var user = safeCall(staffRepository.findByEmail(email), "Staff", email);
+
         var issueAt = new Date();
         Map<String, Object> claims = new HashMap<>();
         claims.put("type", type.name());
         claims.put("roles", authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority).toList());
+        claims.put("id", user.getId());
+        claims.put("username", user.getName());
 
         return Jwts.builder()
                 .issuer(issuer)
