@@ -12,6 +12,7 @@ import org.bytesync.hotelmanagement.repository.*;
 import org.bytesync.hotelmanagement.repository.specification.ReservationSpecification;
 import org.bytesync.hotelmanagement.service.impl.finance.VoucherService;
 import org.bytesync.hotelmanagement.service.impl.guest.GuestRecordService;
+import org.bytesync.hotelmanagement.service.impl.guest.GuestService;
 import org.bytesync.hotelmanagement.service.interfaces.hotel.IReservationService;
 import org.bytesync.hotelmanagement.util.mapper.GuestMapper;
 import org.bytesync.hotelmanagement.util.mapper.ContactMapper;
@@ -45,6 +46,7 @@ public class ReservationService implements IReservationService {
     private final ContactRepository contactRepository;
     private final VoucherService voucherService;
     private final GuestRecordRepository guestRecordRepository;
+    private final GuestService guestService;
 
     @Override
     public ReservationGuestInfo getReservationGuestInfoById(Long id ){
@@ -130,6 +132,7 @@ public class ReservationService implements IReservationService {
                     guest.setNrc(form.getGuestNrc());
                     guest.addPhone(form.getPhone());
                     guest.setStatus(GuestStatus.GOOD);
+                    guestService.checkGuestExists(guest);
                     return guestRepository.save(guest);
                 });
     }
@@ -213,20 +216,22 @@ public class ReservationService implements IReservationService {
         var guestDto = GuestMapper.toDto(reservation.getGuest());
         var roomDto = RoomMapper.toDto(reservation.getRoom());
         var totalPrice = getTotalPriceInReservation(reservation);
-        var paidPrice = getPaidPriceInReservation(reservation);
-        var leftPrice = totalPrice - paidPrice;
+        var leftPrice = getLeftPriceInReservation(reservation);
         var refundPrice = getTotalRefundInReservation(reservation);
         var contacts = reservation.getContactList().stream().map(ContactMapper::toDto).toList();
 
         resvDetails.setGuestDetails(guestDto);
         resvDetails.setRoomDetails(roomDto);
         resvDetails.setTotalPrice(totalPrice);
-        resvDetails.setPaidPrice(paidPrice);
         resvDetails.setLeftPrice(leftPrice);
         resvDetails.setRefundPrice(refundPrice);
         resvDetails.setContacts(contacts);
 
         return resvDetails;
+    }
+
+    private Integer getLeftPriceInReservation(Reservation reservation) {
+        return reservation.getVoucherList().stream().filter(v -> !v.getIsPaid()).map(Voucher::getPrice).reduce(0, Integer::sum);
     }
 
     private Integer getTotalPriceInReservation(Reservation reservation) {

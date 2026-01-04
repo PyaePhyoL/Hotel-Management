@@ -29,7 +29,6 @@ public class ReservationDetails {
     private RoomDto roomDetails;
 
     private Integer totalPrice;
-    private Integer paidPrice;
     private Integer leftPrice;
     private Integer refundPrice;
 

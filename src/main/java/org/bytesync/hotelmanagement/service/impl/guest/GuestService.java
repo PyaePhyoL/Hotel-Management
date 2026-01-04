@@ -40,10 +40,13 @@ public class GuestService implements IGuestService {
         return "New Guest has been created : " + id;
     }
 
-    private void checkGuestExists(Guest guest) {
-        if(guestRepository.existsByEmail(guest.getEmail())) throw new UserAlreadyExistsException("Email already exists");
-        if(guestRepository.existsByNrc(guest.getNrc())) throw new UserAlreadyExistsException("National Id already exists");
-        if(null != guest.getPassport() && guestRepository.existsByPassport(guest.getPassport())) throw new UserAlreadyExistsException("Passport already exists");
+    public void checkGuestExists(Guest guest) {
+        if(null != guest.getEmail() && guestRepository.existsByEmail(guest.getEmail()))
+            throw new UserAlreadyExistsException("Email already exists");
+        if(guestRepository.existsByNrc(guest.getNrc()))
+            throw new UserAlreadyExistsException("National Id already exists");
+        if(null != guest.getPassport() && guestRepository.existsByPassport(guest.getPassport()))
+            throw new UserAlreadyExistsException("Passport already exists");
     }
 
     @Override

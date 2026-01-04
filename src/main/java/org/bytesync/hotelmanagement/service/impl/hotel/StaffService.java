@@ -69,7 +69,7 @@ public class StaffService implements IStaffService {
     private void checkUserExists(Staff staff) {
         if(staffRepository.existsByEmail(staff.getEmail())) throw new UserAlreadyExistsException("Email already exists");
         if(staffRepository.existsByName(staff.getName())) throw new UserAlreadyExistsException("Name already exists");
-        if(staffRepository.existsByNrc(staff.getNrc())) throw new UserAlreadyExistsException("NRC already exists");
+        if(null != staff.getNrc() && staffRepository.existsByNrc(staff.getNrc())) throw new UserAlreadyExistsException("NRC already exists");
     }
 
     @Override
@@ -86,7 +86,7 @@ public class StaffService implements IStaffService {
     private void ensureStaffUpdateNoConflict(Staff staff, StaffRegisterForm form) {
         if(!staff.getName().equals(form.name()) && staffRepository.existsByName(form.name())) throw new UserAlreadyExistsException("Name already exists");
         if(!staff.getEmail().equals(form.email()) && staffRepository.existsByEmail(form.email())) throw new UserAlreadyExistsException("Email already exists");
-        if(!staff.getNrc().equals(form.nrc()) && staffRepository.existsByNrc(form.nrc())) throw new UserAlreadyExistsException("NRC already exists");
+        if(null!= staff.getNrc() && !staff.getNrc().equals(form.nrc()) && staffRepository.existsByNrc(form.nrc())) throw new UserAlreadyExistsException("NRC already exists");
     }
 
     @Override
