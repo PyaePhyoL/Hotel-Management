@@ -117,7 +117,7 @@ public class ReservationService implements IReservationService {
         return guestRepository.findByNameAndNrc(form.getGuestName(), form.getGuestNrc())
                 .map(guest -> {
                     // may be phone number might be new
-                    guest.addPhone(form.getPhone());
+                    changePhoneIfAddNewPhone(form.getPhone(), guest);
 
                     if(guest.getIsStaying())
                         throw new IllegalStateException("This guest has another reservation");
@@ -130,11 +130,18 @@ public class ReservationService implements IReservationService {
                     Guest guest = new Guest();
                     guest.setName(form.getGuestName());
                     guest.setNrc(form.getGuestNrc());
-                    guest.addPhone(form.getPhone());
+                    guest.setPhoneNumber(form.getPhone());
                     guest.setStatus(GuestStatus.GOOD);
                     guestService.checkGuestExists(guest);
                     return guestRepository.save(guest);
                 });
+    }
+
+    private void changePhoneIfAddNewPhone(String phone, Guest guest) {
+        if(phone != null && !phone.isBlank() && !guest.getPhoneNumber().equals(phone)) {
+            guest.setPhoneNumber(phone);
+            guestRepository.save(guest);
+        }
     }
 
     @Override

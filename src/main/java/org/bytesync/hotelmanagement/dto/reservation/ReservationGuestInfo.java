@@ -13,7 +13,7 @@ public class ReservationGuestInfo {
     private LocalDateTime checkInTime;
     private Long guestId;
     private String guestName;
-    private Set<String> guestPhoneList;
+    private String phone;
     private Integer noOfGuests;
     private Integer daysOfStay;
 }

@@ -27,8 +27,8 @@ public class Guest {
     private String name;
     @Column(unique = true)
     private String email;
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> phoneList = new HashSet<>();
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String phoneNumber;
     @Column(unique = true, nullable = false)
     private String nrc;
     @Column(unique = true)
@@ -57,10 +57,6 @@ public class Guest {
         this.reservationList.add(reservation);
         this.setCurrentReservationId(reservation.getId());
         this.setIsStaying(true);
-    }
-
-    public void addPhone(String phone) {
-        this.phoneList.add(phone);
     }
 
 }

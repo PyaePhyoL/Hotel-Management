@@ -13,7 +13,7 @@ public class GuestMapper {
         return Guest.builder()
                 .name(guestDto.getName())
                 .email(guestDto.getEmail())
-                .phoneList(guestDto.getPhoneList())
+                .phoneNumber(guestDto.getPhone())
                 .nrc(guestDto.getNrc())
                 .passport(guestDto.getPassport())
                 .occupation(guestDto.getOccupation())
@@ -32,7 +32,7 @@ public class GuestMapper {
                 .id(guest.getId())
                 .name(guest.getName())
                 .email(guest.getEmail())
-                .phoneList(guest.getPhoneList())
+                .phone(guest.getPhoneNumber())
                 .nrc(guest.getNrc())
                 .passport(guest.getPassport())
                 .occupation(guest.getOccupation())
@@ -49,7 +49,7 @@ public class GuestMapper {
     public static void updateGuest(Guest guest, GuestDto form) {
         guest.setName(form.getName());
         guest.setEmail(form.getEmail());
-        guest.setPhoneList(form.getPhoneList());
+        guest.setPhoneNumber(form.getPhone());
         guest.setNrc(form.getNrc());
         guest.setPassport(form.getPassport());
         guest.setOccupation(form.getOccupation());
