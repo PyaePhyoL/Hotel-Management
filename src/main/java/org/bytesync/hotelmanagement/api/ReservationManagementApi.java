@@ -33,9 +33,10 @@ public class ReservationManagementApi {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ResponseMessage<PageResult<ReservationInfo>>> getAllReservations(@RequestParam(required = false, defaultValue = "0") int page,
+    public ResponseEntity<ResponseMessage<PageResult<ReservationInfo>>> getReservationRecord(@RequestParam(required = false, defaultValue = "0") int page,
                                                                                            @RequestParam(required = false, defaultValue = "10") int size) {
-        var list = reservationService.getAll(page, size, List.of());
+        var statusList = List.of(Status.CANCELED, Status.FINISHED);
+        var list = reservationService.getAll(page, size, statusList);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
                 "",

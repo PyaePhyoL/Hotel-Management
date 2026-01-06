@@ -61,7 +61,7 @@ public class GuestRecordService implements IGuestRecordService {
         var spec = GuestRecordSpecification.currentOrAll(isCurrent);
         Page<GuestRecord> records = guestRecordRepository.findAll(spec, pageable);
         List<GuestRecordDto> dtos = records.stream().map(GuestRecordMapper::toDto).toList();
-        return new PageResult<>(dtos, records.getNumberOfElements(), page, size);
+        return new PageResult<>(dtos, records.getTotalElements(), page, size);
     }
 
     @Override
@@ -70,6 +70,6 @@ public class GuestRecordService implements IGuestRecordService {
         var spec = GuestRecordSpecification.search(query, isCurrent);
         Page<GuestRecord> records = guestRecordRepository.findAll(spec, pageable);
         List<GuestRecordDto> dtos = records.stream().map(GuestRecordMapper::toDto).toList();
-        return new PageResult<>(dtos, records.getNumberOfElements(), page, size);
+        return new PageResult<>(dtos, records.getTotalElements(), page, size);
     }
 }
