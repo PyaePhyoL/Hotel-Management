@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Slf4j
 @Service
@@ -59,7 +60,8 @@ public class ScheduleMethods {
 
 
     public static Status checkDateTimeAndGetStatus(LocalDateTime checkIn, LocalDateTime checkOut) {
-        var now = LocalDateTime.now();
+        ZoneId zoneId = ZoneId.of("Asia/Yangon");
+        var now = LocalDateTime.now(zoneId);
 
         if(now.isBefore(checkIn)) {
             return Status.BOOKING;

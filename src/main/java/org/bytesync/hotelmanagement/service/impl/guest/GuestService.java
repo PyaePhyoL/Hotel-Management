@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
@@ -41,11 +42,11 @@ public class GuestService implements IGuestService {
     }
 
     public void checkGuestExists(Guest guest) {
-        if(null != guest.getEmail() && guestRepository.existsByEmail(guest.getEmail()))
+        if(null != guest.getEmail() && !guest.getEmail().isBlank() && guestRepository.existsByEmail(guest.getEmail()))
             throw new UserAlreadyExistsException("Email already exists");
         if(guestRepository.existsByNrc(guest.getNrc()))
             throw new UserAlreadyExistsException("National Id already exists");
-        if(null != guest.getPassport() && guestRepository.existsByPassport(guest.getPassport()))
+        if(null != guest.getPassport() && !guest.getPassport().isBlank() && guestRepository.existsByPassport(guest.getPassport()))
             throw new UserAlreadyExistsException("Passport already exists");
     }
 
@@ -59,9 +60,9 @@ public class GuestService implements IGuestService {
     public PageResult<GuestDto> getAll(int page, int size) {
         long count = guestRepository.count();
         Pageable pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "id");
-        List<GuestDto> guestList = guestRepository.findAllGuestDto(pageable);
-
-        return new PageResult<>(guestList, count, page, size);
+        Page<Guest> guestPage = guestRepository.findAll(pageable);
+        List<GuestDto> guestList = guestPage.getContent().stream().map(GuestMapper::toDto).toList();
+        return new PageResult<>(guestList, guestPage.getTotalElements(), page, size);
     }
 
     @Override
