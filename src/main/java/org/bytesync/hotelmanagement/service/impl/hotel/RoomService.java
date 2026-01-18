@@ -11,7 +11,6 @@ import org.bytesync.hotelmanagement.dto.room.RoomSelectList;
 import org.bytesync.hotelmanagement.model.Room;
 import org.bytesync.hotelmanagement.enums.Floor;
 import org.bytesync.hotelmanagement.enums.RoomStatus;
-import org.bytesync.hotelmanagement.enums.RoomType;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.repository.specification.RoomSpecification;
 import org.bytesync.hotelmanagement.service.interfaces.hotel.IRoomService;
@@ -87,14 +86,13 @@ public class RoomService implements IRoomService {
 
     @Override
     public List<RoomSelectList> selectAvailableRoomList() {
-        var roomList = roomRepository.findAllRoomForSelectList();
+        var roomList = roomRepository.findAllAvailableRooms();
         return roomList.stream().map(RoomMapper::toRoomSelectList).toList();
     }
 
     @Override
     public List<RoomSelectList> selectAvailableDoubleRoomList() {
-        var roomList = roomRepository.findAllRoomForSelectList().stream()
-                .filter(room -> room.getRoomType().equals(RoomType.DOUBLE)).toList();
+        var roomList = roomRepository.findAllAvailableDoubleRooms();
         return roomList.stream().map(RoomMapper::toRoomSelectList).toList();
     }
 
@@ -109,8 +107,8 @@ public class RoomService implements IRoomService {
     @Override
     public String changeRoomPrice(Long id, Integer price) {
         var room = safeCall(roomRepository.findById(id), "Room", id);
-        room.setBasePrice(price);
-        roomRepository.save(room);
+//        room.setBasePrice(price);
+//        roomRepository.save(room);
         return "Room Price Changed.";
     }
 

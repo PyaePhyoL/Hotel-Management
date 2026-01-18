@@ -6,6 +6,7 @@ import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.dto.reservation.*;
+import org.bytesync.hotelmanagement.dto.room.RoomPricingRuleDto;
 import org.bytesync.hotelmanagement.enums.Status;
 import org.bytesync.hotelmanagement.service.interfaces.hotel.IReservationService;
 import org.springframework.http.HttpStatus;
@@ -177,6 +178,26 @@ public class ReservationManagementApi {
                 HttpStatus.OK.value(),
                 message,
                 null
+        ));
+    }
+
+    @GetMapping("/pricing-rules")
+    public ResponseEntity<ResponseMessage<List<RoomPricingRuleDto>>> getPricingRuleList() {
+        var pricingRules = reservationService.getPricingRuleList();
+        return ResponseEntity.ok(new ResponseMessage<>(
+                HttpStatus.OK.value(),
+                "",
+                pricingRules
+        ));
+    }
+
+    @PutMapping("/update-pricing-rules")
+    public ResponseEntity<ResponseMessage<List<RoomPricingRuleDto>>> updatePricingRulesDetails(@RequestBody List<RoomPricingRuleDto> ruleDtoList) {
+        var pricingRuleDtos = reservationService.updatePricingRulesDetails(ruleDtoList);
+        return ResponseEntity.ok(new ResponseMessage<>(
+                HttpStatus.OK.value(),
+                "Pricing Rules updated",
+                pricingRuleDtos
         ));
     }
 

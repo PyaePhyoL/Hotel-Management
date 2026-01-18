@@ -16,8 +16,8 @@ public class RoomMapper {
         if (room == null) return null;
         return RoomDto.builder()
                 .no(room.getRoomNo())
-                .basePrice(room.getBasePrice())
-                .capacity(room.getCapacity())
+                .basePrice(room.getRoomType().getPrice())
+                .capacity(room.getRoomType().getCapacity())
                 .floor(room.getFloor())
                 .currentStatus(room.getCurrentStatus())
                 .build();
@@ -26,10 +26,10 @@ public class RoomMapper {
     public static RoomOverviewDetails toRoomOverDetails(Room room) {
         return RoomOverviewDetails.builder()
                 .no(room.getRoomNo())
-                .roomType(room.getRoomType())
-                .basePrice(room.getBasePrice())
+                .roomType(room.getRoomType().getDescription())
+                .basePrice(room.getRoomType().getPrice())
                 .notes(room.getNotes())
-                .capacity(room.getCapacity())
+                .capacity(room.getRoomType().getCapacity())
                 .floor(room.getFloor())
                 .currentStatus(room.getCurrentStatus())
                 .currentReservationId(room.getCurrentReservationId())
@@ -37,11 +37,11 @@ public class RoomMapper {
     }
 
     public static RoomSelectList toRoomSelectList(Room room) {
-        var name = "%d (%s) - %d MMK".formatted(room.getRoomNo(), room.getFloor().getValue(), room.getBasePrice());
+        var name = "%d (%s) - %d MMK".formatted(room.getRoomNo(), room.getFloor().getValue(), room.getRoomType().getPrice());
         return new RoomSelectList(
                 room.getRoomNo(),
                 name,
-                room.getBasePrice()
+                room.getRoomType().getPrice()
         );
     }
 

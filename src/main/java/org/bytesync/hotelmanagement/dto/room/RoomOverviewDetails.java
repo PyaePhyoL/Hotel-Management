@@ -5,13 +5,12 @@ import lombok.Data;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo;
 import org.bytesync.hotelmanagement.enums.Floor;
 import org.bytesync.hotelmanagement.enums.RoomStatus;
-import org.bytesync.hotelmanagement.enums.RoomType;
 
 @Data
 @Builder
 public class RoomOverviewDetails {
     private Long no;
-    private RoomType roomType;
+    private String roomType;
     private Integer basePrice;
     private Integer capacity;
     private Floor floor;

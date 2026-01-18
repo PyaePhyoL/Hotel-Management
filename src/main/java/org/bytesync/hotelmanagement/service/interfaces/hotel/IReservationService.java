@@ -3,7 +3,7 @@ package org.bytesync.hotelmanagement.service.interfaces.hotel;
 import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.reservation.*;
-import org.bytesync.hotelmanagement.model.Reservation;
+import org.bytesync.hotelmanagement.dto.room.RoomPricingRuleDto;
 import org.bytesync.hotelmanagement.enums.Status;
 
 import java.time.LocalDateTime;
@@ -42,4 +42,8 @@ public interface IReservationService {
     String updateGuestNumber(Long id, Integer guests);
 
     String updateDeposit(Long id, Integer deposit);
+
+    List<RoomPricingRuleDto> getPricingRuleList();
+
+    List<RoomPricingRuleDto> updatePricingRulesDetails(List<RoomPricingRuleDto> ruleDtoList);
 }

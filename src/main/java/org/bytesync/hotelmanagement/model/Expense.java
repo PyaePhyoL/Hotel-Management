@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Entity
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Table(name = "expenses")
 public class Expense {
 
     @Id

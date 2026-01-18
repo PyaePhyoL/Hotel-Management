@@ -14,8 +14,8 @@ public interface RoomRepository extends JpaRepository<Room,Long>, JpaSpecificati
     @Query("""
     select new org.bytesync.hotelmanagement.dto.room.RoomDto(
     r.roomNo,
-    r.basePrice,
-    r.capacity,
+    r.roomType.price,
+    r.roomType.capacity,
     r.floor,
     r.currentStatus
     )
@@ -28,5 +28,12 @@ public interface RoomRepository extends JpaRepository<Room,Long>, JpaSpecificati
     select r from Room r
     where r.currentStatus = 'AVAILABLE'
 """)
-    List<Room> findAllRoomForSelectList();
+    List<Room> findAllAvailableRooms();
+
+    @Query("""
+    select r from Room r
+    where r.currentStatus = 'AVAILABLE'
+    and r.roomType.id in ('DR1', 'DR2')
+""")
+    List<Room> findAllAvailableDoubleRooms();
 }

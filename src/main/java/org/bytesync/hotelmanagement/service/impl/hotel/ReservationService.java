@@ -6,6 +6,7 @@ import org.bytesync.hotelmanagement.dto.finance.VoucherCreatForm;
 import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.reservation.*;
+import org.bytesync.hotelmanagement.dto.room.RoomPricingRuleDto;
 import org.bytesync.hotelmanagement.enums.*;
 import org.bytesync.hotelmanagement.model.*;
 import org.bytesync.hotelmanagement.repository.*;
@@ -14,10 +15,7 @@ import org.bytesync.hotelmanagement.service.impl.finance.VoucherService;
 import org.bytesync.hotelmanagement.service.impl.guest.GuestRecordService;
 import org.bytesync.hotelmanagement.service.impl.guest.GuestService;
 import org.bytesync.hotelmanagement.service.interfaces.hotel.IReservationService;
-import org.bytesync.hotelmanagement.util.mapper.GuestMapper;
-import org.bytesync.hotelmanagement.util.mapper.ContactMapper;
-import org.bytesync.hotelmanagement.util.mapper.ReservationMapper;
-import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
+import org.bytesync.hotelmanagement.util.mapper.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.bytesync.hotelmanagement.enums.GuestStatus.BLACKLIST;
 import static org.bytesync.hotelmanagement.enums.VoucherType.EXTEND;
@@ -47,6 +46,8 @@ public class ReservationService implements IReservationService {
     private final VoucherService voucherService;
     private final GuestRecordRepository guestRecordRepository;
     private final GuestService guestService;
+    private final RoomPricingRuleRepository roomPricingRuleRepository;
+    private final PricingRuleMapper pricingRuleMapper;
 
     @Override
     public ReservationGuestInfo getReservationGuestInfoById(Long id ){
@@ -405,5 +406,36 @@ public class ReservationService implements IReservationService {
         reservation.setDeposit(deposit);
         reservationRepository.save(reservation);
         return "Deposit amount updated successfully";
+    }
+
+    @Override
+    public List<RoomPricingRuleDto> getPricingRuleList() {
+        return roomPricingRuleRepository.findAllRoomPricingRuleDtos();
+    }
+
+    @Override
+    public List<RoomPricingRuleDto> updatePricingRulesDetails(List<RoomPricingRuleDto> ruleDtoList) {
+
+        List<Integer> updatedIds = ruleDtoList.stream()
+                .map(RoomPricingRuleDto::getId)
+                .filter(Objects::nonNull)
+                .toList();
+
+        List<RoomPricingRule> deleteRules = roomPricingRuleRepository.findAll()
+                        .stream()
+                        .filter(rule -> !updatedIds.contains(rule.getId()))
+                        .toList();
+
+        ruleDtoList.forEach(ruleDto -> {
+            if(ruleDto.getId() != null) {
+                pricingRuleMapper.updateRoomPricingRule(ruleDto);
+            } else {
+                pricingRuleMapper.createRoomPricingRule(ruleDto);
+            }
+        });
+
+        roomPricingRuleRepository.deleteAll(deleteRules);
+
+        return roomPricingRuleRepository.findAllRoomPricingRuleDtos();
     }
 }
