@@ -43,8 +43,5 @@ public interface IReservationService {
 
     String updateDeposit(Long id, Integer deposit);
 
-    List<RoomPricingRuleDto> getPricingRuleList();
-
-    List<RoomPricingRuleDto> updatePricingRulesDetails(List<RoomPricingRuleDto> ruleDtoList);
-
+    String updateReservation(Long id, ReservationForm form);
 }

@@ -72,22 +72,32 @@ INSERT INTO room_pricing_rules (room_type_id, stay_type, no_of_guests, hours, pr
 VALUES
     ('SR1', 'NORMAL', 1, null, 30000),
     ('SR1', 'NORMAL', 2, null, 40000),
-
     ('SR2', 'NORMAL', 1, null, 25000),
     ('SR2', 'NORMAL', 1, null, 35000),
-
     ('DR1', 'NORMAL', 1, null, 35000),
     ('DR1', 'NORMAL', 2, null, 40000),
     ('DR1', 'NORMAL', 3, null, 55000),
-
     ('DR2', 'NORMAL', 1, null, 30000),
     ('DR2', 'NORMAL', 2, null, 35000),
     ('DR2', 'NORMAL', 3, null, 50000),
-
     ('FR1', 'NORMAL', 2, null, 48000),
     ('FR1', 'NORMAL', 3, null, 60000),
     ('FR1', 'NORMAL', 4, null, 70000),
 
-    ('DR1', 'SECTION', 3, null, 30000),
-    ('DR2', 'SECTION', 3, null, 25000)
+    ('SR1', 'LONG', 1, null, 30000),
+    ('SR1', 'LONG', 2, null, 40000),
+    ('SR2', 'LONG', 1, null, 25000),
+    ('SR2', 'LONG', 1, null, 35000),
+    ('DR1', 'LONG', 1, null, 35000),
+    ('DR1', 'LONG', 2, null, 40000),
+    ('DR1', 'LONG', 3, null, 55000),
+    ('DR2', 'LONG', 1, null, 30000),
+    ('DR2', 'LONG', 2, null, 35000),
+    ('DR2', 'LONG', 3, null, 50000),
+    ('FR1', 'LONG', 2, null, 48000),
+    ('FR1', 'LONG', 3, null, 60000),
+    ('FR1', 'LONG', 4, null, 70000),
+
+    ('DR1', 'SECTION', null, 3, 30000),
+    ('DR2', 'SECTION', null, 3, 25000)
 ;

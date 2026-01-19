@@ -26,6 +26,7 @@ public class ReservationForm {
     private Long roomId;
     @NotNull(message = "Price cannot be blank")
     private Integer price;
+    private Integer extraPrice;
     private Integer discount;
     private Integer deposit;
     private String note;

@@ -181,24 +181,4 @@ public class ReservationManagementApi {
         ));
     }
 
-    @GetMapping("/pricing-rules")
-    public ResponseEntity<ResponseMessage<List<RoomPricingRuleDto>>> getPricingRuleList() {
-        var pricingRules = reservationService.getPricingRuleList();
-        return ResponseEntity.ok(new ResponseMessage<>(
-                HttpStatus.OK.value(),
-                "",
-                pricingRules
-        ));
-    }
-
-    @PutMapping("/update-pricing-rules")
-    public ResponseEntity<ResponseMessage<List<RoomPricingRuleDto>>> updatePricingRulesDetails(@RequestBody List<RoomPricingRuleDto> ruleDtoList) {
-        var pricingRuleDtos = reservationService.updatePricingRulesDetails(ruleDtoList);
-        return ResponseEntity.ok(new ResponseMessage<>(
-                HttpStatus.OK.value(),
-                "Pricing Rules updated",
-                pricingRuleDtos
-        ));
-    }
-
 }
