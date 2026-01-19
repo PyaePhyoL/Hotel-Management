@@ -43,7 +43,6 @@ public class ReservationService implements IReservationService {
     private final VoucherService voucherService;
     private final GuestRecordRepository guestRecordRepository;
     private final GuestService guestService;
-    private final RoomPricingRuleRepository roomPricingRuleRepository;
 
     @Override
     public ReservationGuestInfo getReservationGuestInfoById(Long id ){
@@ -404,5 +403,20 @@ public class ReservationService implements IReservationService {
         return "Deposit amount updated successfully";
     }
 
+    @Override
+    public String updateReservation(Long id, ReservationForm form) {
+        var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
+        var guest = safeCall(guestRepository.findByNameAndNrc(form.getGuestName(), form.getGuestNrc()), "Guest", form.getGuestNrc());
+
+        if(!guest.getPhoneNumber().equals(form.getPhone())) {
+            guest.setPhoneNumber(form.getPhone());
+        }
+
+        reservation.setNoOfGuests(form.getNoOfGuests());
+        reservation.setCheckInDateTime(form.getCheckInDateTime());
+        reservation.setCheckOutDateTime(form.getCheckOutDateTime());
+
+        return "";
+    }
 
 }

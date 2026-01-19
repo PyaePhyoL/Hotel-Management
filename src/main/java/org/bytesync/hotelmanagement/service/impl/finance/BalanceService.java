@@ -108,7 +108,7 @@ public class BalanceService implements IBalanceService {
     }
 
     private List<PaymentDto> getAllPaymentsByMonthOfYear(int year, int month) {
-        var payments = paymentRepository.findAllInMonthOfYear(year, month);
+        var payments = paymentRepository.findAllRoomRentPaymentsInMonthOfYear(year, month);
         return payments.stream().map(FinanceMapper::toPaymentDto).toList();
     }
 

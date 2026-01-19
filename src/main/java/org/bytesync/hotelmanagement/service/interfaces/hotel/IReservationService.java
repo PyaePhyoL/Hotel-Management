@@ -43,5 +43,5 @@ public interface IReservationService {
 
     String updateDeposit(Long id, Integer deposit);
 
-
+    String updateReservation(Long id, ReservationForm form);
 }

@@ -1,6 +1,7 @@
 package org.bytesync.hotelmanagement.service.interfaces.guest;
 
 import org.bytesync.hotelmanagement.dto.guest.GuestDto;
+import org.bytesync.hotelmanagement.dto.guest.GuestStatusDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.enums.GuestStatus;
 
@@ -25,4 +26,6 @@ public interface IGuestService {
     String updatePhotoUrl(Long id, String photo);
 
     String updateNrcUrl(Long id, String nrc);
+
+    GuestStatusDto checkGuestStatusByNameAndNrc(String name, String nrc);
 }

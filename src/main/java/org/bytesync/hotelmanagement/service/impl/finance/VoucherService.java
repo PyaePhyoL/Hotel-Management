@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.VoucherCreatForm;
 import org.bytesync.hotelmanagement.dto.finance.VoucherDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
+import org.bytesync.hotelmanagement.enums.PaymentType;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Voucher;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.bytesync.hotelmanagement.enums.PaymentMethod.DEPOSIT;
+import static org.bytesync.hotelmanagement.enums.PaymentType.ROOM_RENT_PAYMENT;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Service
@@ -139,6 +141,7 @@ public class VoucherService implements IVoucherService {
                 .paymentDate(LocalDate.now())
                 .amount(reservation.getPrice())
                 .paymentMethod(DEPOSIT)
+                .paymentType(ROOM_RENT_PAYMENT)
                 .notes("Automatic paid from deposit")
                 .vouchers(new ArrayList<>())
                 .build();

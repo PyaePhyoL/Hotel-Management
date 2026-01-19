@@ -3,6 +3,7 @@ package org.bytesync.hotelmanagement.service.impl.guest;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.guest.GuestDto;
+import org.bytesync.hotelmanagement.dto.guest.GuestStatusDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.exception.UserAlreadyExistsException;
 import org.bytesync.hotelmanagement.model.Guest;
@@ -134,6 +135,12 @@ public class GuestService implements IGuestService {
         guest.setNrcUrl(nrc);
         guestRepository.save(guest);
         return "Guest's NRC has been updated";
+    }
+
+    @Override
+    public GuestStatusDto checkGuestStatusByNameAndNrc(String name, String nrc) {
+        var guest = safeCall(guestRepository.findByNameAndNrc(name, nrc), "Guest", nrc);
+        return new GuestStatusDto(guest.getStatus());
     }
 }
 

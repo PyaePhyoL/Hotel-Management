@@ -26,6 +26,7 @@ public class FinanceMapper {
                 .amount(amount)
                 .paymentMethod(paymentCreateForm.getPaymentMethod())
                 .notes(paymentCreateForm.getNotes())
+                .paymentType(paymentCreateForm.getPaymentType())
                 .vouchers(new ArrayList<>())
                 .build();
     }
@@ -37,6 +38,7 @@ public class FinanceMapper {
                 .paymentDate(payment.getPaymentDate())
                 .amount(payment.getAmount())
                 .paymentMethod(payment.getPaymentMethod())
+                .paymentType(payment.getPaymentType())
                 .notes(payment.getNotes())
                 .reservationId(reservation.getId())
                 .guestName(reservation.getGuest().getName())
@@ -52,6 +54,7 @@ public class FinanceMapper {
                 .paymentDate(payment.getPaymentDate())
                 .amount(payment.getAmount())
                 .paymentMethod(payment.getPaymentMethod())
+                .paymentType(payment.getPaymentType())
                 .notes(payment.getNotes())
                 .reservationId(reservation.getId())
                 .guestName(reservation.getGuest().getName())

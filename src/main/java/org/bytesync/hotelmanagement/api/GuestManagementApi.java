@@ -3,10 +3,11 @@ package org.bytesync.hotelmanagement.api;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.guest.GuestDto;
+import org.bytesync.hotelmanagement.dto.guest.GuestStatusDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.enums.GuestStatus;
-import org.bytesync.hotelmanagement.service.impl.guest.GuestService;
+import org.bytesync.hotelmanagement.service.interfaces.guest.IGuestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/guests/api")
 public class GuestManagementApi {
 
-    private final GuestService guestService;
+    private final IGuestService guestService;
 
     @PostMapping("/register")
     public ResponseEntity<ResponseMessage<Void>> register(@Valid @RequestBody GuestDto form) {
@@ -81,5 +82,11 @@ public class GuestManagementApi {
     public ResponseEntity<ResponseMessage<String>> updateNrcUrl(@PathVariable Long id, @RequestParam String nrc) {
         var message = guestService.updateNrcUrl(id, nrc);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), message, null));
+    }
+
+    @GetMapping("/check-guest-status")
+    public ResponseEntity<ResponseMessage<GuestStatusDto>> checkGuestStatus(@RequestParam String name, @RequestParam String nrc) {
+        var statusDto = guestService.checkGuestStatusByNameAndNrc(name, nrc);
+        return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", statusDto));
     }
 }
