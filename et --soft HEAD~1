@@ -1,0 +1,94 @@
+[33m5ee2e42[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m CRUD finished for Room pricing rules
+[33m172f452[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Update pricing rules
+[33md74a8b3[m[33m ([m[1;32mdev[m[33m)[m Finished create, update, delete and get list for room pricing rules
+[33m36616ff[m Change guest phone list to phone
+[33m17114ee[m Added phone list in guests
+[33m6fd1370[m Change reservation record api
+[33m327f65f[m Added Id and username in JWT token
+[33m40f61c8[m Add login success message
+[33m32874b8[m Added Reservation deposit update api
+[33m1501638[m Update reservation details
+[33m6737f43[m Update reservation contacts
+[33ma0939b5[m Finished payment details api
+[33maa8fdc1[m Update contacts in reservation
+[33mb1f114c[m Update
+[33m9cbdf29[m Added id in staff register response message
+[33m853e573[m add allow origin to s3 controller
+[33mde8fc7e[m Photo update url finished
+[33m4cda850[m Put presigned url finished
+[33mc131279[m Voucher details
+[33m1bbcf86[m Finished change password
+[33m4e10236[m Added refund to balance sheet
+[33mf1d5d84[m update db password
+[33m70ff954[m Update
+[33mb283664[m Reservation records search finished
+[33m9d67782[m Finished guest records
+[33m7395cb1[m Finished api for voucher create
+[33m06d331d[m Route security update
+[33m97a21dd[m Finished guest record search api
+[33me4e3999[m Testing method security
+[33m478466b[m Reservation search api
+[33m147fa14[m Fix change room api
+[33m687adcd[m Update
+[33mb27f099[m Added interfaces in service
+[33m98d7d30[m Update
+[33m07f6011[m Take extra hour api finished
+[33ma074135[m Change all id to long
+[33me7b08c1[m update
+[33m6340923[m Separate Finance Service and Apis
+[33mbf891b0[m Make room in-service when checkout
+[33mffca2be[m Update reservation details
+[33mbd7f64b[m Update reservaion api
+[33me31e0f2[m Guest status change api finished
+[33m4ec5779[m Fixed small issues on Guest update api
+[33m76d2193[m Fixed staff note,father name and phone number not updated
+[33m7cbd28d[m Finished reservation update api
+[33m07b4bc4[m Refund List API
+[33m0d91b4d[m Create Refund API
+[33m8615561[m Expense Details api
+[33maf77e16[m Finished expense update and delete api
+[33mbca7eab[m Fixed the reservation status and room status doesn't match
+[33m0a2d78d[m Added in service to Rooms Dashborad view
+[33m9284aef[m Added room change price api
+[33m5fa6995[m Reservation all & current list api
+[33m2eff49f[m update application yml
+[33mfd0f167[m Add relations in Reservation details
+[33m31470be[m Update database connection details in application.yml
+[33m2a72f08[m Finished monthly balance sheet
+[33mdf2382c[m Added payment list api
+[33m5c77720[m Update Reservation: remove isActive and add status as enum
+[33m6791824[m Added relations to guest while register reservation
+[33mb6614d4[m Update
+[33m6156aa9[m Update
+[33m33c68ef[m Update
+[33ma5ee1b8[m Create payments for daily vouchers when payment is enough
+[33mc2ae15e[m Update Rooms and Staffs model
+[33mf13793b[m Added reservation's  voucher list api
+[33md57d296[m Added Guest Record API
+[33ma720838[m Staff search
+[33m5b3dfab[m Creating Daily Vouchers
+[33m7c3c7f0[m Adding creat method for daily vouchers
+[33m3164ce2[m Room Select List only show available rooms
+[33m8d13378[m Added Room select list Api
+[33m429df0b[m Added exception handling if room is not available
+[33m95d6531[m Reservation List API finished
+[33m48ed520[m Resolve null pointer on guest's passport
+[33m84756d1[m Reservation create finished
+[33m72e53ef[m Doing reservation register
+[33m3b9f5f1[m Room Overview Details Api finished
+[33m0335fff[m Rooms in Grid view api finished
+[33mf9e0eb5[m Added cross origin in Guest and room apis
+[33m5a9fa54[m Guest CRUD finished
+[33mffb57cd[m Guest register & get detail api finished
+[33m246d63e[m Added user details api
+[33me210ad6[m Added @CrossOrigin('*') in AccountsManagementApi
+[33m7ea55bb[m User CRUD finished
+[33ma48757e[m Added localhost:5173 in cors config
+[33mdc4744f[m Extend access token expiration
+[33md243ee9[m Create admin user
+[33mbcfb347[m[33m ([m[1;31morigin/dev[m[33m)[m login & register
+[33m80d2afc[m Added security
+[33m4f721c0[m update data
+[33mbd06a6a[m Merge branch 'main' of https://github.com/PyaePhyoL/Hotel-Management
+[33m981ea42[m Backend created
+[33m14895b7[m Initial commit

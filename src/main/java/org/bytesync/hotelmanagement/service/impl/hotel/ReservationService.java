@@ -6,7 +6,6 @@ import org.bytesync.hotelmanagement.dto.finance.VoucherCreatForm;
 import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.reservation.*;
-import org.bytesync.hotelmanagement.dto.room.RoomPricingRuleDto;
 import org.bytesync.hotelmanagement.enums.*;
 import org.bytesync.hotelmanagement.model.*;
 import org.bytesync.hotelmanagement.repository.*;
@@ -25,9 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static org.bytesync.hotelmanagement.enums.GuestStatus.BLACKLIST;
 import static org.bytesync.hotelmanagement.enums.VoucherType.EXTEND;
@@ -47,7 +44,6 @@ public class ReservationService implements IReservationService {
     private final GuestRecordRepository guestRecordRepository;
     private final GuestService guestService;
     private final RoomPricingRuleRepository roomPricingRuleRepository;
-    private final PricingRuleMapper pricingRuleMapper;
 
     @Override
     public ReservationGuestInfo getReservationGuestInfoById(Long id ){

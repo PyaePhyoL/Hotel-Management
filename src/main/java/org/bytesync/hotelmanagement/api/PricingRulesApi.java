@@ -28,13 +28,33 @@ public class PricingRulesApi {
         ));
     }
 
-    @PutMapping("/update-rules")
-    public ResponseEntity<ResponseMessage<List<RoomPricingRuleDto>>> updatePricingRulesDetails(@RequestBody List<RoomPricingRuleDto> ruleDtoList) {
-        var pricingRuleDtos = pricingService.updatePricingRulesDetails(ruleDtoList);
+    @PostMapping("/add-rule")
+    public ResponseEntity<ResponseMessage<Void>> createNewPricingRule(@RequestBody RoomPricingRuleDto ruleDto) {
+        var message = pricingService.createPricingRule(ruleDto);
+        return ResponseEntity.ok(new ResponseMessage<>(
+                HttpStatus.CREATED.value(),
+                message,
+                null
+        ));
+    }
+
+    @PutMapping("/update-rule/{id}")
+    public ResponseEntity<ResponseMessage<Void>> updatePricingRulesDetails(@PathVariable Integer id, @RequestBody RoomPricingRuleDto ruleDto) {
+        var message = pricingService.updatePricingRuleById(id, ruleDto);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
-                "Pricing Rules updated",
-                pricingRuleDtos
+                message,
+                null
+        ));
+    }
+
+    @DeleteMapping("/delete-rule/{id}")
+    public ResponseEntity<ResponseMessage<Void>> deletePricingRule(@PathVariable Integer id) {
+        var message = pricingService.deleteById(id);
+        return ResponseEntity.ok(new ResponseMessage<>(
+                HttpStatus.OK.value(),
+                message,
+                null
         ));
     }
 

@@ -9,7 +9,11 @@ public interface IPricingService {
 
     List<RoomPricingRuleDto> getPricingRuleList();
 
-    List<RoomPricingRuleDto> updatePricingRulesDetails(List<RoomPricingRuleDto> ruleDtoList);
+    String updatePricingRuleById(Integer id, RoomPricingRuleDto ruleDto);
 
     Integer getPricing(String roomType, StayType stayType, Integer guests, Integer hours);
+
+    String createPricingRule(RoomPricingRuleDto ruleDto);
+
+    String deleteById(Integer id);
 }
