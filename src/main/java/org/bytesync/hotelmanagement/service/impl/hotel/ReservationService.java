@@ -408,34 +408,5 @@ public class ReservationService implements IReservationService {
         return "Deposit amount updated successfully";
     }
 
-    @Override
-    public List<RoomPricingRuleDto> getPricingRuleList() {
-        return roomPricingRuleRepository.findAllRoomPricingRuleDtos();
-    }
 
-    @Override
-    public List<RoomPricingRuleDto> updatePricingRulesDetails(List<RoomPricingRuleDto> ruleDtoList) {
-
-        List<Integer> updatedIds = ruleDtoList.stream()
-                .map(RoomPricingRuleDto::getId)
-                .filter(Objects::nonNull)
-                .toList();
-
-        List<RoomPricingRule> deleteRules = roomPricingRuleRepository.findAll()
-                        .stream()
-                        .filter(rule -> !updatedIds.contains(rule.getId()))
-                        .toList();
-
-        ruleDtoList.forEach(ruleDto -> {
-            if(ruleDto.getId() != null) {
-                pricingRuleMapper.updateRoomPricingRule(ruleDto);
-            } else {
-                pricingRuleMapper.createRoomPricingRule(ruleDto);
-            }
-        });
-
-        roomPricingRuleRepository.deleteAll(deleteRules);
-
-        return roomPricingRuleRepository.findAllRoomPricingRuleDtos();
-    }
 }
