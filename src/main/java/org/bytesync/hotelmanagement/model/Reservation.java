@@ -75,10 +75,6 @@ public class Reservation extends Auditable{
         contact.setReservation(this);
     }
 
-    public void increasePrice(int price) {
-        this.price += price;
-    }
-
     public void setNewCheckOutDateTime(LocalDateTime newCheckOutDateTime) {
         this.daysOfStay = getDaysBetween(this.checkInDateTime.toLocalDate(),
                 newCheckOutDateTime.toLocalDate());

@@ -35,19 +35,22 @@ public class VoucherService implements IVoucherService {
     @Override
     public void createVoucherFromReservation(Reservation reservation) {
 
-        var baseVoucher = createBasicVoucherFromReservation(reservation);
+        var voucher = switch (reservation.getStayType()) {
+            case SECTION -> createVoucherForSectionStay(reservation);
+            case NORMAL -> createVoucherForNormalStay(reservation);
+            case LONG -> createVoucherForLongStay(reservation);
+        };
 
-        changeForDailyVoucher(baseVoucher);
+        reservation.addVoucher(voucher);
 
-        reservation.addVoucher(baseVoucher);
-
-        voucherRepository.save(baseVoucher);
+        voucherRepository.save(voucher);
     }
+
 
     @Override
     public void createAdditionalVoucher(VoucherCreatForm form) {
         var reservation = safeCall(reservationRepository.findById(form.reservationId()), "Reservation", form.reservationId());
-        var extendVoucher = createBasicVoucherFromReservation(reservation);
+        var extendVoucher = createVoucherForNormalStay(reservation);
         extendVoucher.setPrice(form.price());
         extendVoucher.setType(form.type());
         extendVoucher.setNotes(form.notes());
@@ -99,8 +102,29 @@ public class VoucherService implements IVoucherService {
         return FinanceMapper.toVoucherDto(voucher);
     }
 
-    private Voucher createBasicVoucherFromReservation(Reservation reservation) {
+    private Voucher createVoucherForSectionStay(Reservation reservation) {
+        var voucher = getVoucherFromReservation(reservation);
+        var price = voucher.getPrice() - reservation.getDiscount();
+        voucher.setPrice(price);
+        return voucher;
+    }
+
+    private Voucher createVoucherForNormalStay(Reservation reservation) {
+        var voucher = getVoucherFromReservation(reservation);
+        var price = (reservation.getPrice() * reservation.getDaysOfStay()) - reservation.getDiscount();
+        voucher.setPrice(price);
+        return voucher;
+    }
+
+    private Voucher createVoucherForLongStay(Reservation reservation) {
+        var voucher = getVoucherFromReservation(reservation);
+        processDailyPayment(voucher);
+        return voucher;
+    }
+
+    private Voucher getVoucherFromReservation(Reservation reservation) {
         var voucherType = VoucherType.getVoucherTypeFromStayType(reservation.getStayType());
+
         return Voucher.builder()
                 .reservation(reservation)
                 .date(LocalDate.now())
@@ -112,25 +136,18 @@ public class VoucherService implements IVoucherService {
                 .build();
     }
 
-    private void changeForDailyVoucher(Voucher baseVoucher) {
-        if(baseVoucher.getType() != VoucherType.DAILY) return;
-        boolean isPaid = processDailyPayment(baseVoucher);
-        baseVoucher.setIsPaid(isPaid);
-    }
 
-
-    private boolean processDailyPayment(Voucher dailyVoucher) {
+    private void processDailyPayment(Voucher dailyVoucher) {
         var reservation = dailyVoucher.getReservation();
         var deposit = reservation.getDeposit();
         var pricePerNight = reservation.getPrice();
-        var paid = false;
+
         if(deposit >= pricePerNight) {
             deposit = deposit - pricePerNight;
-            paid = true;
+            dailyVoucher.setIsPaid(true);
             reservation.setDeposit(deposit);
             createPaymentToDailyVoucher(dailyVoucher);
         }
-        return paid;
     }
 
     private void createPaymentToDailyVoucher(Voucher dailyVoucher) {
@@ -145,6 +162,5 @@ public class VoucherService implements IVoucherService {
         payment.setReservation(reservation);
         payment.addDailyVoucher(dailyVoucher);
     }
-
 
 }

@@ -347,7 +347,6 @@ public class ReservationService implements IReservationService {
         var price = extraHoursDto.price() * extraHoursDto.hour();
 
         reservation.setNewCheckOutDateTime(newCheckoutTime);
-        reservation.increasePrice(price);
 
         if(reservation.getStayType() != StayType.SECTION) {
             throw new IllegalArgumentException("This is not a section type");

@@ -46,4 +46,5 @@ public interface IReservationService {
     List<RoomPricingRuleDto> getPricingRuleList();
 
     List<RoomPricingRuleDto> updatePricingRulesDetails(List<RoomPricingRuleDto> ruleDtoList);
+
 }
