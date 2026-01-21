@@ -41,6 +41,7 @@ public class RoomMapper {
         return new RoomSelectList(
                 room.getRoomNo(),
                 name,
+                room.getRoomType().getId(),
                 room.getRoomType().getPrice()
         );
     }

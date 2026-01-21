@@ -3,8 +3,10 @@ package org.bytesync.hotelmanagement.service.impl.finance;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.*;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
+import org.bytesync.hotelmanagement.enums.IncomeType;
 import org.bytesync.hotelmanagement.enums.PaymentMethod;
 import org.bytesync.hotelmanagement.model.Payment;
+import org.bytesync.hotelmanagement.model.Voucher;
 import org.bytesync.hotelmanagement.repository.*;
 import org.bytesync.hotelmanagement.repository.specification.PaymentSpecification;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IPaymentService;
@@ -37,6 +39,8 @@ public class PaymentService implements IPaymentService {
 
         var vouchers = voucherService.getVouchers(paymentCreateForm.getVoucherIds());
 
+        throwExceptionIfVoucherListContainDifferentTypes(vouchers);
+
         var payment = FinanceMapper.toPayment(paymentCreateForm);
 
         payment.setReservation(reservation);
@@ -46,6 +50,14 @@ public class PaymentService implements IPaymentService {
         });
         var id = paymentRepository.save(payment).getId();
         return "Payment created successfully : " + id;
+    }
+
+    private void throwExceptionIfVoucherListContainDifferentTypes(List<Voucher> voucherList) {
+        IncomeType firstType = voucherList.getFirst().getType();
+
+        voucherList.forEach(v -> {
+            if (v.getType() == firstType) throw new IllegalArgumentException("Contain different types. Please split the vouchers");
+        });
     }
 
     @Override
