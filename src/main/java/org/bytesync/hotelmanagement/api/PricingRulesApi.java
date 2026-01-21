@@ -1,6 +1,7 @@
 package org.bytesync.hotelmanagement.api;
 
 import lombok.RequiredArgsConstructor;
+import org.bytesync.hotelmanagement.dto.finance.PricingAmountDto;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.dto.room.RoomPricingRuleDto;
 import org.bytesync.hotelmanagement.enums.StayType;
@@ -69,7 +70,7 @@ public class PricingRulesApi {
     }
 
     @GetMapping("/get-amount")
-    public ResponseEntity<ResponseMessage<Integer>> getPricing(
+    public ResponseEntity<ResponseMessage<PricingAmountDto>> getPricing(
             @RequestParam String roomType,
             @RequestParam StayType stayType,
             @RequestParam Integer guests,

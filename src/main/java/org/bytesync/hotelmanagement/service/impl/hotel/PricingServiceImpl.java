@@ -1,6 +1,7 @@
 package org.bytesync.hotelmanagement.service.impl.hotel;
 
 import lombok.RequiredArgsConstructor;
+import org.bytesync.hotelmanagement.dto.finance.PricingAmountDto;
 import org.bytesync.hotelmanagement.dto.room.RoomPricingRuleDto;
 import org.bytesync.hotelmanagement.enums.StayType;
 import org.bytesync.hotelmanagement.repository.RoomPricingRuleRepository;
@@ -37,25 +38,29 @@ public class PricingServiceImpl implements IPricingService {
     }
 
     @Override
-    public Integer getPricing(String roomType,
-                              StayType stayType,
-                              Integer guests,
-                              Integer hours) {
+    public PricingAmountDto getPricing(String roomType,
+                                       StayType stayType,
+                                       Integer guests,
+                                       Integer hours) {
+
+        int amount = 0;
 
          switch (stayType) {
             case NORMAL -> {
-                return roomPricingRuleRepository.findPriceForNormalStayRoom(roomType, guests).orElse(0);
+                amount = roomPricingRuleRepository.findPriceForNormalStayRoom(roomType, guests).orElse(0);
             }
             case SECTION -> {
-                return roomPricingRuleRepository.findPricingForSectionStayRoom(roomType, hours).orElse(0);
+                amount = roomPricingRuleRepository.findPricingForSectionStayRoom(roomType, hours).orElse(0);
             }
              case LONG -> {
-                return roomPricingRuleRepository.findPricingForLongStayRoom(roomType, guests).orElse(0);
+                amount = roomPricingRuleRepository.findPricingForLongStayRoom(roomType, guests).orElse(0);
              }
              case null, default -> {
-                return 0;
+                amount = 0;
              }
         }
+
+        return new PricingAmountDto(amount);
 
     }
 

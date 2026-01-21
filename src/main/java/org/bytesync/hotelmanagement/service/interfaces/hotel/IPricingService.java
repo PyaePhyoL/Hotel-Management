@@ -1,5 +1,6 @@
 package org.bytesync.hotelmanagement.service.interfaces.hotel;
 
+import org.bytesync.hotelmanagement.dto.finance.PricingAmountDto;
 import org.bytesync.hotelmanagement.dto.room.RoomPricingRuleDto;
 import org.bytesync.hotelmanagement.enums.StayType;
 
@@ -11,7 +12,7 @@ public interface IPricingService {
 
     String updatePricingRuleById(Integer id, RoomPricingRuleDto ruleDto);
 
-    Integer getPricing(String roomType, StayType stayType, Integer guests, Integer hours);
+    PricingAmountDto getPricing(String roomType, StayType stayType, Integer guests, Integer hours);
 
     String createPricingRule(RoomPricingRuleDto ruleDto);
 
