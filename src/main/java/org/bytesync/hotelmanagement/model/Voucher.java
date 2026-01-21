@@ -1,21 +1,19 @@
 package org.bytesync.hotelmanagement.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.bytesync.hotelmanagement.enums.IncomeType;
 
 import java.time.LocalDate;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @Entity
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "vouchers")
-public class Voucher {
+public class Voucher extends Auditable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -17,7 +17,7 @@ public class Refund extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate refundDate;
+    private LocalDate date;
     private Integer amount;
 
     @Column(columnDefinition = "TEXT")

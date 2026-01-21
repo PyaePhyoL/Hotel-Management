@@ -20,7 +20,7 @@ public class Payment extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate paymentDate;
+    private LocalDate date;
     private Integer amount;
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;

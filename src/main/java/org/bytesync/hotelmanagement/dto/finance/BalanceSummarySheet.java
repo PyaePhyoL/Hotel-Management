@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MonthlyBalanceSheet {
+public class BalanceSummarySheet {
     private String period;
     private Integer totalIncome;
     private Integer totalExpense;
@@ -22,4 +22,6 @@ public class MonthlyBalanceSheet {
     private List<PaymentDto> incomes;
     private List<ExpenseDto> expenses;
     private List<RefundDto> refunds;
+
+    private List<PaymentDto> foodAndServiceIncomes;
 }

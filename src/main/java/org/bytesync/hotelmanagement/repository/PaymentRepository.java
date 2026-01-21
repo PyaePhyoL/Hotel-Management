@@ -12,11 +12,11 @@ public interface PaymentRepository extends JpaRepository<Payment, Long>, JpaSpec
 
     @Query("""
     select p from Payment p
-    where p.incomeType = 'ROOM_RENT_PAYMENT'
-    and FUNCTION('YEAR', p.paymentDate) = :year
-    and FUNCTION('MONTH', p.paymentDate) = :month
+    where p.incomeType = 'ROOM_RENT'
+    and FUNCTION('YEAR', p.date) = :year
+    and FUNCTION('MONTH', p.date) = :month
 """)
     List<Payment> findAllRoomRentPaymentsInMonthOfYear(int year, int month);
 
-    List<Payment> findByPaymentDate(LocalDate paymentDate);
+    List<Payment> findByDate(LocalDate date);
 }

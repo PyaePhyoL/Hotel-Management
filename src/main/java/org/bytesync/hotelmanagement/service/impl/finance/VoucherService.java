@@ -153,7 +153,7 @@ public class VoucherService implements IVoucherService {
     private void createPaymentToDailyVoucher(Voucher dailyVoucher) {
         var reservation = dailyVoucher.getReservation();
         var payment = Payment.builder()
-                .paymentDate(LocalDate.now())
+                .date(LocalDate.now())
                 .amount(reservation.getPrice())
                 .paymentMethod(DEPOSIT)
                 .incomeType(ROOM_RENT)

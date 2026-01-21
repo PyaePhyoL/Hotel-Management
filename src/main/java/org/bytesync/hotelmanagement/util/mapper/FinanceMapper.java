@@ -22,7 +22,7 @@ public class FinanceMapper {
         }
 
         return Payment.builder()
-                .paymentDate(paymentCreateForm.getPaymentDate())
+                .date(paymentCreateForm.getPaymentDate())
                 .amount(amount)
                 .paymentMethod(paymentCreateForm.getPaymentMethod())
                 .notes(paymentCreateForm.getNotes())
@@ -35,7 +35,7 @@ public class FinanceMapper {
         var reservation = payment.getReservation();
         return PaymentDto.builder()
                 .id(payment.getId())
-                .paymentDate(payment.getPaymentDate())
+                .paymentDate(payment.getDate())
                 .amount(payment.getAmount())
                 .paymentMethod(payment.getPaymentMethod())
                 .incomeType(payment.getIncomeType())
@@ -51,7 +51,7 @@ public class FinanceMapper {
         var vouchers = payment.getVouchers().stream().map(FinanceMapper::toVoucherDto).toList();
         return PaymentDetailsDto.builder()
                 .id(payment.getId())
-                .paymentDate(payment.getPaymentDate())
+                .paymentDate(payment.getDate())
                 .amount(payment.getAmount())
                 .paymentMethod(payment.getPaymentMethod())
                 .incomeType(payment.getIncomeType())
@@ -94,7 +94,7 @@ public class FinanceMapper {
 
     public static Refund toRefund(RefundDto refundDto, RefundType refundType) {
         return Refund.builder()
-                .refundDate(refundDto.getRefundDate())
+                .date(refundDto.getRefundDate())
                 .amount(refundDto.getAmount())
                 .notes(refundDto.getNotes())
                 .type(refundType)
@@ -104,7 +104,7 @@ public class FinanceMapper {
     public static RefundDto toRefundDto(Refund refund) {
         return RefundDto.builder()
                 .id(refund.getId())
-                .refundDate(refund.getRefundDate())
+                .refundDate(refund.getDate())
                 .amount(refund.getAmount())
                 .type(refund.getType())
                 .notes(refund.getNotes())

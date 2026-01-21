@@ -76,6 +76,7 @@ public class Reservation extends Auditable{
     }
 
     public void setNewCheckOutDateTime(LocalDateTime newCheckOutDateTime) {
+        this.setCheckOutDateTime(newCheckOutDateTime);
         this.daysOfStay = getDaysBetween(this.checkInDateTime.toLocalDate(),
                 newCheckOutDateTime.toLocalDate());
     }

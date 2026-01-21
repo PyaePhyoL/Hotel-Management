@@ -21,8 +21,12 @@ public class EntityOperationUtils {
         return DateTimeFormatter.ofPattern("HH:mm:ss").format(localDateTime);
     }
 
-    public static String dateFormat(LocalDateTime localDateTime) {
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(localDateTime);
+    public static String dateFormat(LocalDate date) {
+        return DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date);
+    }
+
+    public static String dateTimeFormat(LocalDateTime dateTime) {
+        return DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm").format(dateTime);
     }
 
     public static int getDaysBetween(LocalDate startDate, LocalDate endDate) {

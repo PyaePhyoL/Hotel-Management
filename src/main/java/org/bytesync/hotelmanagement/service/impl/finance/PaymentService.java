@@ -39,7 +39,7 @@ public class PaymentService implements IPaymentService {
 
         var vouchers = voucherService.getVouchers(paymentCreateForm.getVoucherIds());
 
-        throwExceptionIfVoucherListContainDifferentTypes(vouchers);
+        validateVoucherTypesConsistency(vouchers, paymentCreateForm.getIncomeType());
 
         var payment = FinanceMapper.toPayment(paymentCreateForm);
 
@@ -52,12 +52,16 @@ public class PaymentService implements IPaymentService {
         return "Payment created successfully : " + id;
     }
 
-    private void throwExceptionIfVoucherListContainDifferentTypes(List<Voucher> voucherList) {
+    private void validateVoucherTypesConsistency(List<Voucher> voucherList, IncomeType type) {
         IncomeType firstType = voucherList.getFirst().getType();
 
         voucherList.forEach(v -> {
-            if (v.getType() == firstType) throw new IllegalArgumentException("Contain different types. Please split the vouchers");
+            if (v.getType() != firstType) throw new IllegalArgumentException("Contain different types. Please split the vouchers");
         });
+
+        if(firstType != type) {
+            throw new IllegalArgumentException("Chosen income type does not match with voucher type");
+        }
     }
 
     @Override
@@ -71,7 +75,7 @@ public class PaymentService implements IPaymentService {
     @Override
     public Integer getDailyIncomeAmount() {
         var today = LocalDate.now();
-        var payments =paymentRepository.findByPaymentDate(today);
+        var payments =paymentRepository.findByDate(today);
 
         return payments.stream().map(Payment::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
     }

@@ -23,6 +23,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.bytesync.hotelmanagement.enums.GuestStatus.BLACKLIST;
@@ -134,11 +135,7 @@ public class ReservationService implements IReservationService {
 
         makeRoomAvailable(reservation.getRoom());
         guestCheckout(reservation.getGuest());
-
-        var guestRecord = safeCall(guestRecordRepository.findByReservationId(reservationId), "Guest Record's reservation", reservationId);
         reservation.setStatus(Status.CANCELED);
-
-        guestRecordRepository.delete(guestRecord);
         reservationRepository.save(reservation);
         return "Reservation canceled successfully";
     }
@@ -221,7 +218,7 @@ public class ReservationService implements IReservationService {
 
         reservationRepository.save(reservation);
 
-        return "New Checkout Date : " + dateFormat(reservation.getCheckOutDateTime());
+        return "New Checkout Date : " + dateTimeFormat(reservation.getCheckOutDateTime());
     }
 
     @Override
