@@ -52,4 +52,19 @@ public interface RoomPricingRuleRepository extends JpaRepository<RoomPricingRule
     order by r.id desc limit 1
 """)
     Optional<Integer> findPricingForLongStayRoom(String roomType, Integer guests);
+
+    @Query("""
+    select new org.bytesync.hotelmanagement.dto.room.RoomPricingRuleDto(
+    r.id,
+    r.roomType.id,
+    r.roomType.description,
+    r.stayType,
+    r.noOfGuests,
+    r.hours,
+    r.price
+    )
+    from RoomPricingRule r
+    where r.id = :id
+""")
+    Optional<RoomPricingRuleDto> findRoomPricingRuleDtoById(Integer id);
 }

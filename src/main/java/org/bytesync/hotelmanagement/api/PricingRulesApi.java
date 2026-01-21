@@ -38,6 +38,16 @@ public class PricingRulesApi {
         ));
     }
 
+    @GetMapping("/rule/{id}")
+    public ResponseEntity<ResponseMessage<RoomPricingRuleDto>> getRoomPricingRuleDto(@PathVariable Integer id) {
+        var ruleDto = pricingService.getPricingRuleDtoById(id);
+        return ResponseEntity.ok(new ResponseMessage<>(
+                HttpStatus.OK.value(),
+                "",
+                ruleDto
+        ));
+    }
+
     @PutMapping("/update-rule/{id}")
     public ResponseEntity<ResponseMessage<Void>> updatePricingRulesDetails(@PathVariable Integer id, @RequestBody RoomPricingRuleDto ruleDto) {
         var message = pricingService.updatePricingRuleById(id, ruleDto);

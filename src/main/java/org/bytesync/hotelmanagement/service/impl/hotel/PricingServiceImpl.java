@@ -74,4 +74,9 @@ public class PricingServiceImpl implements IPricingService {
         roomPricingRuleRepository.delete(roomPricingRule);
         return "Pricing deleted";
     }
+
+    @Override
+    public RoomPricingRuleDto getPricingRuleDtoById(Integer id) {
+        return safeCall(roomPricingRuleRepository.findRoomPricingRuleDtoById(id), "Pricing Rule", id);
+    }
 }

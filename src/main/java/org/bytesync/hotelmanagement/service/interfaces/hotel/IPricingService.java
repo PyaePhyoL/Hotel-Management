@@ -16,4 +16,6 @@ public interface IPricingService {
     String createPricingRule(RoomPricingRuleDto ruleDto);
 
     String deleteById(Integer id);
+
+    RoomPricingRuleDto getPricingRuleDtoById(Integer id);
 }
