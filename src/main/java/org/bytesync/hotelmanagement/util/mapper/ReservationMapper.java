@@ -4,14 +4,17 @@ import org.bytesync.hotelmanagement.dto.reservation.ReservationDetails;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationForm;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
+import org.bytesync.hotelmanagement.enums.Status;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.scheduling.ScheduleMethods;
 import org.bytesync.hotelmanagement.util.EntityOperationUtils;
 
+import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getCurrentYangonZoneLocalDateTime;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getDaysBetween;
 
 public class ReservationMapper {
@@ -36,7 +39,7 @@ public class ReservationMapper {
                 .price(form.getPrice())
                 .deposit(form.getDeposit())
                 .discount(form.getDiscount())
-                .status(ScheduleMethods.checkDateTimeAndGetStatus(form.getCheckInDateTime(), null))
+                .status(Status.BOOKING)
                 .daysOfStay(days)
                 .voucherList(new ArrayList<>())
                 .paymentList(new ArrayList<>())
@@ -44,6 +47,34 @@ public class ReservationMapper {
                 .refundList(new ArrayList<>())
                 .notes(form.getNote())
                 .build();
+    }
+
+    public static void updateReservation(Reservation reservation, ReservationForm form) {
+
+        updateCheckInDateTimeOnlyReservationIsNotStarted(reservation, form.getCheckInDateTime());
+
+        var days = (form.getCheckOutDateTime() != null)
+                ? getDaysBetween(
+                form.getCheckInDateTime().toLocalDate(),
+                form.getCheckOutDateTime().toLocalDate())
+                : 0;
+        reservation.setCheckOutDateTime(form.getCheckOutDateTime());
+        reservation.setDaysOfStay(days);
+        reservation.setDeposit(form.getDeposit());
+        reservation.setDiscount(form.getDiscount());
+        reservation.setNoOfGuests(form.getNoOfGuests());
+        reservation.setNotes(form.getNote());
+    }
+
+    private static void updateCheckInDateTimeOnlyReservationIsNotStarted(Reservation reservation, LocalDateTime newCheckInDateTime) {
+        if(reservation.getStatus() == Status.BOOKING) {
+            var isCheckInDateTimeChanged = !reservation.getCheckInDateTime().equals(newCheckInDateTime);
+            if(isCheckInDateTimeChanged) {
+                reservation.setCheckInDateTime(newCheckInDateTime);
+            }
+        } else {
+            throw new IllegalStateException("Cannot change the check in time after reservation is started");
+        }
     }
 
     public static ReservationInfo toReservationInfo(Reservation reservation) {
@@ -90,12 +121,5 @@ public class ReservationMapper {
                 .build();
     }
 
-    public static void updateReservation(Reservation reservation, ReservationForm form) {
-        reservation.setPrice(form.getPrice());
-        reservation.setDeposit(form.getDeposit());
-        reservation.setDiscount(form.getDiscount());
-        reservation.setStayType(form.getStayType());
-        reservation.setNoOfGuests(form.getNoOfGuests());
-        reservation.setNotes(form.getNote());
-    }
+
 }

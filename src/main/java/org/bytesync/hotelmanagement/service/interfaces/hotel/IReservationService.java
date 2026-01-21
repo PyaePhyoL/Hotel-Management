@@ -6,6 +6,7 @@ import org.bytesync.hotelmanagement.dto.reservation.*;
 import org.bytesync.hotelmanagement.dto.room.RoomPricingRuleDto;
 import org.bytesync.hotelmanagement.enums.Status;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,17 +20,13 @@ public interface IReservationService {
 
     ReservationDetails getDetailsById(Long id);
 
-    String checkoutReservation(Long reservationId, LocalDateTime checkoutTime);
+    String checkinReservation(Long reservationId);
+
+    String checkoutReservation(Long reservationId);
 
     String cancelReservation(Long reservationId);
 
-    String changeRoom(Long reservationId, Long roomId, Integer extraPrice);
-
-    String updateReservationPrice(Long reservationId, Integer price);
-
     Integer getActiveReservationCount();
-
-    String updateContacts(Long reservationId, List<ContactDto> contactDtos);
 
     String delete(Long id);
 

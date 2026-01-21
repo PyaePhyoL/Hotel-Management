@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bytesync.hotelmanagement.enums.PaymentMethod;
-import org.bytesync.hotelmanagement.enums.PaymentType;
+import org.bytesync.hotelmanagement.enums.IncomeType;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class PaymentCreateForm {
     private LocalDate paymentDate;
     private Integer amount;
     private PaymentMethod paymentMethod;
-    private PaymentType paymentType;
+    private IncomeType incomeType;
     private String notes;
     private Long reservationId;
     private List<Long> voucherIds = new ArrayList<>();

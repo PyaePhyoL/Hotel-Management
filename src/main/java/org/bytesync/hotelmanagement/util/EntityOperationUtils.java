@@ -3,8 +3,10 @@ package org.bytesync.hotelmanagement.util;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
@@ -25,5 +27,12 @@ public class EntityOperationUtils {
 
     public static int getDaysBetween(LocalDate startDate, LocalDate endDate) {
         return (int) ChronoUnit.DAYS.between(startDate, endDate);
+    }
+
+    public static LocalDateTime getCurrentYangonZoneLocalDateTime() {
+        Instant instant = Instant.now();
+        ZoneId yangonZone = ZoneId.of("Asia/Yangon");
+
+        return instant.atZone(yangonZone).toLocalDateTime();
     }
 }

@@ -3,7 +3,7 @@ package org.bytesync.hotelmanagement.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.bytesync.hotelmanagement.enums.PaymentMethod;
-import org.bytesync.hotelmanagement.enums.PaymentType;
+import org.bytesync.hotelmanagement.enums.IncomeType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,7 +32,7 @@ public class Payment extends Auditable{
     private Reservation reservation;
 
     @Enumerated(value = EnumType.STRING)
-    private PaymentType paymentType;
+    private IncomeType incomeType;
 
     @OneToMany(mappedBy = "payment", cascade = CascadeType.PERSIST)
     private List<Voucher> vouchers;

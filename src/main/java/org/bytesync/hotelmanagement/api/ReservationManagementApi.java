@@ -55,10 +55,19 @@ public class ReservationManagementApi {
                 list));
     }
 
+    @PutMapping("/checkin/{id}")
+    public ResponseEntity<ResponseMessage<Void>> checkin(@PathVariable Long id) {
+        var message = reservationService.checkinReservation(id);
+        return ResponseEntity.ok(new ResponseMessage<>(
+                HttpStatus.OK.value(),
+                message,
+                null
+        ));
+    }
+
     @PutMapping("/checkout/{id}")
-    public ResponseEntity<ResponseMessage<Void>> checkout(@PathVariable Long id,
-                                                    @RequestParam LocalDateTime checkout) {
-        var message = reservationService.checkoutReservation(id, checkout);
+    public ResponseEntity<ResponseMessage<Void>> checkout(@PathVariable Long id) {
+        var message = reservationService.checkoutReservation(id);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
                 message,
@@ -93,25 +102,14 @@ public class ReservationManagementApi {
                 detail));
     }
 
-    @PutMapping("/{reservationId}/change-room/{roomId}")
-    public ResponseEntity<ResponseMessage<Void>> changeRoom(@PathVariable Long reservationId,
-                                                            @PathVariable Long roomId,
-                                                            @RequestParam(required = false, defaultValue = "0") Integer extraPrice) {
-        var message = reservationService.changeRoom(reservationId, roomId, extraPrice);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ResponseMessage<Void>> updateReservationById(@PathVariable long id, @RequestBody ReservationForm form) {
+        var message = reservationService.updateReservation(id, form);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
                 message,
-                null));
-    }
-
-    @PutMapping("/update-contacts/{id}")
-    public ResponseEntity<ResponseMessage<Void>> updateReservationContacts(@PathVariable Long id,
-                                                                           @RequestBody List<ContactDto> contactDtos) {
-        var message = reservationService.updateContacts(id, contactDtos);
-        return ResponseEntity.ok(new ResponseMessage<>(
-                HttpStatus.OK.value(),
-                message,
-                null));
+                null
+        ));
     }
 
     @PostMapping("/extend-hours/{id}")
@@ -149,16 +147,6 @@ public class ReservationManagementApi {
                "",
                list
        ));
-    }
-
-    @PutMapping("/update-long-stay-price/{id}")
-    public ResponseEntity<ResponseMessage<Void>> updateLongStayPrice(@PathVariable Long id, @RequestParam Integer price) {
-        var message = reservationService.updateReservationPrice(id, price);
-        return ResponseEntity.ok(new ResponseMessage<>(
-                HttpStatus.OK.value(),
-                message,
-                null
-        ));
     }
 
     @PutMapping("/update-guest-number/{id}")

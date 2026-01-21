@@ -23,12 +23,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.bytesync.hotelmanagement.enums.GuestStatus.BLACKLIST;
-import static org.bytesync.hotelmanagement.enums.VoucherType.EXTEND;
-import static org.bytesync.hotelmanagement.enums.VoucherType.getVoucherTypeFromStayType;
+import static org.bytesync.hotelmanagement.enums.IncomeType.ROOM_RENT;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.*;
 
 @Service
@@ -62,90 +60,42 @@ public class ReservationService implements IReservationService {
         var room = findRoom(form.getRoomId());
         var reservation = createReservation(form, guest, room);
 
-        voucherService.createVoucherFromReservation(reservation);
-
-        guestRecordService.createGuestRecord(reservation);
-
         updateAssociation(reservation, room, guest, form.getContacts());
 
         return "Reservation created successfully";
     }
 
-    private void updateAssociation(Reservation reservation, Room room, Guest guest, List<ContactDto> contactDtos) {
-        room.addReservation(reservation);
-        room.setCurrentStatus(
-                RoomMapper.getRoomCurrentStatusFromReservation(reservation.getStatus(), reservation.getStayType()));
+    @Transactional
+    @Override
+    public String checkinReservation(Long reservationId) {
+        var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
 
-        guest.addReservation(reservation);
-        addContactsToReservation(reservation, contactDtos);
+        if(reservation.getStatus() == Status.BOOKING) {
+            var checkinDateTime = getCurrentYangonZoneLocalDateTime();
+            reservation.setCheckInDateTime(checkinDateTime);
+            reservation.setStatus(Status.ACTIVE);
 
-        roomRepository.save(room);
-        guestRepository.save(guest);
-    }
+            reservation.getGuest().setIsStaying(true);
 
-    private void addContactsToReservation(Reservation reservation, List<ContactDto> contactDtos) {
-        contactDtos.stream()
-                .filter(rs -> !rs.name().isBlank() || !rs.phone().isBlank())
-                .forEach(dto -> {
-            reservation.addRelation(ContactMapper.toEntity(dto));
-        });
-    }
+            reservationRepository.save(reservation);
 
-    private Reservation createReservation(ReservationForm form, Guest guest, Room room) {
-        var reservation = ReservationMapper.toEntity(form);
+            guestRecordService.createGuestRecord(reservation);
+            voucherService.createVoucherFromReservation(reservation);
 
-        reservation.setGuest(guest);
-        reservation.setRoom(room);
-        return reservationRepository.save(reservation);
-    }
-
-    private Room findRoom(Long roomNo) {
-        var room = roomRepository.findById(roomNo)
-                .orElseThrow(() -> new EntityNotFoundException("Room not found"));
-        if(room.getCurrentStatus() != RoomStatus.AVAILABLE) {
-            throw new IllegalStateException("Room is not available");
+            return "Reservation checked in";
         } else {
-            return room;
-        }
-    }
-
-    private Guest findOrCreateGuest(ReservationForm form) {
-        return guestRepository.findByNameAndNrc(form.getGuestName(), form.getGuestNrc())
-                .map(guest -> {
-                    // may be phone number might be new
-                    changePhoneIfAddNewPhone(form.getPhone(), guest);
-
-                    if(guest.getIsStaying())
-                        throw new IllegalStateException("This guest has another reservation");
-
-                    if(guest.getStatus() == BLACKLIST)
-                        throw new IllegalArgumentException("This guest is blacklisted");
-
-                    return guest;
-                }).orElseGet(() -> {
-                    Guest guest = new Guest();
-                    guest.setName(form.getGuestName());
-                    guest.setNrc(form.getGuestNrc());
-                    guest.setPhoneNumber(form.getPhone());
-                    guest.setStatus(GuestStatus.GOOD);
-                    guestService.checkGuestExists(guest);
-                    return guestRepository.save(guest);
-                });
-    }
-
-    private void changePhoneIfAddNewPhone(String phone, Guest guest) {
-        if(phone != null && !phone.isBlank() && !guest.getPhoneNumber().equals(phone)) {
-            guest.setPhoneNumber(phone);
-            guestRepository.save(guest);
+            throw new IllegalStateException("Reservation is already started");
         }
     }
 
     @Override
     @Transactional
-    public String checkoutReservation(Long reservationId, LocalDateTime checkoutTime) {
+    public String checkoutReservation(Long reservationId) {
 //        1st change the status in Reservation
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
-        reservation.setNewCheckOutDateTime(checkoutTime);
+        var checkoutDateTime = getCurrentYangonZoneLocalDateTime();
+
+        reservation.setNewCheckOutDateTime(checkoutDateTime);
         reservation.setStatus(Status.FINISHED);
 
         var room = reservation.getRoom();
@@ -155,9 +105,9 @@ public class ReservationService implements IReservationService {
         guestCheckout(guest);
 
 //        3rd change the checkout time in guest record
-        guestRecordService.updateGuestRecordWhenCheckout(reservationId, checkoutTime);
+        guestRecordService.updateGuestRecordWhenCheckout(reservationId, checkoutDateTime);
         
-        var timeString = timeFormat(checkoutTime);
+        var timeString = timeFormat(checkoutDateTime);
         reservationRepository.save(reservation);
 
         return "Room-%s is checked out at %s".formatted(room.getRoomNo(), timeString);
@@ -193,24 +143,6 @@ public class ReservationService implements IReservationService {
         return "Reservation canceled successfully";
     }
 
-    private void makeRoomAvailable(Room room) {
-        room.setCurrentStatus(RoomStatus.AVAILABLE);
-        room.setCurrentReservationId(null);
-        roomRepository.save(room);
-    }
-
-    private void makeRoomInService(Room room) {
-        room.setCurrentStatus(RoomStatus.IN_SERVICE);
-        room.setCurrentReservationId(null);
-        roomRepository.save(room);
-    }
-
-    private void guestCheckout(Guest guest) {
-        guest.setCurrentReservationId(null);
-        guest.setIsStaying(false);
-        guestRepository.save(guest);
-    }
-
     @Override
     public ReservationDetails getDetailsById(Long id) {
         var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
@@ -233,92 +165,9 @@ public class ReservationService implements IReservationService {
         return resvDetails;
     }
 
-    private Integer getLeftPriceInReservation(Reservation reservation) {
-        return reservation.getVoucherList().stream().filter(v -> !v.getIsPaid()).map(Voucher::getPrice).reduce(0, Integer::sum);
-    }
-
-    private Integer getTotalPriceInReservation(Reservation reservation) {
-        return reservation.getPaymentList().stream().map(Payment::getAmount).reduce(0, Integer::sum);
-    }
-
-    private Integer getPaidPriceInReservation(Reservation reservation) {
-        return reservation.getVoucherList().stream().filter(Voucher::getIsPaid).map(Voucher::getPrice).reduce(0, Integer::sum);
-    }
-
-    private Integer getTotalRefundInReservation(Reservation reservation) {
-        return reservation.getRefundList().stream().map(Refund::getAmount).reduce(0, Integer::sum);
-    }
-
-    @Override
-    @Transactional
-    public String changeRoom(Long reservationId, Long roomId, Integer extraPrice) {
-        var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
-        var newRoom = findRoom(roomId);
-        var oldRoom = reservation.getRoom();
-        makeRoomInService(oldRoom);
-
-        reservation.setRoom(newRoom);
-        newRoom.addReservation(reservation);
-        newRoom.setCurrentStatus(
-                RoomMapper.getRoomCurrentStatusFromReservation(reservation.getStatus(), reservation.getStayType()));
-
-        if(extraPrice != null) {
-            updateReservationPrice(reservationId, extraPrice);
-        }
-
-        roomRepository.save(newRoom);
-        reservationRepository.save(reservation);
-        return "Room-%s is changed with Room-%s".formatted(oldRoom.getRoomNo(), newRoom.getRoomNo());
-
-    }
-
-    @Override
-    public String updateReservationPrice(Long reservationId, Integer price) {
-        var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
-        var stayType = reservation.getStayType();
-        var voucherType = getVoucherTypeFromStayType(stayType);
-
-        if(stayType == StayType.NORMAL) {
-            if(price > 0) {
-                voucherService.createAdditionalVoucher(new VoucherCreatForm(reservationId, voucherType, price, ""));
-            }
-        } else if(stayType == StayType.LONG) {
-            reservation.setPrice(price);
-        }
-
-        reservationRepository.save(reservation);
-        return "Price per night has been updated";
-    }
-
     @Override
     public Integer getActiveReservationCount() {
         return reservationRepository.countAllActive();
-    }
-
-
-    @Override
-    public String updateContacts(Long reservationId, List<ContactDto> contactDtos) {
-
-        var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
-
-        reservation.getContactList().clear();
-
-        var newContacts = contactDtos.stream().filter(dto -> dto.id() == null).toList();
-
-        addContactsToReservation(reservation, newContacts);
-
-        var oldContacts = contactDtos.stream().filter(dto -> dto.id() != null).toList();
-
-        oldContacts.forEach(dto -> {
-            contactRepository.findById(dto.id()).ifPresent(contact -> {
-                ContactMapper.updateContent(contact, dto);
-                reservation.getContactList().add(contact);
-            });
-        });
-
-        reservationRepository.save(reservation);
-
-        return "Reservation's contacts have been updated";
     }
 
     @Transactional
@@ -351,7 +200,7 @@ public class ReservationService implements IReservationService {
             throw new IllegalArgumentException("This is finished already");
         }
         var notes = String.format("Extend for %d hour(s)", extraHoursDto.hour());
-        voucherService.createAdditionalVoucher(new VoucherCreatForm(id, EXTEND, price, notes));
+        voucherService.createAdditionalVoucher(new VoucherCreatForm(id, ROOM_RENT, price, notes));
 
         reservationRepository.save(reservation);
 
@@ -368,7 +217,7 @@ public class ReservationService implements IReservationService {
         reservation.setNewCheckOutDateTime(newCheckoutTime);
 
         var notes =  String.format("Extend for %d day(s)".formatted(extraDaysDto.day()));
-        voucherService.createAdditionalVoucher(new VoucherCreatForm(id, EXTEND, price, notes));
+        voucherService.createAdditionalVoucher(new VoucherCreatForm(id, ROOM_RENT, price, notes));
 
         reservationRepository.save(reservation);
 
@@ -405,17 +254,175 @@ public class ReservationService implements IReservationService {
     @Override
     public String updateReservation(Long id, ReservationForm form) {
         var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
-        var guest = safeCall(guestRepository.findByNameAndNrc(form.getGuestName(), form.getGuestNrc()), "Guest", form.getGuestNrc());
 
-        if(!guest.getPhoneNumber().equals(form.getPhone())) {
-            guest.setPhoneNumber(form.getPhone());
+        if(reservation.getStatus() == Status.FINISHED || reservation.getStatus() == Status.CANCELED) {
+            throw new IllegalStateException("Reservation is finished");
         }
 
-        reservation.setNoOfGuests(form.getNoOfGuests());
-        reservation.setCheckInDateTime(form.getCheckInDateTime());
-        reservation.setCheckOutDateTime(form.getCheckOutDateTime());
+        var guest = safeCall(guestRepository.findByNameAndNrc(form.getGuestName(), form.getGuestNrc()), "Guest", form.getGuestNrc());
 
-        return "";
+        changePhoneIfAddNewPhone(form.getPhone(), guest);
+
+        if(!reservation.getRoom().getRoomNo().equals(form.getRoomId())) {
+            changeRoom(reservation, form.getRoomId());
+        }
+
+        updateReservationPrice(reservation, form);
+
+        updateContacts(reservation, form.getContacts());
+
+        ReservationMapper.updateReservation(reservation, form);
+
+        reservationRepository.save(reservation);
+
+        return "Reservation updated successfully";
     }
+
+//    Private methods
+
+    private void updateAssociation(Reservation reservation, Room room, Guest guest, List<ContactDto> contactDtos) {
+        room.addReservation(reservation);
+        room.setCurrentStatus(
+                RoomMapper.getRoomCurrentStatusFromReservation(reservation.getStatus(), reservation.getStayType()));
+
+        guest.addReservation(reservation);
+        guest.setIsStaying(false);
+        addContactsToReservation(reservation, contactDtos);
+
+        roomRepository.save(room);
+        guestRepository.save(guest);
+    }
+
+    private void addContactsToReservation(Reservation reservation, List<ContactDto> contactDtos) {
+        contactDtos.stream()
+                .filter(rs -> !rs.name().isBlank() || !rs.phone().isBlank())
+                .forEach(dto -> {
+                    reservation.addRelation(ContactMapper.toEntity(dto));
+                });
+    }
+
+    private Reservation createReservation(ReservationForm form, Guest guest, Room room) {
+        var reservation = ReservationMapper.toEntity(form);
+
+        reservation.setGuest(guest);
+        reservation.setRoom(room);
+        return reservationRepository.save(reservation);
+    }
+
+    private Room findRoom(Long roomNo) {
+        var room = roomRepository.findById(roomNo)
+                .orElseThrow(() -> new EntityNotFoundException("Room not found"));
+        if(room.getCurrentStatus() != RoomStatus.AVAILABLE) {
+            throw new IllegalStateException("Room is not available");
+        } else {
+            return room;
+        }
+    }
+
+    private Guest findOrCreateGuest(ReservationForm form) {
+        return guestRepository.findByNameAndNrc(form.getGuestName(), form.getGuestNrc())
+                .map(guest -> {
+                    // may be phone number might be new
+                    changePhoneIfAddNewPhone(form.getPhone(), guest);
+
+                    if(guest.getCurrentReservationId() != null)
+                        throw new IllegalStateException("This guest has another reservation");
+
+                    if(guest.getStatus() == BLACKLIST)
+                        throw new IllegalArgumentException("This guest is blacklisted");
+
+                    return guest;
+                }).orElseGet(() -> {
+                    Guest guest = new Guest();
+                    guest.setName(form.getGuestName());
+                    guest.setNrc(form.getGuestNrc());
+                    guest.setPhoneNumber(form.getPhone());
+                    guest.setStatus(GuestStatus.GOOD);
+                    guestService.checkGuestExists(guest);
+                    return guestRepository.save(guest);
+                });
+    }
+
+    private void changePhoneIfAddNewPhone(String phone, Guest guest) {
+        if(phone != null && !phone.isBlank() && !guest.getPhoneNumber().equals(phone)) {
+            guest.setPhoneNumber(phone);
+            guestRepository.save(guest);
+        }
+    }
+
+    private void updateReservationPrice(Reservation reservation, ReservationForm form) {
+        reservation.setPrice(form.getPrice());
+        if(form.getExtraPrice() != null && form.getExtraPrice() > 0) {
+            voucherService.createAdditionalVoucher(new VoucherCreatForm(reservation.getId(), ROOM_RENT, form.getExtraPrice(), ""));
+        }
+    }
+
+    private void changeRoom(Reservation reservation, Long roomId) {
+        var newRoom = findRoom(roomId);
+        var oldRoom = reservation.getRoom();
+        makeRoomInService(oldRoom);
+
+        reservation.setRoom(newRoom);
+        newRoom.addReservation(reservation);
+        newRoom.setCurrentStatus(
+                RoomMapper.getRoomCurrentStatusFromReservation(reservation.getStatus(), reservation.getStayType()));
+
+        roomRepository.save(newRoom);
+    }
+
+
+    private void makeRoomAvailable(Room room) {
+        room.setCurrentStatus(RoomStatus.AVAILABLE);
+        room.setCurrentReservationId(null);
+        roomRepository.save(room);
+    }
+
+    private void makeRoomInService(Room room) {
+        room.setCurrentStatus(RoomStatus.IN_SERVICE);
+        room.setCurrentReservationId(null);
+        roomRepository.save(room);
+    }
+
+    private void guestCheckout(Guest guest) {
+        guest.setCurrentReservationId(null);
+        guest.setIsStaying(false);
+        guestRepository.save(guest);
+    }
+
+    private Integer getLeftPriceInReservation(Reservation reservation) {
+        return reservation.getVoucherList().stream().filter(v -> !v.getIsPaid()).map(Voucher::getPrice).reduce(0, Integer::sum);
+    }
+
+    private Integer getTotalPriceInReservation(Reservation reservation) {
+        return reservation.getPaymentList().stream().map(Payment::getAmount).reduce(0, Integer::sum);
+    }
+
+    private Integer getPaidPriceInReservation(Reservation reservation) {
+        return reservation.getVoucherList().stream().filter(Voucher::getIsPaid).map(Voucher::getPrice).reduce(0, Integer::sum);
+    }
+
+    private Integer getTotalRefundInReservation(Reservation reservation) {
+        return reservation.getRefundList().stream().map(Refund::getAmount).reduce(0, Integer::sum);
+    }
+
+
+    private void updateContacts(Reservation reservation, List<ContactDto> contactDtos) {
+        reservation.getContactList().clear();
+
+        var newContacts = contactDtos.stream().filter(dto -> dto.id() == null).toList();
+
+        addContactsToReservation(reservation, newContacts);
+
+        var oldContacts = contactDtos.stream().filter(dto -> dto.id() != null).toList();
+
+        oldContacts.forEach(dto -> {
+            contactRepository.findById(dto.id()).ifPresent(contact -> {
+                ContactMapper.updateContent(contact, dto);
+                reservation.getContactList().add(contact);
+            });
+        });
+    }
+
+
 
 }

@@ -56,7 +56,6 @@ public class Guest {
     public void addReservation(Reservation reservation) {
         this.reservationList.add(reservation);
         this.setCurrentReservationId(reservation.getId());
-        this.setIsStaying(true);
     }
 
 }

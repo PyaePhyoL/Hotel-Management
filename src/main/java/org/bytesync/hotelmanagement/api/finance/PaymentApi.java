@@ -6,13 +6,10 @@ import org.bytesync.hotelmanagement.dto.finance.PaymentDetailsDto;
 import org.bytesync.hotelmanagement.dto.finance.PaymentDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
-import org.bytesync.hotelmanagement.service.impl.finance.PaymentService;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IPaymentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @CrossOrigin("*")
 @RestController

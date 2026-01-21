@@ -1,14 +1,14 @@
 package org.bytesync.hotelmanagement.dto.finance;
 
 import lombok.Builder;
-import org.bytesync.hotelmanagement.enums.VoucherType;
+import org.bytesync.hotelmanagement.enums.IncomeType;
 
 import java.time.LocalDate;
 
 @Builder
 public record VoucherDto(
     Long voucherNo,
-    VoucherType type,
+    IncomeType type,
     Long paymentId,
     LocalDate date,
     Long reservationId,

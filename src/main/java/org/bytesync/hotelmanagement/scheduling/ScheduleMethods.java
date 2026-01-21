@@ -7,6 +7,7 @@ import org.bytesync.hotelmanagement.enums.Status;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IVoucherService;
+import org.bytesync.hotelmanagement.util.EntityOperationUtils;
 import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -37,31 +38,30 @@ public class ScheduleMethods {
     }
 
 
-    @Scheduled(cron = "0 * * * * *")
-    public void checkBookingReservationAndChangeStatus() {
-
-        var reservations = reservationRepository.findAllBookingReservations();
-
-        reservations.forEach(reservation -> {
-            var room = reservation.getRoom();
-            var status = checkDateTimeAndGetStatus(
-                    reservation.getCheckInDateTime(),
-                    reservation.getCheckOutDateTime());
-            if(status != reservation.getStatus()) {
-                reservation.setStatus(status);
-                room.setCurrentStatus(RoomMapper.getRoomCurrentStatusFromReservation(reservation.getStatus(), reservation.getStayType()));
-                roomRepository.save(room);
-            }
-        });
-
-        reservationRepository.saveAll(reservations);
-    }
+//    @Scheduled(cron = "0 * * * * *")
+//    public void checkBookingReservationAndChangeStatus() {
+//
+//        var reservations = reservationRepository.findAllBookingReservations();
+//
+//        reservations.forEach(reservation -> {
+//            var room = reservation.getRoom();
+//            var status = checkDateTimeAndGetStatus(
+//                    reservation.getCheckInDateTime(),
+//                    reservation.getCheckOutDateTime());
+//            if(status != reservation.getStatus()) {
+//                reservation.setStatus(status);
+//                room.setCurrentStatus(RoomMapper.getRoomCurrentStatusFromReservation(reservation.getStatus(), reservation.getStayType()));
+//                roomRepository.save(room);
+//            }
+//        });
+//
+//        reservationRepository.saveAll(reservations);
+//    }
 
 
 
     public static Status checkDateTimeAndGetStatus(LocalDateTime checkIn, LocalDateTime checkOut) {
-        ZoneId zoneId = ZoneId.of("Asia/Yangon");
-        var now = LocalDateTime.now(zoneId);
+        var now = EntityOperationUtils.getCurrentYangonZoneLocalDateTime();
 
         if(now.isBefore(checkIn)) {
             return Status.BOOKING;

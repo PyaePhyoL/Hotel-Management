@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.VoucherCreatForm;
 import org.bytesync.hotelmanagement.dto.finance.VoucherDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
-import org.bytesync.hotelmanagement.enums.PaymentType;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Voucher;
-import org.bytesync.hotelmanagement.enums.VoucherType;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.VoucherRepository;
 import org.bytesync.hotelmanagement.repository.specification.DailyVoucherSpecification;
@@ -24,7 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.bytesync.hotelmanagement.enums.PaymentMethod.DEPOSIT;
-import static org.bytesync.hotelmanagement.enums.PaymentType.ROOM_RENT_PAYMENT;
+import static org.bytesync.hotelmanagement.enums.IncomeType.ROOM_RENT;
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getCurrentYangonZoneLocalDateTime;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Service
@@ -125,16 +124,15 @@ public class VoucherService implements IVoucherService {
     }
 
     private Voucher getVoucherFromReservation(Reservation reservation) {
-        var voucherType = VoucherType.getVoucherTypeFromStayType(reservation.getStayType());
-
+        var now = getCurrentYangonZoneLocalDateTime();
         return Voucher.builder()
                 .reservation(reservation)
-                .date(LocalDate.now())
+                .date(now.toLocalDate())
                 .guestName(reservation.getGuest().getName())
                 .roomNo(reservation.getRoom().getRoomNo())
                 .price(reservation.getPrice())
                 .isPaid(false)
-                .type(voucherType)
+                .type(ROOM_RENT)
                 .build();
     }
 
@@ -158,7 +156,7 @@ public class VoucherService implements IVoucherService {
                 .paymentDate(LocalDate.now())
                 .amount(reservation.getPrice())
                 .paymentMethod(DEPOSIT)
-                .paymentType(ROOM_RENT_PAYMENT)
+                .incomeType(ROOM_RENT)
                 .notes("Automatic paid from deposit")
                 .vouchers(new ArrayList<>())
                 .build();

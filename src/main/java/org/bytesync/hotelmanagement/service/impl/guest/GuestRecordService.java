@@ -35,7 +35,6 @@ public class GuestRecordService implements IGuestRecordService {
                 .guest(reservation.getGuest())
                 .room(reservation.getRoom())
                 .checkInTime(reservation.getCheckInDateTime())
-                .checkOutTime(reservation.getCheckOutDateTime())
                 .daysOfStay(reservation.getDaysOfStay())
                 .current(true)
                 .reservation(reservation)

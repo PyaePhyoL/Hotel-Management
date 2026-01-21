@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.bytesync.hotelmanagement.enums.VoucherType;
+import org.bytesync.hotelmanagement.enums.IncomeType;
 
 import java.time.LocalDate;
 
@@ -26,7 +26,7 @@ public class Voucher {
     private Integer price;
     private Boolean isPaid;
     @Enumerated(EnumType.STRING)
-    private VoucherType type;
+    private IncomeType type;
 
     @ManyToOne
     private Reservation reservation;

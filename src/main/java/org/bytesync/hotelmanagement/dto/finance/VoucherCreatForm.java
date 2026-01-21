@@ -1,10 +1,10 @@
 package org.bytesync.hotelmanagement.dto.finance;
 
-import org.bytesync.hotelmanagement.enums.VoucherType;
+import org.bytesync.hotelmanagement.enums.IncomeType;
 
 public record VoucherCreatForm(
         Long reservationId,
-        VoucherType type,
+        IncomeType type,
         Integer price,
         String notes
 ) {
