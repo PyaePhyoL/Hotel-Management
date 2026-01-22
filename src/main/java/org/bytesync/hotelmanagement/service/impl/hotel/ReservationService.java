@@ -171,11 +171,11 @@ public class ReservationService implements IReservationService {
     @Override
     public String delete(Long id) {
         var reservation = safeCall(reservationRepository.findById(id), "Reservation", id);
-        var guestRecord = safeCall(guestRecordRepository.findByReservationId(id), "Guest's record reservation", id);
+        var guestRecord = guestRecordRepository.findByReservationId(id).orElse(null);
 
         makeRoomAvailable(reservation.getRoom());
         guestCheckout(reservation.getGuest());
-        guestRecordRepository.delete(guestRecord);
+        if(guestRecord != null) guestRecordRepository.delete(guestRecord);
         reservationRepository.delete(reservation);
 
         return "Reservation deleted successfully";
