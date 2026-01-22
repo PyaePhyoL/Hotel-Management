@@ -96,7 +96,7 @@ public class PaymentService implements IPaymentService {
 
     @Override
     public PageResult<PaymentDto> getPaymentListByReservation(Long id, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("paymentDate").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
         Specification<Payment> spec = PaymentSpecification.filterByReservation(id);
         Page<Payment> paymentPage = paymentRepository.findAll(spec, pageable);
 
