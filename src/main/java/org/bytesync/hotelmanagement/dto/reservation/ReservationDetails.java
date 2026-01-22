@@ -15,8 +15,8 @@ import java.util.List;
 @Builder
 public class ReservationDetails {
     private Long id;
-    private LocalDateTime checkInTime;
-    private LocalDateTime checkOutTime;
+    private LocalDateTime checkInDateTime;
+    private LocalDateTime checkOutDateTime;
     private Integer daysOfStay;
     private Integer price;
     private Integer deposit;

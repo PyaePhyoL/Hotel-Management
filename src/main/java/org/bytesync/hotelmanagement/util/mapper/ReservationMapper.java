@@ -96,8 +96,8 @@ public class ReservationMapper {
     public static ReservationDetails toReservationDetails(Reservation reservation) {
         return ReservationDetails.builder()
                 .id(reservation.getId())
-                .checkInTime(reservation.getCheckInDateTime())
-                .checkOutTime(reservation.getCheckOutDateTime())
+                .checkInDateTime(reservation.getCheckInDateTime())
+                .checkOutDateTime(reservation.getCheckOutDateTime())
                 .daysOfStay(reservation.getDaysOfStay())
                 .price(reservation.getPrice())
                 .deposit(reservation.getDeposit())
