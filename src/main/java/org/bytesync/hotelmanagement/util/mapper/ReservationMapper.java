@@ -51,7 +51,9 @@ public class ReservationMapper {
 
     public static void updateReservation(Reservation reservation, ReservationForm form) {
 
-        updateCheckInDateTimeOnlyReservationIsNotStarted(reservation, form.getCheckInDateTime());
+        if(!reservation.getCheckInDateTime().equals(form.getCheckInDateTime())) {
+            updateCheckInDateTimeOnlyReservationIsNotStarted(reservation, form.getCheckInDateTime());
+        }
 
         var days = (form.getCheckOutDateTime() != null)
                 ? getDaysBetween(
