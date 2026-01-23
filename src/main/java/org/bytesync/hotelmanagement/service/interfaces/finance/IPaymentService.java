@@ -5,11 +5,13 @@ import org.bytesync.hotelmanagement.dto.finance.PaymentDetailsDto;
 import org.bytesync.hotelmanagement.dto.finance.PaymentDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 
+import java.time.LocalDate;
+
 public interface IPaymentService {
 
     String createPayment(PaymentCreateForm paymentCreateForm);
 
-    PageResult<PaymentDto> getPaymentList(int page, int size);
+    PageResult<PaymentDto> getPaymentList(int page, int size, LocalDate from, LocalDate to);
 
     Integer getDailyIncomeAmount();
 

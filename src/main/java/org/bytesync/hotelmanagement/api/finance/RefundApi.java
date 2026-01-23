@@ -10,6 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getCurrentYangonZoneLocalDateTime;
+
 @CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
@@ -43,8 +47,13 @@ public class RefundApi {
 
     @GetMapping("/list")
     public ResponseEntity<ResponseMessage<PageResult<RefundDto>>> getRefundList(@RequestParam(required = false, defaultValue = "0") int page,
-                                                                     @RequestParam(required = false, defaultValue = "10") int size) {
-        var refundList = refundService.getRefundList(page, size);
+                                                                                @RequestParam(required = false, defaultValue = "10") int size,
+                                                                                @RequestParam(required = false) LocalDate from,
+                                                                                @RequestParam(required = false) LocalDate to) {
+        if(from == null && to == null) {
+            from = getCurrentYangonZoneLocalDateTime().toLocalDate();
+        }
+        var refundList = refundService.getRefundList(page, size, from, to);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
                 "",

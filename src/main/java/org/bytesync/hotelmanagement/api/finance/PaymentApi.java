@@ -11,6 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getCurrentYangonZoneLocalDateTime;
+
 @CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
@@ -28,8 +32,13 @@ public class PaymentApi {
 
     @GetMapping("/list")
     public ResponseEntity<ResponseMessage<PageResult<PaymentDto>>> getPaymentList(@RequestParam(required = false, defaultValue = "0") int page,
-                                                                                  @RequestParam(required = false, defaultValue = "10") int size) {
-        var paymentList = paymentService.getPaymentList(page, size);
+                                                                                  @RequestParam(required = false, defaultValue = "10") int size,
+                                                                                  @RequestParam(required = false) LocalDate from,
+                                                                                  @RequestParam(required = false) LocalDate to) {
+        if(from == null && to == null) {
+            from = getCurrentYangonZoneLocalDateTime().toLocalDate();
+        }
+        var paymentList = paymentService.getPaymentList(page, size, from, to);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", paymentList));
     }
 

@@ -9,7 +9,7 @@ import org.bytesync.hotelmanagement.dto.reservation.*;
 import org.bytesync.hotelmanagement.enums.*;
 import org.bytesync.hotelmanagement.model.*;
 import org.bytesync.hotelmanagement.repository.*;
-import org.bytesync.hotelmanagement.repository.specification.ReservationSpecification;
+import org.bytesync.hotelmanagement.specification.ReservationSpecification;
 import org.bytesync.hotelmanagement.service.impl.finance.VoucherService;
 import org.bytesync.hotelmanagement.service.impl.guest.GuestRecordService;
 import org.bytesync.hotelmanagement.service.impl.guest.GuestService;
@@ -23,7 +23,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.bytesync.hotelmanagement.enums.GuestStatus.BLACKLIST;

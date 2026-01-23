@@ -6,7 +6,7 @@ import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.model.GuestRecord;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.repository.GuestRecordRepository;
-import org.bytesync.hotelmanagement.repository.specification.GuestRecordSpecification;
+import org.bytesync.hotelmanagement.specification.GuestRecordSpecification;
 import org.bytesync.hotelmanagement.service.interfaces.guest.IGuestRecordService;
 import org.bytesync.hotelmanagement.util.mapper.GuestRecordMapper;
 import org.springframework.data.domain.Page;

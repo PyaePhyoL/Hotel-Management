@@ -9,7 +9,7 @@ import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Voucher;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.VoucherRepository;
-import org.bytesync.hotelmanagement.repository.specification.DailyVoucherSpecification;
+import org.bytesync.hotelmanagement.specification.DailyVoucherSpecification;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IVoucherService;
 import org.bytesync.hotelmanagement.util.mapper.FinanceMapper;
 import org.springframework.data.domain.Page;

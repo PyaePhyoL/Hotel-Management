@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.repository.specification;
+package org.bytesync.hotelmanagement.specification;
 
 import org.bytesync.hotelmanagement.model.Room;
 import org.bytesync.hotelmanagement.enums.RoomStatus;

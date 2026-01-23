@@ -8,7 +8,7 @@ import org.bytesync.hotelmanagement.enums.PaymentMethod;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.model.Voucher;
 import org.bytesync.hotelmanagement.repository.*;
-import org.bytesync.hotelmanagement.repository.specification.PaymentSpecification;
+import org.bytesync.hotelmanagement.specification.FinanceSpecification;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IPaymentService;
 import org.bytesync.hotelmanagement.util.mapper.FinanceMapper;
 import org.springframework.data.domain.Page;
@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+import static org.bytesync.hotelmanagement.enums.IncomeType.ROOM_RENT;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Service
@@ -65,9 +66,10 @@ public class PaymentService implements IPaymentService {
     }
 
     @Override
-    public PageResult<PaymentDto> getPaymentList(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("paymentDate").descending());
-        Page<Payment> all = paymentRepository.findAll(pageable);
+    public PageResult<PaymentDto> getPaymentList(int page, int size, LocalDate from, LocalDate to) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        Specification<Payment> spec = FinanceSpecification.paymentFilterByDate(from, to, ROOM_RENT);
+        Page<Payment> all = paymentRepository.findAll(spec, pageable);
         var dtos = all.getContent().stream().map(FinanceMapper::toPaymentDto).toList();
         return new  PageResult<>(dtos, all.getTotalElements(), page, size);
     }
@@ -97,7 +99,7 @@ public class PaymentService implements IPaymentService {
     @Override
     public PageResult<PaymentDto> getPaymentListByReservation(Long id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-        Specification<Payment> spec = PaymentSpecification.filterByReservation(id);
+        Specification<Payment> spec = FinanceSpecification.paymentFilterByReservation(id);
         Page<Payment> paymentPage = paymentRepository.findAll(spec, pageable);
 
         List<PaymentDto> dtoList = paymentPage.getContent().stream().map(FinanceMapper::toPaymentDto).toList();

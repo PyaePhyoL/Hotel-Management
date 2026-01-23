@@ -7,7 +7,7 @@ import org.bytesync.hotelmanagement.dto.auth.*;
 import org.bytesync.hotelmanagement.exception.UserAlreadyExistsException;
 import org.bytesync.hotelmanagement.model.Staff;
 import org.bytesync.hotelmanagement.repository.StaffRepository;
-import org.bytesync.hotelmanagement.repository.specification.StaffSpecification;
+import org.bytesync.hotelmanagement.specification.StaffSpecification;
 import org.bytesync.hotelmanagement.security.SecurityTokenProvider;
 import org.bytesync.hotelmanagement.service.interfaces.hotel.IStaffService;
 import org.bytesync.hotelmanagement.util.mapper.StaffMapper;

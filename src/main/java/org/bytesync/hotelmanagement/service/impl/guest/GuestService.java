@@ -10,7 +10,7 @@ import org.bytesync.hotelmanagement.model.Guest;
 import org.bytesync.hotelmanagement.enums.GuestStatus;
 import org.bytesync.hotelmanagement.repository.GuestRepository;
 import org.bytesync.hotelmanagement.repository.ContactRepository;
-import org.bytesync.hotelmanagement.repository.specification.GuestSpecification;
+import org.bytesync.hotelmanagement.specification.GuestSpecification;
 import org.bytesync.hotelmanagement.service.interfaces.guest.IGuestService;
 import org.bytesync.hotelmanagement.util.mapper.GuestMapper;
 import org.springframework.data.domain.Page;
@@ -20,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 

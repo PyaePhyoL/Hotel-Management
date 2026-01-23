@@ -6,12 +6,16 @@ import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.model.Expense;
 import org.bytesync.hotelmanagement.repository.ExpenseRepository;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IExpenseService;
+import org.bytesync.hotelmanagement.specification.FinanceSpecification;
 import org.bytesync.hotelmanagement.util.mapper.FinanceMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
@@ -29,9 +33,10 @@ public class ExpenseService implements IExpenseService {
     }
 
     @Override
-    public PageResult<ExpenseDto> getExpenseList(int page, int size) {
+    public PageResult<ExpenseDto> getExpenseList(int page, int size, LocalDate from, LocalDate to) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-        Page<Expense> all = expenseRepository.findAll(pageable);
+        Specification<Expense> spec = FinanceSpecification.expenseFilterByDate(from, to, null);
+        Page<Expense> all = expenseRepository.findAll(spec, pageable);
         var dtos = all.getContent().stream().map(FinanceMapper::toExpenseDto).toList();
         return new  PageResult<>(dtos, all.getTotalElements(), page, size);
     }

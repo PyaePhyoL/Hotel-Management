@@ -12,7 +12,7 @@ import org.bytesync.hotelmanagement.model.Room;
 import org.bytesync.hotelmanagement.enums.Floor;
 import org.bytesync.hotelmanagement.enums.RoomStatus;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
-import org.bytesync.hotelmanagement.repository.specification.RoomSpecification;
+import org.bytesync.hotelmanagement.specification.RoomSpecification;
 import org.bytesync.hotelmanagement.service.interfaces.hotel.IRoomService;
 import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
 import org.springframework.data.domain.Page;

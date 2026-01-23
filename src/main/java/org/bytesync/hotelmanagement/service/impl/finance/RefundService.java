@@ -10,14 +10,19 @@ import org.bytesync.hotelmanagement.repository.PaymentRepository;
 import org.bytesync.hotelmanagement.repository.RefundRepository;
 import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IRefundService;
+import org.bytesync.hotelmanagement.specification.FinanceSpecification;
 import org.bytesync.hotelmanagement.util.mapper.FinanceMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
+import static org.bytesync.hotelmanagement.enums.RefundType.PAYMENT_REFUND;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Service
@@ -59,7 +64,7 @@ public class RefundService implements IRefundService {
         var leftAmount= payment.getAmount() - refundAmount;
 
         payment.setAmount(leftAmount);
-        var refund = FinanceMapper.toRefund(refundDto, RefundType.PAYMENT_REFUND);
+        var refund = FinanceMapper.toRefund(refundDto, PAYMENT_REFUND);
         refund.setReservation(payment.getReservation());
 
         paymentRepository.save(payment);
@@ -69,9 +74,10 @@ public class RefundService implements IRefundService {
     }
 
     @Override
-    public PageResult<RefundDto> getRefundList(int page, int size) {
+    public PageResult<RefundDto> getRefundList(int page, int size, LocalDate from, LocalDate to) {
         Pageable pageable = PageRequest.of(page, size).withSort(Sort.by(Sort.Direction.DESC, "refundDate"));
-        Page<Refund> refundPage = refundRepository.findAll(pageable);
+        Specification<Refund> spec = FinanceSpecification.refundFilterByDate(from, to, PAYMENT_REFUND);
+        Page<Refund> refundPage = refundRepository.findAll(spec, pageable);
         var dtos =refundPage.getContent().stream().map(FinanceMapper::toRefundDto).toList();
         return new PageResult<>(dtos, refundPage.getTotalElements(), page, size);
     }

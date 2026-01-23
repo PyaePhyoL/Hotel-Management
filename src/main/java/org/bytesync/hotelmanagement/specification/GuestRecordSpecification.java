@@ -1,4 +1,4 @@
-package org.bytesync.hotelmanagement.repository.specification;
+package org.bytesync.hotelmanagement.specification;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
