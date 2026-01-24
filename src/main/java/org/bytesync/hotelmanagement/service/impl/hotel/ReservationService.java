@@ -23,6 +23,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.bytesync.hotelmanagement.enums.GuestStatus.BLACKLIST;
@@ -272,6 +276,20 @@ public class ReservationService implements IReservationService {
         reservationRepository.save(reservation);
 
         return "Reservation updated successfully";
+    }
+
+    @Override
+    public Integer getNightCheckInCount() {
+        var from = LocalDateTime.of(LocalDate.now(), LocalTime.of(6, 0));
+        var to = LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 0));
+        return reservationRepository.countAllActiveByShift(from, to);
+    }
+
+    @Override
+    public Integer getMorningCheckInCount() {
+        var from = LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 0));
+        var to = LocalDateTime.of(LocalDate.now(), LocalTime.of(6, 0));
+        return reservationRepository.countAllActiveByShift(from, to);
     }
 
 //    Private methods

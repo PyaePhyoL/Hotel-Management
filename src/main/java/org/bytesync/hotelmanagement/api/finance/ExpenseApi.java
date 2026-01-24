@@ -37,7 +37,11 @@ public class ExpenseApi {
     @GetMapping("/list")
     public ResponseEntity<ResponseMessage<PageResult<ExpenseDto>>> getExpenseList(@RequestParam(required = false, defaultValue = "0") int page,
                                                                                   @RequestParam(required = false, defaultValue = "10") int size,
-                                                                                  @RequestBody FinanceFilterDto filterDto) {
+                                                                                  @RequestParam LocalDate from,
+                                                                                  @RequestParam LocalDate to,
+                                                                                  @RequestParam(required = false) String query,
+                                                                                  @RequestParam(required = false) String type) {
+        FinanceFilterDto filterDto = new FinanceFilterDto(from, to, query, type);
         var expenseList = expenseService.getExpenseList(page, size, filterDto);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", expenseList));
     }

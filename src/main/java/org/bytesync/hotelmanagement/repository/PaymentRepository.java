@@ -1,5 +1,7 @@
 package org.bytesync.hotelmanagement.repository;
 
+import org.bytesync.hotelmanagement.enums.IncomeType;
+import org.bytesync.hotelmanagement.enums.PaymentMethod;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -19,4 +21,12 @@ public interface PaymentRepository extends JpaRepository<Payment, Long>, JpaSpec
     List<Payment> findAllRoomRentPaymentsInMonthOfYear(int year, int month);
 
     List<Payment> findByDate(LocalDate date);
+
+    @Query("""
+    select p from Payment p
+    where p.type = :type
+    and p.date = :today
+    and p.paymentMethod = :paymentMethod
+""")
+    List<Payment> findByDateAndPaymentMethodAndIncomeType(LocalDate today, PaymentMethod paymentMethod, IncomeType type);
 }

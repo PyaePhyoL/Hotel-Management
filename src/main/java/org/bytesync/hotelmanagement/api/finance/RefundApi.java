@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
@@ -44,7 +46,11 @@ public class RefundApi {
     @GetMapping("/list")
     public ResponseEntity<ResponseMessage<PageResult<RefundDto>>> getRefundList(@RequestParam(required = false, defaultValue = "0") int page,
                                                                                 @RequestParam(required = false, defaultValue = "10") int size,
-                                                                                @RequestBody FinanceFilterDto filterDto) {
+                                                                                @RequestParam LocalDate from,
+                                                                                @RequestParam LocalDate to,
+                                                                                @RequestParam(required = false) String query,
+                                                                                @RequestParam(required = false) String type) {
+        FinanceFilterDto filterDto = new FinanceFilterDto(from, to, query, type);
         var refundList = refundService.getRefundList(page, size, filterDto);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),

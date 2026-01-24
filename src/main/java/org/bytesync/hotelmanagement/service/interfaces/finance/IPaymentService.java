@@ -2,8 +2,7 @@ package org.bytesync.hotelmanagement.service.interfaces.finance;
 
 import org.bytesync.hotelmanagement.dto.finance.*;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
-
-import java.time.LocalDate;
+import org.bytesync.hotelmanagement.enums.PaymentMethod;
 
 public interface IPaymentService {
 
@@ -18,4 +17,7 @@ public interface IPaymentService {
     PageResult<PaymentDto> getPaymentListByReservation(Long id, int page, int size);
 
     PaymentDetailsDto getPaymentDetailsById(Long id);
+
+    Integer getDailyIncomeAmountByPaymentMethod(PaymentMethod type);
+
 }

@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.MainDashboard;
+import org.bytesync.hotelmanagement.enums.PaymentMethod;
 import org.bytesync.hotelmanagement.enums.RoomStatus;
 import org.bytesync.hotelmanagement.service.interfaces.IDashboardService;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IPaymentService;
@@ -23,11 +24,18 @@ public class DashboardService implements IDashboardService {
 
         var rooms = roomService.getAllRoomsInGridView(status);
         var dailyIncome = paymentService.getDailyIncomeAmount();
+        var cashIncome = paymentService.getDailyIncomeAmountByPaymentMethod(PaymentMethod.CASH);
+        var kpayIncome = paymentService.getDailyIncomeAmountByPaymentMethod(PaymentMethod.KPAY);
+
         var checkIns = reservationService.getActiveReservationCount();
+        var morningCheckIns = reservationService.getMorningCheckInCount();
+        var nightCheckIns = reservationService.getNightCheckInCount();
 
         dashboard.setRooms(rooms);
         dashboard.setNoOfCheckins(checkIns);
         dashboard.setDailyIncome(dailyIncome);
+        dashboard.setCashIncome(cashIncome);
+        dashboard.setKpayIncome(kpayIncome);
         return dashboard;
     }
 }

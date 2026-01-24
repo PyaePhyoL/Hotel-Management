@@ -81,7 +81,11 @@ public class PaymentService implements IPaymentService {
         var today = LocalDate.now();
         var payments =paymentRepository.findByDate(today);
 
-        return payments.stream().map(Payment::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
+        return payments.stream()
+                .filter(payment -> payment.getType().equals(ROOM_RENT))
+                .map(Payment::getAmount)
+                .filter(Objects::nonNull)
+                .reduce(Integer::sum).orElse(0);
     }
 
     @Override
@@ -113,5 +117,16 @@ public class PaymentService implements IPaymentService {
         var payment = safeCall(paymentRepository.findById(id), "Payment", id);
         return FinanceMapper.toPaymentDetailsDto(payment);
     }
+
+    @Override
+    public Integer getDailyIncomeAmountByPaymentMethod(PaymentMethod type) {
+        LocalDate today = LocalDate.now();
+        var payments = paymentRepository.findByDateAndPaymentMethodAndIncomeType(today, type, ROOM_RENT);
+        return payments.stream()
+                .map(Payment::getAmount)
+                .filter(Objects::nonNull)
+                .reduce(Integer::sum).orElse(0);
+    }
+
 
 }
