@@ -15,7 +15,4 @@ public class DailyBalance {
     private Integer totalExpenses;
     private Integer totalRefunds;
     private Integer dailyProfit;
-
-    private Integer totalServiceIncomes;
-    private Integer totalFoodIncomes;
 }

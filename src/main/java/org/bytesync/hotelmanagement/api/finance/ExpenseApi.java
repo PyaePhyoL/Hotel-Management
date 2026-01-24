@@ -3,6 +3,8 @@ package org.bytesync.hotelmanagement.api.finance;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.ExpenseDto;
+import org.bytesync.hotelmanagement.dto.finance.ExpenseFilterDto;
+import org.bytesync.hotelmanagement.dto.finance.FinanceFilterDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.service.impl.finance.ExpenseService;
@@ -35,12 +37,8 @@ public class ExpenseApi {
     @GetMapping("/list")
     public ResponseEntity<ResponseMessage<PageResult<ExpenseDto>>> getExpenseList(@RequestParam(required = false, defaultValue = "0") int page,
                                                                                   @RequestParam(required = false, defaultValue = "10") int size,
-                                                                                  @RequestParam(required = false) LocalDate from,
-                                                                                  @RequestParam(required = false) LocalDate to) {
-        if(from == null && to == null) {
-            from = getCurrentYangonZoneLocalDateTime().toLocalDate();
-        }
-        var expenseList = expenseService.getExpenseList(page, size, from, to);
+                                                                                  @RequestBody FinanceFilterDto filterDto) {
+        var expenseList = expenseService.getExpenseList(page, size, filterDto);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", expenseList));
     }
 

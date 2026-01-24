@@ -19,9 +19,5 @@ public class BalanceSummarySheet {
     private Integer profit;
 
     private List<DailyBalance> dailyBalances;
-    private List<PaymentDto> incomes;
-    private List<ExpenseDto> expenses;
-    private List<RefundDto> refunds;
 
-    private List<PaymentDto> foodAndServiceIncomes;
 }

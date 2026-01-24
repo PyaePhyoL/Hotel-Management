@@ -12,7 +12,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long>, JpaSpec
 
     @Query("""
     select p from Payment p
-    where p.incomeType = 'ROOM_RENT'
+    where p.type = 'ROOM_RENT'
     and FUNCTION('YEAR', p.date) = :year
     and FUNCTION('MONTH', p.date) = :month
 """)

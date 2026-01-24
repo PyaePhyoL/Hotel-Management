@@ -1,9 +1,7 @@
 package org.bytesync.hotelmanagement.api.finance;
 
 import lombok.RequiredArgsConstructor;
-import org.bytesync.hotelmanagement.dto.finance.PaymentCreateForm;
-import org.bytesync.hotelmanagement.dto.finance.PaymentDetailsDto;
-import org.bytesync.hotelmanagement.dto.finance.PaymentDto;
+import org.bytesync.hotelmanagement.dto.finance.*;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IPaymentService;
@@ -33,12 +31,8 @@ public class PaymentApi {
     @GetMapping("/list")
     public ResponseEntity<ResponseMessage<PageResult<PaymentDto>>> getPaymentList(@RequestParam(required = false, defaultValue = "0") int page,
                                                                                   @RequestParam(required = false, defaultValue = "10") int size,
-                                                                                  @RequestParam(required = false) LocalDate from,
-                                                                                  @RequestParam(required = false) LocalDate to) {
-        if(from == null && to == null) {
-            from = getCurrentYangonZoneLocalDateTime().toLocalDate();
-        }
-        var paymentList = paymentService.getPaymentList(page, size, from, to);
+                                                                                  @RequestBody FinanceFilterDto filterDto) {
+        var paymentList = paymentService.getPaymentList(page, size, filterDto);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", paymentList));
     }
 

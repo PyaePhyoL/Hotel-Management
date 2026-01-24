@@ -45,6 +45,8 @@ public class PaymentService implements IPaymentService {
         var payment = FinanceMapper.toPayment(paymentCreateForm);
 
         payment.setReservation(reservation);
+        payment.setGuest(reservation.getGuest());
+
         vouchers.forEach(voucher -> {
             voucher.setIsPaid(true);
             payment.addDailyVoucher(voucher);
@@ -66,9 +68,9 @@ public class PaymentService implements IPaymentService {
     }
 
     @Override
-    public PageResult<PaymentDto> getPaymentList(int page, int size, LocalDate from, LocalDate to) {
+    public PageResult<PaymentDto> getPaymentList(int page, int size, FinanceFilterDto filterDto) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-        Specification<Payment> spec = FinanceSpecification.paymentFilterByDate(from, to, ROOM_RENT);
+        Specification<Payment> spec = FinanceSpecification.financeFilter(filterDto);
         Page<Payment> all = paymentRepository.findAll(spec, pageable);
         var dtos = all.getContent().stream().map(FinanceMapper::toPaymentDto).toList();
         return new  PageResult<>(dtos, all.getTotalElements(), page, size);

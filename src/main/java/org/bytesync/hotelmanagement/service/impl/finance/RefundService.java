@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.service.impl.finance;
 
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.RefundDto;
+import org.bytesync.hotelmanagement.dto.finance.FinanceFilterDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.enums.RefundType;
 import org.bytesync.hotelmanagement.exception.NotEnoughMoneyException;
@@ -19,8 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
 
 import static org.bytesync.hotelmanagement.enums.RefundType.PAYMENT_REFUND;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
@@ -66,6 +65,7 @@ public class RefundService implements IRefundService {
         payment.setAmount(leftAmount);
         var refund = FinanceMapper.toRefund(refundDto, PAYMENT_REFUND);
         refund.setReservation(payment.getReservation());
+        refund.setGuest(payment.getGuest());
 
         paymentRepository.save(payment);
         var refundId = refundRepository.save(refund).getId();
@@ -74,9 +74,9 @@ public class RefundService implements IRefundService {
     }
 
     @Override
-    public PageResult<RefundDto> getRefundList(int page, int size, LocalDate from, LocalDate to) {
-        Pageable pageable = PageRequest.of(page, size).withSort(Sort.by(Sort.Direction.DESC, "refundDate"));
-        Specification<Refund> spec = FinanceSpecification.refundFilterByDate(from, to, PAYMENT_REFUND);
+    public PageResult<RefundDto> getRefundList(int page, int size, FinanceFilterDto dto) {
+        Pageable pageable = PageRequest.of(page, size).withSort(Sort.by(Sort.Direction.DESC, "date"));
+        Specification<Refund> spec = FinanceSpecification.financeFilter(dto);
         Page<Refund> refundPage = refundRepository.findAll(spec, pageable);
         var dtos =refundPage.getContent().stream().map(FinanceMapper::toRefundDto).toList();
         return new PageResult<>(dtos, refundPage.getTotalElements(), page, size);

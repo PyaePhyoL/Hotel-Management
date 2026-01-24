@@ -1,9 +1,8 @@
 package org.bytesync.hotelmanagement.service.interfaces.finance;
 
 import org.bytesync.hotelmanagement.dto.finance.RefundDto;
+import org.bytesync.hotelmanagement.dto.finance.FinanceFilterDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
-
-import java.time.LocalDate;
 
 public interface IRefundService {
 
@@ -11,5 +10,5 @@ public interface IRefundService {
 
     String createPaymentRefund(Long paymentId, RefundDto refundDto);
 
-    PageResult<RefundDto> getRefundList(int page, int size, LocalDate from, LocalDate to);
+    PageResult<RefundDto> getRefundList(int page, int size, FinanceFilterDto filterDto);
 }

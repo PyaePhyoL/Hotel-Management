@@ -1,17 +1,22 @@
 package org.bytesync.hotelmanagement.specification;
 
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
+import org.bytesync.hotelmanagement.dto.finance.ExpenseFilterDto;
+import org.bytesync.hotelmanagement.dto.finance.PaymentFilterDto;
+import org.bytesync.hotelmanagement.dto.finance.FinanceFilterDto;
 import org.bytesync.hotelmanagement.enums.ExpenseType;
 import org.bytesync.hotelmanagement.enums.IncomeType;
 import org.bytesync.hotelmanagement.enums.RefundType;
-import org.bytesync.hotelmanagement.model.Expense;
-import org.bytesync.hotelmanagement.model.Payment;
-import org.bytesync.hotelmanagement.model.Refund;
+import org.bytesync.hotelmanagement.model.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getCurrentYangonZoneLocalDateTime;
 
 public class FinanceSpecification {
 
@@ -20,64 +25,63 @@ public class FinanceSpecification {
                 cb.equal(root.get("reservation").get("id"), reservationId);
     }
 
-    public static Specification<Payment> paymentFilterByDate(LocalDate from,
-                                                             LocalDate to,
-                                                             IncomeType incomeType) {
+    public static <T> Specification<T> financeFilter(FinanceFilterDto dto) {
         return (root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
+            Class<T> entityClass = root.getModel().getBindableJavaType();
 
-            if(incomeType != null) {
-                predicates.add(cb.equal(root.get("incomeType"), incomeType));
+            if(entityClass.equals(Refund.class)) {
+                if(dto.type() != null) {
+                    var refundType = RefundType.valueOf(dto.type());
+                    predicates.add(cb.equal(root.get("type"), refundType));
+                }
             }
 
-            if(from != null && to != null) {
-                predicates.add(cb.between(root.get("date"), from, to));
-            } else if (from != null) {
-                predicates.add(cb.equal(root.get("date"), from));
-            } else if (to != null) {
-                predicates.add(cb.equal(root.get("date"), to));
+            if(entityClass.equals(Payment.class)) {
+                if(dto.type() != null) {
+                    var incomeType = IncomeType.valueOf(dto.type());
+                    predicates.add(cb.equal(root.get("type"), incomeType));
+                }
             }
 
-            return cb.and(predicates.toArray(new Predicate[0]));
-        };
-    }
-
-    public static Specification<Expense> expenseFilterByDate(LocalDate from,
-                                                             LocalDate to,
-                                                             ExpenseType expenseType) {
-        return (root, cq, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
-
-            if(expenseType != null) {
-                predicates.add(cb.equal(root.get("type"), expenseType));
+            if(entityClass.equals(Expense.class)) {
+                if (dto.type() != null) {
+                    var expenseType = ExpenseType.valueOf(dto.type());
+                    predicates.add(cb.equal(root.get("type"), expenseType));
+                }
             }
 
-            if(from != null && to != null) {
-                predicates.add(cb.between(root.get("date"), from, to));
-            } else if (from != null) {
-                predicates.add(cb.equal(root.get("date"), from));
-            } else if (to != null) {
-                predicates.add(cb.equal(root.get("date"), to));
+            if(dto.from() != null && dto.to() != null) {
+                predicates.add(cb.between(root.get("date"), dto.from(), dto.to()));
+            } else if (dto.from() != null) {
+                predicates.add(cb.equal(root.get("date"), dto.from()));
+            } else if (dto.to() != null) {
+                predicates.add(cb.equal(root.get("date"), dto.to()));
+            } else {
+                LocalDate today = getCurrentYangonZoneLocalDateTime().toLocalDate();
+                predicates.add(cb.equal(root.get("date"), today));
             }
 
-            return cb.and(predicates.toArray(new Predicate[0]));
-        };
-    }
+            try {
+                Integer amount = Integer.parseInt(dto.query());
+                predicates.add(cb.equal(root.get("amount"), amount));
+            } catch (NumberFormatException e) {
+                if(dto.query() != null) {
+                    String likeKeyword = "%" + dto.query().toLowerCase() + "%";
 
-    public static Specification<Refund> refundFilterByDate(LocalDate from, LocalDate to, RefundType refundType) {
-        return (root, cq, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
+                    if(entityClass.equals(Payment.class) || entityClass.equals(Refund.class)) {
+                        Join<Refund, Guest> guestJoin = root.join("guest", JoinType.INNER);
+                        predicates.add(cb.or(cb.like(cb.lower(guestJoin.get("name")), likeKeyword),
+                                cb.like(root.get("notes"), likeKeyword)));
+                    }
 
-            if(refundType != null) {
-                predicates.add(cb.equal(root.get("type"), refundType));
-            }
-
-            if(from != null && to != null) {
-                predicates.add(cb.between(root.get("date"), from, to));
-            } else if (from != null) {
-                predicates.add(cb.equal(root.get("date"), from));
-            } else if (to != null) {
-                predicates.add(cb.equal(root.get("date"), to));
+                    if(entityClass.equals(Expense.class)) {
+                        predicates.add(cb.or(
+                                cb.like(root.get("title"), likeKeyword),
+                                cb.like(root.get("notes"), likeKeyword)
+                        ));
+                    }
+                }
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

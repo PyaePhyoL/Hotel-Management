@@ -1,7 +1,6 @@
 package org.bytesync.hotelmanagement.api.finance;
 
 import lombok.RequiredArgsConstructor;
-import org.bytesync.hotelmanagement.dto.finance.BalanceSheetFilterDto;
 import org.bytesync.hotelmanagement.dto.finance.BalanceSummarySheet;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IBalanceService;

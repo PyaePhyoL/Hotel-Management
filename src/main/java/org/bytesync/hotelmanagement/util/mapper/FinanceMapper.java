@@ -26,7 +26,7 @@ public class FinanceMapper {
                 .amount(amount)
                 .paymentMethod(paymentCreateForm.getPaymentMethod())
                 .notes(paymentCreateForm.getNotes())
-                .incomeType(paymentCreateForm.getIncomeType())
+                .type(paymentCreateForm.getIncomeType())
                 .vouchers(new ArrayList<>())
                 .build();
     }
@@ -38,10 +38,10 @@ public class FinanceMapper {
                 .paymentDate(payment.getDate())
                 .amount(payment.getAmount())
                 .paymentMethod(payment.getPaymentMethod())
-                .incomeType(payment.getIncomeType())
+                .incomeType(payment.getType())
                 .notes(payment.getNotes())
                 .reservationId(reservation.getId())
-                .guestName(reservation.getGuest().getName())
+                .guestName(payment.getGuest().getName())
                 .roomNo(reservation.getRoom().getRoomNo())
                 .build();
     }
@@ -54,7 +54,7 @@ public class FinanceMapper {
                 .paymentDate(payment.getDate())
                 .amount(payment.getAmount())
                 .paymentMethod(payment.getPaymentMethod())
-                .incomeType(payment.getIncomeType())
+                .incomeType(payment.getType())
                 .notes(payment.getNotes())
                 .reservationId(reservation.getId())
                 .guestName(reservation.getGuest().getName())
@@ -105,6 +105,7 @@ public class FinanceMapper {
         return RefundDto.builder()
                 .id(refund.getId())
                 .refundDate(refund.getDate())
+                .guestName(refund.getGuest().getName())
                 .amount(refund.getAmount())
                 .type(refund.getType())
                 .notes(refund.getNotes())

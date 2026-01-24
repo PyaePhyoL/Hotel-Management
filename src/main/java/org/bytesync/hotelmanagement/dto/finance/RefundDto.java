@@ -12,6 +12,7 @@ public class RefundDto {
     private Long id;
     private LocalDate refundDate;
     private RefundType type;
+    private String guestName;
     private Integer amount;
     private String notes;
 }

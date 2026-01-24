@@ -156,7 +156,7 @@ public class VoucherService implements IVoucherService {
                 .date(LocalDate.now())
                 .amount(reservation.getPrice())
                 .paymentMethod(DEPOSIT)
-                .incomeType(ROOM_RENT)
+                .type(ROOM_RENT)
                 .notes("Automatic paid from deposit")
                 .vouchers(new ArrayList<>())
                 .build();

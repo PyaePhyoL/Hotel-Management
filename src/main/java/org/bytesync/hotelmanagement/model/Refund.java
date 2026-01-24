@@ -18,6 +18,9 @@ public class Refund extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate date;
+
+    @ManyToOne
+    private Guest guest;
     private Integer amount;
 
     @Column(columnDefinition = "TEXT")
@@ -27,11 +30,13 @@ public class Refund extends Auditable {
     @ManyToOne
     private Reservation reservation;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Expense expense;
-
     public void setReservation(Reservation reservation) {
         this.reservation = reservation;
         reservation.addRefund(this);
+    }
+
+    public void setGuest(Guest guest) {
+        this.guest = guest;
+        guest.addRefund(this);
     }
 }

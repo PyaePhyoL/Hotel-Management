@@ -53,9 +53,23 @@ public class Guest {
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
+    private List<Payment> paymentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
+    private List<Refund> refundList = new ArrayList<>();
+
     public void addReservation(Reservation reservation) {
         this.reservationList.add(reservation);
         this.setCurrentReservationId(reservation.getId());
+    }
+
+    public void addPayment(Payment payment) {
+        this.paymentList.add(payment);
+    }
+
+    public void addRefund(Refund refund) {
+        this.refundList.add(refund);
     }
 
 }

@@ -21,6 +21,9 @@ public class Payment extends Auditable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate date;
+
+    @ManyToOne
+    private Guest guest;
     private Integer amount;
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
@@ -32,7 +35,7 @@ public class Payment extends Auditable{
     private Reservation reservation;
 
     @Enumerated(value = EnumType.STRING)
-    private IncomeType incomeType;
+    private IncomeType type;
 
     @OneToMany(mappedBy = "payment", cascade = CascadeType.PERSIST)
     private List<Voucher> vouchers;
@@ -45,6 +48,11 @@ public class Payment extends Auditable{
     public void addDailyVoucher(Voucher voucher) {
         this.vouchers.add(voucher);
         voucher.setPayment(this);
+    }
+
+    public void setGuest(Guest guest) {
+        this.guest = guest;
+        guest.addPayment(this);
     }
 
 }

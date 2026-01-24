@@ -2,17 +2,13 @@ package org.bytesync.hotelmanagement.api.finance;
 
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.RefundDto;
+import org.bytesync.hotelmanagement.dto.finance.FinanceFilterDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.output.ResponseMessage;
-import org.bytesync.hotelmanagement.service.impl.finance.RefundService;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IRefundService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-
-import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getCurrentYangonZoneLocalDateTime;
 
 @CrossOrigin("*")
 @RestController
@@ -48,12 +44,8 @@ public class RefundApi {
     @GetMapping("/list")
     public ResponseEntity<ResponseMessage<PageResult<RefundDto>>> getRefundList(@RequestParam(required = false, defaultValue = "0") int page,
                                                                                 @RequestParam(required = false, defaultValue = "10") int size,
-                                                                                @RequestParam(required = false) LocalDate from,
-                                                                                @RequestParam(required = false) LocalDate to) {
-        if(from == null && to == null) {
-            from = getCurrentYangonZoneLocalDateTime().toLocalDate();
-        }
-        var refundList = refundService.getRefundList(page, size, from, to);
+                                                                                @RequestBody FinanceFilterDto filterDto) {
+        var refundList = refundService.getRefundList(page, size, filterDto);
         return ResponseEntity.ok(new ResponseMessage<>(
                 HttpStatus.OK.value(),
                 "",

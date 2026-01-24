@@ -10,15 +10,18 @@ import org.bytesync.hotelmanagement.repository.PaymentRepository;
 import org.bytesync.hotelmanagement.repository.RefundRepository;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IBalanceService;
 import org.bytesync.hotelmanagement.specification.FinanceSpecification;
-import org.bytesync.hotelmanagement.util.mapper.FinanceMapper;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.bytesync.hotelmanagement.enums.IncomeType.ROOM_RENT;
+import static org.bytesync.hotelmanagement.enums.RefundType.PAYMENT_REFUND;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.dateFormat;
 
 @Service
@@ -31,18 +34,21 @@ public class BalanceService implements IBalanceService {
 
     @Override
     public BalanceSummarySheet getBalanceSummarySheet(LocalDate from, LocalDate to) {
-        Specification<Payment> paymentSpecification = FinanceSpecification.paymentFilterByDate(from, to, ROOM_RENT);
-        Specification<Expense> expenseSpecification = FinanceSpecification.expenseFilterByDate(from, to, null);
-        Specification<Refund> refundSpecification = FinanceSpecification.refundFilterByDate(from, to, null);
+        Specification<Payment> paymentSpecification = FinanceSpecification.financeFilter(new FinanceFilterDto(from, to, null, ROOM_RENT.toString()));
+        Specification<Expense> expenseSpecification = FinanceSpecification.financeFilter(new FinanceFilterDto(from, to, null, null));
+        Specification<Refund> refundSpecification = FinanceSpecification.financeFilter(new FinanceFilterDto(from, to, null, PAYMENT_REFUND.toString()));
 
-        var totalIncome = paymentRepository.findAll(paymentSpecification).stream()
-                .filter(payment -> payment.getIncomeType().equals(ROOM_RENT))
+        List<Payment> paymentList = paymentRepository.findAll(paymentSpecification);
+        List<Expense> expenseList = expenseRepository.findAll(expenseSpecification);
+        List<Refund> refundList = refundRepository.findAll(refundSpecification);
+
+        var totalIncome = paymentList.stream().filter(payment -> payment.getType().equals(ROOM_RENT))
                 .map(Payment::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
-        var totalExpense = expenseRepository.findAll(expenseSpecification).stream()
-                .map(Expense::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
-        var totalRefund = refundRepository.findAll(refundSpecification).stream()
-                .map(Refund::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
+        var totalExpense = expenseList.stream().map(Expense::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
+        var totalRefund = refundList.stream().map(Refund::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
         var profit =  totalIncome - totalExpense;
+
+        List<DailyBalance> dailyBalanceList = getDailyBalanceList(paymentList, expenseList, refundList, from, to);
 
         return BalanceSummarySheet.builder()
                 .period(getPeriodString(from, to))
@@ -50,6 +56,7 @@ public class BalanceService implements IBalanceService {
                 .totalExpense(totalExpense)
                 .totalRefund(totalRefund)
                 .profit(profit)
+                .dailyBalances(dailyBalanceList)
                 .build();
     }
 
@@ -63,4 +70,50 @@ public class BalanceService implements IBalanceService {
         }
         return  null;
     }
+
+    private List<DailyBalance> getDailyBalanceList(List<Payment> paymentList,
+                                                   List<Expense> expenseDtos,
+                                                   List<Refund> refundDtos,
+                                                   LocalDate startDate,
+                                                   LocalDate endDate) {
+
+        List<DailyBalance> dailyBalances = new ArrayList<>();
+
+        // Pre-group incomes by date
+        Map<LocalDate, Integer> incomeMap = paymentList.stream()
+                .collect(Collectors.groupingBy(
+                        Payment::getDate,
+                        Collectors.summingInt(Payment::getAmount)
+                ));
+
+        // Pre-group expenses by date
+        Map<LocalDate, Integer> expenseMap = expenseDtos.stream()
+                .collect(Collectors.groupingBy(
+                        Expense::getDate,
+                        Collectors.summingInt(Expense::getAmount)
+                ));
+
+        Map<LocalDate, Integer> refundMap = refundDtos.stream()
+                .collect(Collectors.groupingBy(
+                        Refund::getDate,
+                        Collectors.summingInt(Refund::getAmount)
+                ));
+
+        var current = startDate;
+
+        while (!current.isAfter(endDate)) {
+            int dailyIncome = incomeMap.getOrDefault(current, 0);
+            int dailyExpense = expenseMap.getOrDefault(current, 0);
+            int dailyRefund = refundMap.getOrDefault(current, 0);
+            int dailyProfit = dailyIncome - dailyExpense;
+
+            dailyBalances.add(new DailyBalance(current, dailyIncome, dailyExpense, dailyRefund, dailyProfit));
+
+            current = current.plusDays(1); // IMPORTANT: move to next day
+        }
+
+        return dailyBalances;
+    }
+
+
 }
