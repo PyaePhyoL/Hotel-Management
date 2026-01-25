@@ -23,10 +23,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 import static org.bytesync.hotelmanagement.enums.GuestStatus.BLACKLIST;
@@ -73,6 +69,7 @@ public class ReservationService implements IReservationService {
     @Override
     public String checkinReservation(Long reservationId) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
+        var room = reservation.getRoom();
 
         if(reservation.getStatus() == Status.BOOKING) {
             var checkinDateTime = getCurrentYangonZoneLocalDateTime();
@@ -80,6 +77,10 @@ public class ReservationService implements IReservationService {
             reservation.setStatus(Status.ACTIVE);
 
             reservation.getGuest().setIsStaying(true);
+            room.setCurrentStatus(RoomMapper
+                    .getRoomCurrentStatusFromReservation(
+                            reservation.getStatus(),
+                            reservation.getStayType()));
 
             reservationRepository.save(reservation);
 
@@ -279,17 +280,18 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public Integer getNightCheckInCount() {
-        var from = LocalDateTime.of(LocalDate.now(), LocalTime.of(6, 0));
-        var to = LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 0));
-        return reservationRepository.countAllActiveByShift(from, to);
+    public Integer getDayShiftCheckInCount() {
+        Specification<Reservation> spec = ReservationSpecification.morningShiftFilter();
+        List<Reservation> reservations = reservationRepository.findAll(spec);
+        return reservations.size();
     }
 
+
     @Override
-    public Integer getMorningCheckInCount() {
-        var from = LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 0));
-        var to = LocalDateTime.of(LocalDate.now(), LocalTime.of(6, 0));
-        return reservationRepository.countAllActiveByShift(from, to);
+    public Integer getNightShiftCheckInCount() {
+        Specification<Reservation> spec = ReservationSpecification.nightShiftFilter();
+        List<Reservation> reservations = reservationRepository.findAll(spec);
+        return reservations.size();
     }
 
 //    Private methods

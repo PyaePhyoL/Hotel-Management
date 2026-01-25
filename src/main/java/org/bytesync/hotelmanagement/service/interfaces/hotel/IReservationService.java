@@ -1,13 +1,9 @@
 package org.bytesync.hotelmanagement.service.interfaces.hotel;
 
-import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.dto.reservation.*;
-import org.bytesync.hotelmanagement.dto.room.RoomPricingRuleDto;
 import org.bytesync.hotelmanagement.enums.Status;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IReservationService {
@@ -42,7 +38,7 @@ public interface IReservationService {
 
     String updateReservation(Long id, ReservationForm form);
 
-    Integer getNightCheckInCount();
+    Integer getDayShiftCheckInCount();
 
-    Integer getMorningCheckInCount();
+    Integer getNightShiftCheckInCount();
 }

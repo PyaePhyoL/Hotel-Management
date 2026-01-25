@@ -56,6 +56,8 @@ public class PaymentService implements IPaymentService {
     }
 
     private void validateVoucherTypesConsistency(List<Voucher> voucherList, IncomeType type) {
+        if(voucherList.isEmpty()) throw new IllegalArgumentException("Voucher list is empty");
+
         IncomeType firstType = voucherList.getFirst().getType();
 
         voucherList.forEach(v -> {
