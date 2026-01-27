@@ -1,6 +1,7 @@
 package org.bytesync.hotelmanagement.service.impl.finance;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bytesync.hotelmanagement.dto.finance.VoucherCreatForm;
 import org.bytesync.hotelmanagement.dto.finance.VoucherDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
@@ -26,6 +27,7 @@ import static org.bytesync.hotelmanagement.enums.IncomeType.ROOM_RENT;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getCurrentYangonZoneLocalDateTime;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VoucherService implements IVoucherService {
@@ -42,6 +44,7 @@ public class VoucherService implements IVoucherService {
             case LONG -> createVoucherForLongStay(reservation);
         };
 
+        log.info("Voucher {} ", voucher.getRoomNo());
         reservation.addVoucher(voucher);
 
         voucherRepository.save(voucher);
@@ -159,6 +162,7 @@ public class VoucherService implements IVoucherService {
                 .type(ROOM_RENT)
                 .notes("Automatic paid from deposit")
                 .vouchers(new ArrayList<>())
+                .guest(reservation.getGuest())
                 .build();
         payment.setReservation(reservation);
         payment.addDailyVoucher(dailyVoucher);

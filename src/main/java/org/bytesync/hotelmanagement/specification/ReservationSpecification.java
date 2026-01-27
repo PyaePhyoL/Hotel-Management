@@ -1,5 +1,6 @@
 package org.bytesync.hotelmanagement.specification;
 
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
@@ -11,6 +12,9 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.bytesync.hotelmanagement.enums.Status.ACTIVE;
+import static org.bytesync.hotelmanagement.enums.Status.BOOKING;
 
 public class ReservationSpecification {
 
@@ -47,5 +51,40 @@ public class ReservationSpecification {
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    public static Specification<Reservation> nightShiftFilter() {
+        return (root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            Expression<Integer> hourExp = cb.function("HOUR", Integer.class, root.get("checkInDateTime"));
+
+            predicates.add(cb.or(
+                    cb.greaterThanOrEqualTo(hourExp, 18),
+                    cb.lessThan(hourExp, 6)
+            ));
+
+            predicates.add(root.get("status").in(ACTIVE, BOOKING));
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+    }
+
+    public static Specification<Reservation> morningShiftFilter() {
+        return (root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            Expression<Integer> hourExp = cb.function("HOUR", Integer.class, root.get("checkInDateTime"));
+
+            predicates.add(cb.and(
+                    cb.greaterThanOrEqualTo(hourExp, 6),
+                    cb.lessThan(hourExp, 18)
+            ));
+            predicates.add(root.get("status").in(ACTIVE, BOOKING));
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
     }
 }

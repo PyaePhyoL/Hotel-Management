@@ -10,8 +10,8 @@ public class MainDashboard {
     private Integer cashIncome;
     private Integer kpayIncome;
 
-    private Integer morningShiftReservations;
-    private Integer nightShiftReservations;
+    private Integer dayShiftCheckins;
+    private Integer nightShiftCheckins;
 
     private RoomDashboardView rooms;
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation,Long>, JpaSpecificationExecutor<Reservation> {
@@ -36,9 +37,4 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long>, 
 """)
     Integer countAllActive();
 
-    @Query("""
-    select COUNT(r) from Reservation r
-    where r.checkInDateTime >= :from and r.checkInDateTime < :to
-""")
-    Integer countAllActiveByShift(LocalDateTime from, LocalDateTime to);
 }

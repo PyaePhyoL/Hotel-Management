@@ -25,7 +25,7 @@ public class ScheduleMethods {
     private final IVoucherService voucherService;
 
     @Transactional
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Yangon")
     public void scheduleEveryDayCreatingVouchers() {
 
         log.info(" =============> Creating Voucher Schedule Task <=============");
