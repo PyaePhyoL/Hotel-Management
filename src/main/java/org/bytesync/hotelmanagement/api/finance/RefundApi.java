@@ -46,8 +46,8 @@ public class RefundApi {
     @GetMapping("/list")
     public ResponseEntity<ResponseMessage<PageResult<RefundDto>>> getRefundList(@RequestParam(required = false, defaultValue = "0") int page,
                                                                                 @RequestParam(required = false, defaultValue = "10") int size,
-                                                                                @RequestParam LocalDate from,
-                                                                                @RequestParam LocalDate to,
+                                                                                @RequestParam(required = false) LocalDate from,
+                                                                                @RequestParam(required = false) LocalDate to,
                                                                                 @RequestParam(required = false) String query,
                                                                                 @RequestParam(required = false) String type) {
         FinanceFilterDto filterDto = new FinanceFilterDto(from, to, query, type);
