@@ -31,8 +31,6 @@ public class GuestRecordSpecification {
 
             Join<GuestRecord, Guest> guestJoin = root.join("guest", JoinType.INNER);
 
-            Join<Guest, String> phoneJoin = guestJoin.joinSet("phoneList", JoinType.LEFT);
-
             predicates.add(cb.equal(root.get("current"), isCurrent));
 
             predicates.add(cb.or(
@@ -42,7 +40,7 @@ public class GuestRecordSpecification {
                     cb.like(cb.lower(guestJoin.get("passport")), likeKeyword),
                     cb.like(cb.lower(guestJoin.get("occupation")), likeKeyword),
                     cb.like(cb.lower(guestJoin.get("address")), likeKeyword),
-                    cb.like(cb.lower(phoneJoin), likeKeyword)
+                    cb.like(cb.lower(guestJoin.get("phoneNumber")), likeKeyword)
             ));
 
             return cb.and(predicates.toArray(new Predicate[0]));

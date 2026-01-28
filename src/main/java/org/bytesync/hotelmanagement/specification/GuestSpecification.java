@@ -10,7 +10,6 @@ public class GuestSpecification {
     public static Specification<Guest> search(String query) {
         return (root, cq, cb) -> {
             String likeKeyword = "%" + query.toLowerCase() + "%";
-            Join<Guest, String> phoneJoin = root.join("phoneList", JoinType.LEFT);
 
             return cb.or(
                     cb.like(cb.lower(root.get("name")), likeKeyword),
@@ -19,7 +18,7 @@ public class GuestSpecification {
                     cb.like(cb.lower(root.get("passport")), likeKeyword),
                     cb.like(cb.lower(root.get("occupation")), likeKeyword),
                     cb.like(cb.lower(root.get("address")), likeKeyword),
-                    cb.like(cb.lower(phoneJoin), likeKeyword)
+                    cb.like(cb.lower(root.get("phoneNumber")), likeKeyword)
                     );
         };
     }
