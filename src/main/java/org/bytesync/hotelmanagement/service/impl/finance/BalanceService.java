@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static org.bytesync.hotelmanagement.enums.IncomeType.ROOM_RENT;
+import static org.bytesync.hotelmanagement.enums.IncomeType.*;
 import static org.bytesync.hotelmanagement.enums.RefundType.PAYMENT_REFUND;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.dateFormat;
 
@@ -34,19 +34,28 @@ public class BalanceService implements IBalanceService {
 
     @Override
     public BalanceSummarySheet getBalanceSummarySheet(LocalDate from, LocalDate to) {
-        Specification<Payment> paymentSpecification = FinanceSpecification.financeFilter(new FinanceFilterDto(from, to, null, ROOM_RENT.toString()));
-        Specification<Expense> expenseSpecification = FinanceSpecification.financeFilter(new FinanceFilterDto(from, to, null, null));
-        Specification<Refund> refundSpecification = FinanceSpecification.financeFilter(new FinanceFilterDto(from, to, null, PAYMENT_REFUND.toString()));
+        Specification<Payment> paymentSpec = FinanceSpecification.financeFilter(new FinanceFilterDto(from, to, null, ROOM_RENT.toString()));
+        Specification<Expense> expenseSpec = FinanceSpecification.financeFilter(new FinanceFilterDto(from, to, null, null));
+        Specification<Refund> refundSpec = FinanceSpecification.financeFilter(new FinanceFilterDto(from, to, null, PAYMENT_REFUND.toString()));
+        Specification<Payment> foodIncomeSpec = FinanceSpecification.financeFilter(new FinanceFilterDto(from, to, null, FOOD_CHARGES.toString()));
+        Specification<Payment> serviceIncomeSpec = FinanceSpecification.financeFilter(new FinanceFilterDto(from, to, null, SERVICE_CHARGES.toString()));
 
-        List<Payment> paymentList = paymentRepository.findAll(paymentSpecification);
-        List<Expense> expenseList = expenseRepository.findAll(expenseSpecification);
-        List<Refund> refundList = refundRepository.findAll(refundSpecification);
+        List<Payment> paymentList = paymentRepository.findAll(paymentSpec);
+        List<Expense> expenseList = expenseRepository.findAll(expenseSpec);
+        List<Refund> refundList = refundRepository.findAll(refundSpec);
+        List<Payment> foodIncomeList = paymentRepository.findAll(foodIncomeSpec);
+        List<Payment> serviceIncomeList = paymentRepository.findAll(serviceIncomeSpec);
 
-        var totalIncome = paymentList.stream().filter(payment -> payment.getType().equals(ROOM_RENT))
-                .map(Payment::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
+        var totalIncome = paymentList.stream().map(Payment::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
         var totalExpense = expenseList.stream().map(Expense::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
         var totalRefund = refundList.stream().map(Refund::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
         var profit =  totalIncome - totalExpense;
+
+        var totalFoodIncome = foodIncomeList.stream().map(Payment::getAmount)
+                .filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
+
+        var totalServiceIncome = serviceIncomeList.stream().map(Payment::getAmount)
+                .filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
 
         List<DailyBalance> dailyBalanceList = getDailyBalanceList(paymentList, expenseList, refundList, from, to);
 
@@ -55,6 +64,8 @@ public class BalanceService implements IBalanceService {
                 .totalIncome(totalIncome)
                 .totalExpense(totalExpense)
                 .totalRefund(totalRefund)
+                .totalFoodIncome(totalFoodIncome)
+                .totalServiceIncome(totalServiceIncome)
                 .profit(profit)
                 .dailyBalances(dailyBalanceList)
                 .build();

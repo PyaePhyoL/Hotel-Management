@@ -16,6 +16,8 @@ public class BalanceSummarySheet {
     private Integer totalIncome;
     private Integer totalExpense;
     private Integer totalRefund;
+    private Integer totalFoodIncome;
+    private Integer totalServiceIncome;
     private Integer profit;
 
     private List<DailyBalance> dailyBalances;
