@@ -3,6 +3,7 @@ package org.bytesync.hotelmanagement.dto.room;
 import lombok.Builder;
 import org.bytesync.hotelmanagement.enums.Floor;
 import org.bytesync.hotelmanagement.enums.RoomStatus;
+import org.bytesync.hotelmanagement.enums.RoomType;
 
 @Builder
 public record RoomDto(
@@ -10,6 +11,7 @@ public record RoomDto(
         Integer basePrice,
         Integer capacity,
         Floor floor,
-        RoomStatus currentStatus
+        RoomStatus currentStatus,
+        String roomType
 ) {
 }

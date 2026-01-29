@@ -20,6 +20,7 @@ public class RoomMapper {
                 .capacity(room.getRoomType().getCapacity())
                 .floor(room.getFloor())
                 .currentStatus(room.getCurrentStatus())
+                .roomType(room.getRoomType().getId())
                 .build();
     }
 

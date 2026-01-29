@@ -17,7 +17,8 @@ public interface RoomRepository extends JpaRepository<Room,Long>, JpaSpecificati
     r.roomType.price,
     r.roomType.capacity,
     r.floor,
-    r.currentStatus
+    r.currentStatus,
+    r.roomType.id
     )
     from Room r
     where r.currentStatus = :status
