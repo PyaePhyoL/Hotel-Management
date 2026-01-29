@@ -43,6 +43,7 @@ public class RefundService implements IRefundService {
         }
         var refund = FinanceMapper.toRefund(refundDto, RefundType.DEPOSIT_REFUND);
         refund.setReservation(reservation);
+        refund.setGuest(reservation.getGuest());
         var refundId = refundRepository.save(refund).getId();
 
         var leftDeposit = deposit - refund.getAmount();
