@@ -49,8 +49,9 @@ public class PaymentService implements IPaymentService {
 
         vouchers.forEach(voucher -> {
             voucher.setIsPaid(true);
-            payment.addDailyVoucher(voucher);
+            payment.addVoucher(voucher);
         });
+
         var id = paymentRepository.save(payment).getId();
         return "Payment created successfully : " + id;
     }

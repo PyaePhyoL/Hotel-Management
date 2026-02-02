@@ -45,7 +45,7 @@ public class Payment extends Auditable{
         resv.addPayment(this);
     }
 
-    public void addDailyVoucher(Voucher voucher) {
+    public void addVoucher(Voucher voucher) {
         this.vouchers.add(voucher);
         voucher.setPayment(this);
     }

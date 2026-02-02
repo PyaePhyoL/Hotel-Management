@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bytesync.hotelmanagement.dto.finance.VoucherCreatForm;
 import org.bytesync.hotelmanagement.dto.finance.VoucherDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
+import org.bytesync.hotelmanagement.enums.DepositType;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Voucher;
@@ -22,7 +23,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.bytesync.hotelmanagement.enums.PaymentMethod.DEPOSIT;
 import static org.bytesync.hotelmanagement.enums.IncomeType.ROOM_RENT;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getCurrentYangonZoneLocalDateTime;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
@@ -155,17 +155,18 @@ public class VoucherService implements IVoucherService {
 
     private void createPaymentToDailyVoucher(Voucher dailyVoucher) {
         var reservation = dailyVoucher.getReservation();
+        var paymentMethod = DepositType.convertToPaymentMethod(reservation.getDepositType());
         var payment = Payment.builder()
                 .date(LocalDate.now())
                 .amount(reservation.getPrice())
-                .paymentMethod(DEPOSIT)
+                .paymentMethod(paymentMethod)
                 .type(ROOM_RENT)
                 .notes("Automatic paid from deposit")
                 .vouchers(new ArrayList<>())
                 .guest(reservation.getGuest())
                 .build();
         payment.setReservation(reservation);
-        payment.addDailyVoucher(dailyVoucher);
+        payment.addVoucher(dailyVoucher);
     }
 
 }

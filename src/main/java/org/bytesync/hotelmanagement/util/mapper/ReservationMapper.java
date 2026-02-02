@@ -6,15 +6,10 @@ import org.bytesync.hotelmanagement.dto.reservation.ReservationGuestInfo;
 import org.bytesync.hotelmanagement.dto.reservation.ReservationInfo;
 import org.bytesync.hotelmanagement.enums.Status;
 import org.bytesync.hotelmanagement.model.Reservation;
-import org.bytesync.hotelmanagement.scheduling.ScheduleMethods;
-import org.bytesync.hotelmanagement.util.EntityOperationUtils;
 
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
-import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getCurrentYangonZoneLocalDateTime;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getDaysBetween;
 
 public class ReservationMapper {
@@ -37,6 +32,7 @@ public class ReservationMapper {
                 .checkInDateTime(form.getCheckInDateTime())
                 .checkOutDateTime(form.getCheckOutDateTime())
                 .price(form.getPrice())
+                .depositType(form.getDepositType())
                 .deposit(form.getDeposit())
                 .discount(form.getDiscount())
                 .status(Status.BOOKING)
@@ -100,13 +96,16 @@ public class ReservationMapper {
                 .checkOutDateTime(reservation.getCheckOutDateTime())
                 .daysOfStay(reservation.getDaysOfStay())
                 .price(reservation.getPrice())
+                .depositType(reservation.getDepositType())
                 .deposit(reservation.getDeposit())
                 .discount(reservation.getDiscount())
                 .stayType(reservation.getStayType())
                 .status(reservation.getStatus())
-                .registeredStaff(reservation.getCreatedBy())
                 .noOfGuests(reservation.getNoOfGuests())
                 .notes(reservation.getNotes())
+                .registerStaff(reservation.getRegisterStaff())
+                .checkInStaff(reservation.getCheckInStaff())
+                .checkOutStaff(reservation.getCheckOutStaff())
                 .build();
     }
 

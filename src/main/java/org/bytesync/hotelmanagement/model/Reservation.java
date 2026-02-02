@@ -2,6 +2,7 @@ package org.bytesync.hotelmanagement.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.bytesync.hotelmanagement.enums.DepositType;
 import org.bytesync.hotelmanagement.enums.Status;
 import org.bytesync.hotelmanagement.enums.StayType;
 
@@ -28,6 +29,8 @@ public class Reservation extends Auditable{
     private Integer daysOfStay;
     private Integer price;
     private Integer discount;
+    @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
+    private DepositType depositType;
     private Integer deposit;
     @Enumerated(EnumType.STRING) @Column(columnDefinition = "VARCHAR(50)")
     private StayType stayType;
@@ -50,6 +53,10 @@ public class Reservation extends Auditable{
     private Status status;
     @Column(columnDefinition = "TEXT")
     private String notes;
+
+    private String registerStaff;
+    private String checkInStaff;
+    private String checkOutStaff;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contact> contactList;

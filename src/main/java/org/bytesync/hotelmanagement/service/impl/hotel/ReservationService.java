@@ -2,6 +2,8 @@ package org.bytesync.hotelmanagement.service.impl.hotel;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.bytesync.hotelmanagement.audit.AuditAwareImpl;
 import org.bytesync.hotelmanagement.dto.finance.VoucherCreatForm;
 import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
@@ -29,6 +31,7 @@ import static org.bytesync.hotelmanagement.enums.GuestStatus.BLACKLIST;
 import static org.bytesync.hotelmanagement.enums.IncomeType.ROOM_RENT;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationService implements IReservationService {
@@ -41,6 +44,7 @@ public class ReservationService implements IReservationService {
     private final VoucherService voucherService;
     private final GuestRecordRepository guestRecordRepository;
     private final GuestService guestService;
+    private final AuditAwareImpl auditAware;
 
     @Override
     public ReservationGuestInfo getReservationGuestInfoById(Long id ){
@@ -70,11 +74,13 @@ public class ReservationService implements IReservationService {
     public String checkinReservation(Long reservationId) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
         var room = reservation.getRoom();
+        var checkInStaff = auditAware.getCurrentAuditor().orElse(null);
 
         if(reservation.getStatus() == Status.BOOKING) {
             var checkinDateTime = getCurrentYangonZoneLocalDateTime();
             reservation.setCheckInDateTime(checkinDateTime);
             reservation.setStatus(Status.ACTIVE);
+            reservation.setCheckInStaff(checkInStaff);
 
             reservation.getGuest().setIsStaying(true);
             room.setCurrentStatus(RoomMapper
@@ -99,9 +105,11 @@ public class ReservationService implements IReservationService {
 //        1st change the status in Reservation
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
         var checkoutDateTime = getCurrentYangonZoneLocalDateTime();
+        var checkoutStaff = auditAware.getCurrentAuditor().orElse(null);
 
         reservation.setNewCheckOutDateTime(checkoutDateTime);
         reservation.setStatus(Status.FINISHED);
+        reservation.setCheckOutStaff(checkoutStaff);
 
         var room = reservation.getRoom();
         var guest = reservation.getGuest();
@@ -319,9 +327,11 @@ public class ReservationService implements IReservationService {
 
     private Reservation createReservation(ReservationForm form, Guest guest, Room room) {
         var reservation = ReservationMapper.toEntity(form);
+        var registerStaff = auditAware.getCurrentAuditor().orElse(null);
 
         reservation.setGuest(guest);
         reservation.setRoom(room);
+        reservation.setRegisterStaff(registerStaff);
         return reservationRepository.save(reservation);
     }
 

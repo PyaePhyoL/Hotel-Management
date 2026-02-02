@@ -5,6 +5,7 @@ import lombok.Data;
 import org.bytesync.hotelmanagement.dto.guest.GuestDto;
 import org.bytesync.hotelmanagement.dto.guest.ContactDto;
 import org.bytesync.hotelmanagement.dto.room.RoomDto;
+import org.bytesync.hotelmanagement.enums.DepositType;
 import org.bytesync.hotelmanagement.enums.Status;
 import org.bytesync.hotelmanagement.enums.StayType;
 
@@ -19,10 +20,10 @@ public class ReservationDetails {
     private LocalDateTime checkOutDateTime;
     private Integer daysOfStay;
     private Integer price;
+    private DepositType depositType;
     private Integer deposit;
     private Integer discount;
     private StayType stayType;
-    private String registeredStaff;
     private Integer noOfGuests;
     private Status status;
     private GuestDto guestDetails;
@@ -34,4 +35,8 @@ public class ReservationDetails {
 
     private List<ContactDto> contacts;
     private String notes;
+
+    private String registerStaff;
+    private String checkInStaff;
+    private String checkOutStaff;
 }

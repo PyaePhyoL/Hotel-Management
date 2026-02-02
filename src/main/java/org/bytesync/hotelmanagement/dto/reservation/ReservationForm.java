@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.bytesync.hotelmanagement.dto.guest.ContactDto;
+import org.bytesync.hotelmanagement.enums.DepositType;
 import org.bytesync.hotelmanagement.enums.StayType;
 
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ public class ReservationForm {
     private Integer price;
     private Integer extraPrice;
     private Integer discount;
+    private DepositType depositType;
     private Integer deposit;
     private String note;
     private List<ContactDto> contacts;
