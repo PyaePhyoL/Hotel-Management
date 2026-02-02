@@ -64,7 +64,7 @@ public class ReservationSpecification {
                     cb.lessThan(hourExp, 6)
             ));
 
-            predicates.add(root.get("status").in(ACTIVE, BOOKING));
+            predicates.add(cb.equal(root.get("status"), ACTIVE));
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
@@ -81,7 +81,7 @@ public class ReservationSpecification {
                     cb.greaterThanOrEqualTo(hourExp, 6),
                     cb.lessThan(hourExp, 18)
             ));
-            predicates.add(root.get("status").in(ACTIVE, BOOKING));
+            predicates.add(cb.equal(root.get("status"), ACTIVE));
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
