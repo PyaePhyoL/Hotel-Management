@@ -40,5 +40,5 @@ public interface GuestRepository extends JpaRepository<Guest, Long>, JpaSpecific
 
     boolean existsByName(String name);
 
-    Optional<Guest> findByNameAndNrc(String name, String nrc);
+    Optional<Guest> findByNrc(String nrc);
 }

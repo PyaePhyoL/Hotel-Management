@@ -45,6 +45,7 @@ public class ReservationService implements IReservationService {
     private final GuestRecordRepository guestRecordRepository;
     private final GuestService guestService;
     private final AuditAwareImpl auditAware;
+    private final StaffRepository staffRepository;
 
     @Override
     public ReservationGuestInfo getReservationGuestInfoById(Long id ){
@@ -74,7 +75,9 @@ public class ReservationService implements IReservationService {
     public String checkinReservation(Long reservationId) {
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
         var room = reservation.getRoom();
-        var checkInStaff = auditAware.getCurrentAuditor().orElse(null);
+        String checkInStaff = auditAware.getCurrentAuditor()
+                .flatMap(staffRepository::findUsernameByEmail)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         if(reservation.getStatus() == Status.BOOKING) {
             var checkinDateTime = getCurrentYangonZoneLocalDateTime();
@@ -105,7 +108,9 @@ public class ReservationService implements IReservationService {
 //        1st change the status in Reservation
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
         var checkoutDateTime = getCurrentYangonZoneLocalDateTime();
-        var checkoutStaff = auditAware.getCurrentAuditor().orElse(null);
+        String checkoutStaff = auditAware.getCurrentAuditor()
+                .flatMap(staffRepository::findUsernameByEmail)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         reservation.setNewCheckOutDateTime(checkoutDateTime);
         reservation.setStatus(Status.FINISHED);
@@ -268,7 +273,7 @@ public class ReservationService implements IReservationService {
             throw new IllegalStateException("Reservation is finished");
         }
 
-        var guest = safeCall(guestRepository.findByNameAndNrc(form.getGuestName(), form.getGuestNrc()), "Guest", form.getGuestNrc());
+        var guest = safeCall(guestRepository.findByNrc(form.getGuestNrc()), "Guest", form.getGuestNrc());
 
         changePhoneIfAddNewPhone(form.getPhone(), guest);
 
@@ -327,7 +332,10 @@ public class ReservationService implements IReservationService {
 
     private Reservation createReservation(ReservationForm form, Guest guest, Room room) {
         var reservation = ReservationMapper.toEntity(form);
-        var registerStaff = auditAware.getCurrentAuditor().orElse(null);
+
+        String registerStaff = auditAware.getCurrentAuditor()
+                .flatMap(staffRepository::findUsernameByEmail)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         reservation.setGuest(guest);
         reservation.setRoom(room);
@@ -346,7 +354,7 @@ public class ReservationService implements IReservationService {
     }
 
     private Guest findOrCreateGuest(ReservationForm form) {
-        return guestRepository.findByNameAndNrc(form.getGuestName(), form.getGuestNrc())
+        return guestRepository.findByNrc(form.getGuestNrc())
                 .map(guest -> {
                     // may be phone number might be new
                     changePhoneIfAddNewPhone(form.getPhone(), guest);

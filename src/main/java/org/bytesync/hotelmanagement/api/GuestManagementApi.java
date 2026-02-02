@@ -85,8 +85,8 @@ public class GuestManagementApi {
     }
 
     @GetMapping("/check-guest-status")
-    public ResponseEntity<ResponseMessage<GuestStatusDto>> checkGuestStatus(@RequestParam String name, @RequestParam String nrc) {
-        var statusDto = guestService.checkGuestStatusByNameAndNrc(name, nrc);
+    public ResponseEntity<ResponseMessage<GuestStatusDto>> checkGuestStatus(@RequestParam String nrc) {
+        var statusDto = guestService.checkGuestStatusByNrc(nrc);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", statusDto));
     }
 }

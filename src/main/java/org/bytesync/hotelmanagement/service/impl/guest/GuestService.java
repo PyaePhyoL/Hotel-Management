@@ -137,9 +137,13 @@ public class GuestService implements IGuestService {
     }
 
     @Override
-    public GuestStatusDto checkGuestStatusByNameAndNrc(String name, String nrc) {
-        var guest = safeCall(guestRepository.findByNameAndNrc(name, nrc), "Guest", nrc);
-        return new GuestStatusDto(guest.getStatus());
+    public GuestStatusDto checkGuestStatusByNrc(String nrc) {
+        var guest = safeCall(guestRepository.findByNrc(nrc), "Guest", nrc);
+        return new GuestStatusDto(
+                guest.getName(),
+                guest.getNrc(),
+                guest.getPhoneNumber(),
+                guest.getStatus());
     }
 }
 

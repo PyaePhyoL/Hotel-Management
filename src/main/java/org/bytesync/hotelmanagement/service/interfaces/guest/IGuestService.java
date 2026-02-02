@@ -27,5 +27,5 @@ public interface IGuestService {
 
     String updateNrcUrl(Long id, String nrc);
 
-    GuestStatusDto checkGuestStatusByNameAndNrc(String name, String nrc);
+    GuestStatusDto checkGuestStatusByNrc(String nrc);
 }
