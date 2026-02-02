@@ -6,6 +6,7 @@ import org.bytesync.hotelmanagement.enums.PaymentMethod;
 import org.bytesync.hotelmanagement.enums.IncomeType;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -38,7 +39,7 @@ public class Payment extends Auditable{
     private IncomeType type;
 
     @OneToMany(mappedBy = "payment", cascade = CascadeType.PERSIST)
-    private List<Voucher> vouchers;
+    private List<Voucher> vouchers = new ArrayList<>();
 
     public void setReservation(Reservation resv) {
         this.reservation = resv;

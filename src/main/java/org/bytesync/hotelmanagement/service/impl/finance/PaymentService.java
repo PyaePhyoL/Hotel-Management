@@ -3,8 +3,10 @@ package org.bytesync.hotelmanagement.service.impl.finance;
 import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.*;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
+import org.bytesync.hotelmanagement.enums.DepositType;
 import org.bytesync.hotelmanagement.enums.IncomeType;
 import org.bytesync.hotelmanagement.enums.PaymentMethod;
+import org.bytesync.hotelmanagement.exception.NotEnoughMoneyException;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.model.Voucher;
 import org.bytesync.hotelmanagement.repository.*;
@@ -34,26 +36,58 @@ public class PaymentService implements IPaymentService {
     private final VoucherService voucherService;
 
     @Override
-    public String createPayment(PaymentCreateForm paymentCreateForm) {
-        var reservation = safeCall(reservationRepository.findById(paymentCreateForm.getReservationId()),
-                "Reservation", paymentCreateForm.getReservationId());
+    public String createPayment(PaymentCreateForm form) {
+        var reservation = safeCall(reservationRepository.findById(form.getReservationId()),
+                "Reservation", form.getReservationId());
 
+        var payment = new Payment();
+
+        payment.setDate(form.getPaymentDate());
+        payment.setReservation(reservation);
+        payment.setGuest(reservation.getGuest());
+        payment.setNotes(form.getNotes());
+        payment.setType(form.getIncomeType());
+
+        switch (form.getPaymentMethod()) {
+            case CASH, KPAY -> {
+                payment.setAmount(form.getAmount());
+                payment.setPaymentMethod(form.getPaymentMethod());
+            }
+            case DEPOSIT -> {
+                if(reservation.getDeposit() >= form.getAmount()) {
+                    var leftDeposit = reservation.getDeposit() - form.getAmount();
+                    var paymentMethod = DepositType.convertToPaymentMethod(reservation.getDepositType());
+                    reservation.setDeposit(leftDeposit);
+                    payment.setAmount(form.getAmount());
+                    payment.setPaymentMethod(paymentMethod);
+                } else {
+                    throw new NotEnoughMoneyException("Not enough money");
+                }
+            }
+            case EXPEDIA -> {
+                payment.setAmount(0);
+                payment.setPaymentMethod(form.getPaymentMethod());
+            }
+            case null, default -> {
+                throw new IllegalArgumentException("Illegal payment method");
+            }
+        }
+
+        updatePaidVouchers(form, payment);
+
+        var id = paymentRepository.save(payment).getId();
+        return "Payment created successfully : " + id;
+    }
+
+    private void updatePaidVouchers(PaymentCreateForm paymentCreateForm, Payment payment) {
         var vouchers = voucherService.getVouchers(paymentCreateForm.getVoucherIds());
 
         validateVoucherTypesConsistency(vouchers, paymentCreateForm.getIncomeType());
-
-        var payment = FinanceMapper.toPayment(paymentCreateForm);
-
-        payment.setReservation(reservation);
-        payment.setGuest(reservation.getGuest());
 
         vouchers.forEach(voucher -> {
             voucher.setIsPaid(true);
             payment.addVoucher(voucher);
         });
-
-        var id = paymentRepository.save(payment).getId();
-        return "Payment created successfully : " + id;
     }
 
     private void validateVoucherTypesConsistency(List<Voucher> voucherList, IncomeType type) {
