@@ -58,6 +58,7 @@ public class ReservationMapper {
                 : 0;
         reservation.setCheckOutDateTime(form.getCheckOutDateTime());
         reservation.setDaysOfStay(days);
+        reservation.setDepositType(form.getDepositType());
         reservation.setDeposit(form.getDeposit());
         reservation.setDiscount(form.getDiscount());
         reservation.setNoOfGuests(form.getNoOfGuests());
