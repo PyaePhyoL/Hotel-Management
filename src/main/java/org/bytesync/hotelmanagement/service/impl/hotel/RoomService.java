@@ -12,6 +12,7 @@ import org.bytesync.hotelmanagement.model.Room;
 import org.bytesync.hotelmanagement.enums.Floor;
 import org.bytesync.hotelmanagement.enums.RoomStatus;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
+import org.bytesync.hotelmanagement.repository.RoomTypeRepository;
 import org.bytesync.hotelmanagement.specification.RoomSpecification;
 import org.bytesync.hotelmanagement.service.interfaces.hotel.IRoomService;
 import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
@@ -31,6 +32,7 @@ public class RoomService implements IRoomService {
 
     private final RoomRepository roomRepository;
     private final ReservationService reservationService;
+    private final RoomTypeRepository roomTypeRepository;
 
     @Override
     public RoomDashboardView getAllRoomsInGridView(RoomStatus roomStatus) {
@@ -107,8 +109,9 @@ public class RoomService implements IRoomService {
     @Override
     public String changeRoomPrice(Long id, Integer price) {
         var room = safeCall(roomRepository.findById(id), "Room", id);
-//        room.setBasePrice(price);
-//        roomRepository.save(room);
+        var roomType = room.getRoomType();
+        roomType.setPrice(price);
+        roomTypeRepository.save(roomType);
         return "Room Price Changed.";
     }
 
