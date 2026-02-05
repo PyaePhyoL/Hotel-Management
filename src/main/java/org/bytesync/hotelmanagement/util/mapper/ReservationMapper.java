@@ -87,6 +87,9 @@ public class ReservationMapper {
                 .guestName(reservation.getGuest().getName())
                 .guestPhone(reservation.getGuest().getPhoneNumber())
                 .roomNo(reservation.getRoom().getRoomNo())
+                .registerStaff(reservation.getRegisterStaff())
+                .checkInStaff(reservation.getCheckInStaff())
+                .checkOutStaff(reservation.getCheckOutStaff())
                 .build();
     }
 

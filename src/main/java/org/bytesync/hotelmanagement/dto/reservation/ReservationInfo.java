@@ -19,4 +19,7 @@ public class ReservationInfo {
     private String guestName;
     private String guestPhone;
     private Long roomNo;
+    private String registerStaff;
+    private String checkInStaff;
+    private String checkOutStaff;
 }

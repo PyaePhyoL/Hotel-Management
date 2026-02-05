@@ -46,7 +46,13 @@ public class ReservationSpecification {
                 String likeKeyword = "%" + keyword.toLowerCase() + "%";
                 Join<Reservation, Guest> guestJoin = root.join("guest", JoinType.INNER);
 
-                predicates.add(cb.like(cb.lower(guestJoin.get("name")), likeKeyword));
+
+                predicates.add(cb.or(
+                        cb.like(cb.lower(guestJoin.get("name")), likeKeyword),
+                        cb.like(cb.lower(root.get("registerStaff")), likeKeyword),
+                        cb.like(cb.lower(root.get("checkInStaff")), likeKeyword),
+                        cb.like(cb.lower(root.get("checkOutStaff")), likeKeyword)
+                ));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));
