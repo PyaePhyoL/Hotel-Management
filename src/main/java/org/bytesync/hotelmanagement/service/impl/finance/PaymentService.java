@@ -48,30 +48,31 @@ public class PaymentService implements IPaymentService {
         payment.setNotes(form.getNotes());
         payment.setType(form.getIncomeType());
 
-        switch (form.getPaymentMethod()) {
-            case CASH, KPAY -> {
-                payment.setAmount(form.getAmount());
-                payment.setPaymentMethod(form.getPaymentMethod());
-            }
-            case DEPOSIT -> {
-                if(reservation.getDeposit() >= form.getAmount()) {
-                    var leftDeposit = reservation.getDeposit() - form.getAmount();
-                    var paymentMethod = DepositType.convertToPaymentMethod(reservation.getDepositType());
-                    reservation.setDeposit(leftDeposit);
-                    payment.setAmount(form.getAmount());
-                    payment.setPaymentMethod(paymentMethod);
-                } else {
-                    throw new NotEnoughMoneyException("Not enough money");
+        form.getPaymentAmountMap().forEach((paymentMethod, amount) -> {
+            switch (paymentMethod) {
+                case CASH, KPAY -> {
+                    payment.addPaymentAmount(paymentMethod, amount);
+                }
+                case DEPOSIT -> {
+                    if(reservation.getDeposit() >= amount) {
+                        var leftDeposit = reservation.getDeposit() - amount;
+                        var method = DepositType.convertToPaymentMethod(reservation.getDepositType());
+                        reservation.setDeposit(leftDeposit);
+                        payment.addPaymentAmount(method, amount);
+                    } else {
+                        throw new NotEnoughMoneyException("Not enough money");
+                    }
+                }
+                case EXPEDIA -> {
+                    payment.addPaymentAmount(paymentMethod, 0);
+                }
+                case null, default -> {
+                    throw new IllegalArgumentException("Illegal payment method");
                 }
             }
-            case EXPEDIA -> {
-                payment.setAmount(0);
-                payment.setPaymentMethod(form.getPaymentMethod());
-            }
-            case null, default -> {
-                throw new IllegalArgumentException("Illegal payment method");
-            }
-        }
+        });
+
+
 
         updatePaidVouchers(form, payment);
 
@@ -105,7 +106,7 @@ public class PaymentService implements IPaymentService {
     }
 
     @Override
-    public PageResult<PaymentDto> getPaymentList(int page, int size, FinanceFilterDto filterDto) {
+    public PageResult<PaymentListDto> getPaymentList(int page, int size, FinanceFilterDto filterDto) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
         Specification<Payment> spec = FinanceSpecification.financeFilter(filterDto);
         Page<Payment> all = paymentRepository.findAll(spec, pageable);
@@ -120,32 +121,27 @@ public class PaymentService implements IPaymentService {
 
         return payments.stream()
                 .filter(payment -> payment.getType().equals(ROOM_RENT))
-                .map(Payment::getAmount)
-                .filter(Objects::nonNull)
+                .map(Payment::getPaidAmount)
                 .reduce(Integer::sum).orElse(0);
     }
 
     @Override
-    public String updateExpenditureAmount(Long id, PaymentDto paymentDto) {
+    public String updateExpediaAmount(Long id, UpdateExpediaAmountDto amountDto) {
         var payment = safeCall(paymentRepository.findById(id), "Payment", id);
 
-        if(payment.getPaymentMethod() != PaymentMethod.EXPEDIA) {
-            throw new IllegalArgumentException("Payment method is not from Expedia");
-        }
-
-        payment.setAmount(paymentDto.getAmount());
-        payment.setNotes(paymentDto.getNotes());
+        payment.getPaymentAmountMap().put(PaymentMethod.EXPEDIA, amountDto.amount());
+        payment.setNotes(amountDto.notes());
         paymentRepository.save(payment);
         return "Payment updated successfully : " + id;
     }
 
     @Override
-    public PageResult<PaymentDto> getPaymentListByReservation(Long id, int page, int size) {
+    public PageResult<PaymentListDto> getPaymentListByReservation(Long id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
         Specification<Payment> spec = FinanceSpecification.paymentFilterByReservation(id);
         Page<Payment> paymentPage = paymentRepository.findAll(spec, pageable);
 
-        List<PaymentDto> dtoList = paymentPage.getContent().stream().map(FinanceMapper::toPaymentDto).toList();
+        List<PaymentListDto> dtoList = paymentPage.getContent().stream().map(FinanceMapper::toPaymentDto).toList();
         return new PageResult<>(dtoList, paymentPage.getTotalElements(), page, size);
     }
 
@@ -156,11 +152,11 @@ public class PaymentService implements IPaymentService {
     }
 
     @Override
-    public Integer getDailyIncomeAmountByPaymentMethod(PaymentMethod type) {
+    public Integer getDailyIncomeAmountByPaymentMethod(PaymentMethod paymentMethod) {
         LocalDate today = LocalDate.now();
-        var payments = paymentRepository.findByDateAndPaymentMethodAndIncomeType(today, type, ROOM_RENT);
+        var payments = paymentRepository.findByDateAndIncomeType(today, ROOM_RENT);
         return payments.stream()
-                .map(Payment::getAmount)
+                .map(payment -> payment.getAmountByPaymentMethod(paymentMethod))
                 .filter(Objects::nonNull)
                 .reduce(Integer::sum).orElse(0);
     }

@@ -1,7 +1,5 @@
 package org.bytesync.hotelmanagement.specification;
 
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
 import org.bytesync.hotelmanagement.model.Guest;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -21,5 +19,9 @@ public class GuestSpecification {
                     cb.like(cb.lower(root.get("phoneNumber")), likeKeyword)
                     );
         };
+    }
+
+    public static Specification<Guest> isDeleted(boolean isDeleted) {
+        return (root, cq, cb) -> cb.equal(root.get("isDeleted"), isDeleted);
     }
 }

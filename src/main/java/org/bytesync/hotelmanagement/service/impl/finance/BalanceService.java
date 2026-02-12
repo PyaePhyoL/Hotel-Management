@@ -46,16 +46,16 @@ public class BalanceService implements IBalanceService {
         List<Payment> foodIncomeList = paymentRepository.findAll(foodIncomeSpec);
         List<Payment> serviceIncomeList = paymentRepository.findAll(serviceIncomeSpec);
 
-        var totalIncome = paymentList.stream().map(Payment::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
+        var totalIncome = paymentList.stream().map(Payment::getPaidAmount).reduce(Integer::sum).orElse(0);
         var totalExpense = expenseList.stream().map(Expense::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
         var totalRefund = refundList.stream().map(Refund::getAmount).filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
         var profit =  totalIncome - totalExpense;
 
-        var totalFoodIncome = foodIncomeList.stream().map(Payment::getAmount)
-                .filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
+        var totalFoodIncome = foodIncomeList.stream().map(Payment::getPaidAmount)
+                .reduce(Integer::sum).orElse(0);
 
-        var totalServiceIncome = serviceIncomeList.stream().map(Payment::getAmount)
-                .filter(Objects::nonNull).reduce(Integer::sum).orElse(0);
+        var totalServiceIncome = serviceIncomeList.stream().map(Payment::getPaidAmount)
+                .reduce(Integer::sum).orElse(0);
 
         List<DailyBalance> dailyBalanceList = getDailyBalanceList(paymentList, expenseList, refundList, from, to);
 
@@ -94,7 +94,7 @@ public class BalanceService implements IBalanceService {
         Map<LocalDate, Integer> incomeMap = paymentList.stream()
                 .collect(Collectors.groupingBy(
                         Payment::getDate,
-                        Collectors.summingInt(Payment::getAmount)
+                        Collectors.summingInt(Payment::getPaidAmount)
                 ));
 
         // Pre-group expenses by date

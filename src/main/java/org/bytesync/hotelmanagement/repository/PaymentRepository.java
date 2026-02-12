@@ -26,7 +26,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long>, JpaSpec
     select p from Payment p
     where p.type = :type
     and p.date = :today
-    and p.paymentMethod = :paymentMethod
 """)
-    List<Payment> findByDateAndPaymentMethodAndIncomeType(LocalDate today, PaymentMethod paymentMethod, IncomeType type);
+    List<Payment> findByDateAndIncomeType(LocalDate today, IncomeType type);
 }

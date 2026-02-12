@@ -8,13 +8,13 @@ public interface IPaymentService {
 
     String createPayment(PaymentCreateForm paymentCreateForm);
 
-    PageResult<PaymentDto> getPaymentList(int page, int size, FinanceFilterDto filterDto);
+    PageResult<PaymentListDto> getPaymentList(int page, int size, FinanceFilterDto filterDto);
 
     Integer getDailyIncomeAmount();
 
-    String updateExpenditureAmount(Long id, PaymentDto paymentDto);
+    String updateExpediaAmount(Long id, UpdateExpediaAmountDto amountDto);
 
-    PageResult<PaymentDto> getPaymentListByReservation(Long id, int page, int size);
+    PageResult<PaymentListDto> getPaymentListByReservation(Long id, int page, int size);
 
     PaymentDetailsDto getPaymentDetailsById(Long id);
 

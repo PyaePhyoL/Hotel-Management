@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,9 +59,10 @@ public class GuestService implements IGuestService {
 
     @Override
     public PageResult<GuestDto> getAll(int page, int size) {
-        long count = guestRepository.count();
         Pageable pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "id");
-        Page<Guest> guestPage = guestRepository.findAll(pageable);
+        Specification<Guest> spec = GuestSpecification.isDeleted(false);
+
+        Page<Guest> guestPage = guestRepository.findAll(spec, pageable);
         List<GuestDto> guestList = guestPage.getContent().stream().map(GuestMapper::toDto).toList();
         return new PageResult<>(guestList, guestPage.getTotalElements(), page, size);
     }
@@ -85,7 +87,8 @@ public class GuestService implements IGuestService {
     @Override
     public String delete(Long id) {
         var guest = safeCall(guestRepository.findById(id), "Guest", id);
-        guestRepository.delete(guest);
+        guest.setIsDeleted(true);
+        guestRepository.save(guest);
         return "Guest has been deleted";
     }
 

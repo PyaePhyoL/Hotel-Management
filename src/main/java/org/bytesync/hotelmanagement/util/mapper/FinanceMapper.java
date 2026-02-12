@@ -9,35 +9,26 @@ import org.bytesync.hotelmanagement.model.Refund;
 import org.bytesync.hotelmanagement.model.Voucher;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FinanceMapper {
 
     private FinanceMapper() {
     }
 
-    public static Payment toPayment(PaymentCreateForm paymentCreateForm) {
-        var amount = 0;
-        if(paymentCreateForm.getPaymentMethod() != PaymentMethod.EXPEDIA) {
-            amount = paymentCreateForm.getAmount();
-        }
-
-        return Payment.builder()
-                .date(paymentCreateForm.getPaymentDate())
-                .amount(amount)
-                .paymentMethod(paymentCreateForm.getPaymentMethod())
-                .notes(paymentCreateForm.getNotes())
-                .type(paymentCreateForm.getIncomeType())
-                .vouchers(new ArrayList<>())
-                .build();
-    }
-
-    public static PaymentDto toPaymentDto(Payment payment) {
+    public static PaymentListDto toPaymentDto(Payment payment) {
         var reservation = payment.getReservation();
-        return PaymentDto.builder()
+
+        List<String> amountAndMethods = new ArrayList<>();
+
+        payment.getPaymentAmountMap().forEach(
+                ((paymentMethod, amount) ->
+                        amountAndMethods.add("%d (%s)".formatted(amount, paymentMethod))));
+
+        return PaymentListDto.builder()
                 .id(payment.getId())
                 .paymentDate(payment.getDate())
-                .amount(payment.getAmount())
-                .paymentMethod(payment.getPaymentMethod())
+                .amountAndMethods(amountAndMethods)
                 .incomeType(payment.getType())
                 .notes(payment.getNotes())
                 .reservationId(reservation.getId())
@@ -52,8 +43,7 @@ public class FinanceMapper {
         return PaymentDetailsDto.builder()
                 .id(payment.getId())
                 .paymentDate(payment.getDate())
-                .amount(payment.getAmount())
-                .paymentMethod(payment.getPaymentMethod())
+                .paymentAmountMap(payment.getPaymentAmountMap())
                 .incomeType(payment.getType())
                 .notes(payment.getNotes())
                 .reservationId(reservation.getId())

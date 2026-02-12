@@ -372,6 +372,7 @@ public class ReservationService implements IReservationService {
                     guest.setNrc(form.getGuestNrc());
                     guest.setPhoneNumber(form.getPhone());
                     guest.setStatus(GuestStatus.GOOD);
+                    guest.setIsDeleted(false);
                     guestService.checkGuestExists(guest);
                     return guestRepository.save(guest);
                 });
@@ -428,7 +429,7 @@ public class ReservationService implements IReservationService {
     }
 
     private Integer getTotalPriceInReservation(Reservation reservation) {
-        return reservation.getPaymentList().stream().map(Payment::getAmount).reduce(0, Integer::sum);
+        return reservation.getPaymentList().stream().map(Payment::getPaidAmount).reduce(0, Integer::sum);
     }
 
     private Integer getPaidPriceInReservation(Reservation reservation) {

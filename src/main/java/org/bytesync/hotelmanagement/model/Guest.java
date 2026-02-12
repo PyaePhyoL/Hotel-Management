@@ -49,6 +49,7 @@ public class Guest {
 
     private String photoUrl;
     private String nrcUrl;
+    private Boolean isDeleted;
 
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();
@@ -58,6 +59,9 @@ public class Guest {
 
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
     private List<Refund> refundList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
+    private List<GuestRecord> guestRecordList = new ArrayList<>();
 
     public void addReservation(Reservation reservation) {
         this.reservationList.add(reservation);

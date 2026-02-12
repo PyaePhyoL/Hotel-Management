@@ -23,6 +23,7 @@ public class GuestMapper {
                 .isStaying(false)
                 .notes(guestDto.getNotes())
                 .status(GuestStatus.GOOD)
+                .isDeleted(false)
                 .build();
     }
 

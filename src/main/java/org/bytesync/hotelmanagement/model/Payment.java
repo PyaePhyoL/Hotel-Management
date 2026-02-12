@@ -7,7 +7,9 @@ import org.bytesync.hotelmanagement.enums.IncomeType;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Data
@@ -25,9 +27,16 @@ public class Payment extends Auditable{
 
     @ManyToOne
     private Guest guest;
-    private Integer amount;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "payment_amount",
+            joinColumns = @JoinColumn(name = "payment_id")
+    )
+    @MapKeyColumn(name = "payment_method")
+    @Column(name = "payment_amount")
     @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
+    private Map<PaymentMethod, Integer> paymentAmountMap = new HashMap<>();
 
     @Column(columnDefinition = "TEXT")
     private String notes;
@@ -54,6 +63,37 @@ public class Payment extends Auditable{
     public void setGuest(Guest guest) {
         this.guest = guest;
         guest.addPayment(this);
+    }
+
+    public void addPaymentAmount(PaymentMethod paymentMethod, Integer amount) {
+        this.paymentAmountMap.put(paymentMethod, amount);
+    }
+
+    public int getPaidAmount() {
+        return this.paymentAmountMap.values().stream().reduce(Integer::sum).orElse(0);
+    }
+
+    public int getAmountByPaymentMethod(PaymentMethod paymentMethod) {
+        return this.paymentAmountMap.getOrDefault(paymentMethod, 0);
+    }
+
+    public int deductFromMethod(PaymentMethod method, int amountToDeduct) {
+        if (amountToDeduct <= 0) {
+            return 0;
+        }
+
+        Integer currentAmount = this.getPaymentAmountMap().get(method);
+        if (currentAmount == null || currentAmount <= 0) {
+            return amountToDeduct;
+        }
+
+        if (currentAmount >= amountToDeduct) {
+            this.getPaymentAmountMap().put(method, currentAmount - amountToDeduct);
+            return 0;
+        } else {
+            this.getPaymentAmountMap().put(method, 0);
+            return amountToDeduct - currentAmount;
+        }
     }
 
 }

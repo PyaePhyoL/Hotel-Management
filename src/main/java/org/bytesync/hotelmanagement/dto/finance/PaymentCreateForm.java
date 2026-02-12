@@ -10,6 +10,7 @@ import org.bytesync.hotelmanagement.enums.IncomeType;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -17,8 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PaymentCreateForm {
     private LocalDate paymentDate;
-    private Integer amount;
-    private PaymentMethod paymentMethod;
+    private Map<PaymentMethod, Integer> paymentAmountMap;
     private IncomeType incomeType;
     private String notes;
     private Long reservationId;

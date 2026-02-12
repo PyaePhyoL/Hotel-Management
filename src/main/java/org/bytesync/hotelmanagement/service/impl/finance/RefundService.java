@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.bytesync.hotelmanagement.dto.finance.RefundDto;
 import org.bytesync.hotelmanagement.dto.finance.FinanceFilterDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
+import org.bytesync.hotelmanagement.enums.PaymentMethod;
 import org.bytesync.hotelmanagement.enums.RefundType;
 import org.bytesync.hotelmanagement.exception.NotEnoughMoneyException;
+import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.model.Refund;
 import org.bytesync.hotelmanagement.repository.PaymentRepository;
 import org.bytesync.hotelmanagement.repository.RefundRepository;
@@ -56,14 +58,23 @@ public class RefundService implements IRefundService {
     @Override
     public String createPaymentRefund(Long paymentId, RefundDto refundDto) {
         var payment = safeCall(paymentRepository.findById(paymentId), "Payment", paymentId);
-        var refundAmount = refundDto.getAmount();
-        if(payment.getAmount() < refundAmount) {
+        var remainingRefund = refundDto.getAmount();
+        if(payment.getPaidAmount() < remainingRefund) {
             throw new NotEnoughMoneyException("Not enough money");
         }
 
-        var leftAmount= payment.getAmount() - refundAmount;
+        remainingRefund = payment.deductFromMethod(PaymentMethod.KPAY, remainingRefund);
 
-        payment.setAmount(leftAmount);
+        if(remainingRefund > 0) {
+            remainingRefund = payment.deductFromMethod(PaymentMethod.CASH, remainingRefund);
+        }
+
+        if (remainingRefund > 0) {
+            throw new IllegalStateException(
+                    "Refund could not be fully processed. Remaining: " + remainingRefund
+            );
+        }
+
         var refund = FinanceMapper.toRefund(refundDto, PAYMENT_REFUND);
         refund.setReservation(payment.getReservation());
         refund.setGuest(payment.getGuest());

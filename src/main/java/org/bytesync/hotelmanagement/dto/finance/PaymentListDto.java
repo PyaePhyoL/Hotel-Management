@@ -6,14 +6,15 @@ import org.bytesync.hotelmanagement.enums.PaymentMethod;
 import org.bytesync.hotelmanagement.enums.IncomeType;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
-public class PaymentDto {
+public class PaymentListDto {
     private Long id;
     private LocalDate paymentDate;
-    private Integer amount;
-    private PaymentMethod paymentMethod;
+    private List<String> amountAndMethods;
     private IncomeType incomeType;
     private String notes;
     private Long reservationId;

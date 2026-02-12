@@ -6,6 +6,7 @@ import org.bytesync.hotelmanagement.dto.finance.VoucherCreatForm;
 import org.bytesync.hotelmanagement.dto.finance.VoucherDto;
 import org.bytesync.hotelmanagement.dto.output.PageResult;
 import org.bytesync.hotelmanagement.enums.DepositType;
+import org.bytesync.hotelmanagement.enums.PaymentMethod;
 import org.bytesync.hotelmanagement.model.Payment;
 import org.bytesync.hotelmanagement.model.Reservation;
 import org.bytesync.hotelmanagement.model.Voucher;
@@ -21,7 +22,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.bytesync.hotelmanagement.enums.IncomeType.ROOM_RENT;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getCurrentYangonZoneLocalDateTime;
@@ -143,10 +146,10 @@ public class VoucherService implements IVoucherService {
     private void processDailyPayment(Voucher dailyVoucher) {
         var reservation = dailyVoucher.getReservation();
         var deposit = reservation.getDeposit();
-        var pricePerNight = reservation.getPrice();
+        var price = dailyVoucher.getPrice();
 
-        if(deposit >= pricePerNight) {
-            deposit = deposit - pricePerNight;
+        if(deposit >= price) {
+            deposit = deposit - price;
             dailyVoucher.setIsPaid(true);
             reservation.setDeposit(deposit);
             createPaymentToDailyVoucher(dailyVoucher);
@@ -156,10 +159,13 @@ public class VoucherService implements IVoucherService {
     private void createPaymentToDailyVoucher(Voucher dailyVoucher) {
         var reservation = dailyVoucher.getReservation();
         var paymentMethod = DepositType.convertToPaymentMethod(reservation.getDepositType());
+
+        Map<PaymentMethod, Integer> paymentAmountMap = new HashMap<>();
+        paymentAmountMap.put(paymentMethod, dailyVoucher.getPrice());
+
         var payment = Payment.builder()
                 .date(LocalDate.now())
-                .amount(reservation.getPrice())
-                .paymentMethod(paymentMethod)
+                .paymentAmountMap(paymentAmountMap)
                 .type(ROOM_RENT)
                 .notes("Automatic paid from deposit")
                 .vouchers(new ArrayList<>())

@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
-import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getCurrentYangonZoneLocalDateTime;
-
 @CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
@@ -29,12 +27,12 @@ public class PaymentApi {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ResponseMessage<PageResult<PaymentDto>>> getPaymentList(@RequestParam(required = false, defaultValue = "0") int page,
-                                                                                  @RequestParam(required = false, defaultValue = "10") int size,
-                                                                                  @RequestParam(required = false) LocalDate from,
-                                                                                  @RequestParam(required = false) LocalDate to,
-                                                                                  @RequestParam(required = false) String query,
-                                                                                  @RequestParam(required = false) String type) {
+    public ResponseEntity<ResponseMessage<PageResult<PaymentListDto>>> getPaymentList(@RequestParam(required = false, defaultValue = "0") int page,
+                                                                                      @RequestParam(required = false, defaultValue = "10") int size,
+                                                                                      @RequestParam(required = false) LocalDate from,
+                                                                                      @RequestParam(required = false) LocalDate to,
+                                                                                      @RequestParam(required = false) String query,
+                                                                                      @RequestParam(required = false) String type) {
         FinanceFilterDto filterDto = new FinanceFilterDto(from, to, query, type);
         var paymentList = paymentService.getPaymentList(page, size, filterDto);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", paymentList));
@@ -42,15 +40,15 @@ public class PaymentApi {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseMessage<Void>> updateExpenditureAmount(@PathVariable Long id,
-                                                                         @RequestBody PaymentDto paymentDto) {
-        var message = paymentService.updateExpenditureAmount(id, paymentDto);
+                                                                         @RequestBody UpdateExpediaAmountDto amountDto) {
+        var message = paymentService.updateExpediaAmount(id, amountDto);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), message, null));
     }
 
     @GetMapping("/list/{id}")
-    public ResponseEntity<ResponseMessage<PageResult<PaymentDto>>> getPaymentListByReservation(@PathVariable Long id,
-                                                                                               @RequestParam(required = false, defaultValue = "0") int page,
-                                                                                               @RequestParam(required = false, defaultValue = "10") int size) {
+    public ResponseEntity<ResponseMessage<PageResult<PaymentListDto>>> getPaymentListByReservation(@PathVariable Long id,
+                                                                                                   @RequestParam(required = false, defaultValue = "0") int page,
+                                                                                                   @RequestParam(required = false, defaultValue = "10") int size) {
         var paymentList = paymentService.getPaymentListByReservation(id, page, size);
         return ResponseEntity.ok(new ResponseMessage<>(HttpStatus.OK.value(), "", paymentList));
     }

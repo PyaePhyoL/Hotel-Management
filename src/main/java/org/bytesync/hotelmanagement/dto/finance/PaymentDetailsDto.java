@@ -7,14 +7,14 @@ import org.bytesync.hotelmanagement.enums.IncomeType;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
 public class PaymentDetailsDto {
     private Long id;
     private LocalDate paymentDate;
-    private Integer amount;
-    private PaymentMethod paymentMethod;
+    private Map<PaymentMethod, Integer> paymentAmountMap;
     private IncomeType incomeType;
     private String notes;
     private Long reservationId;
