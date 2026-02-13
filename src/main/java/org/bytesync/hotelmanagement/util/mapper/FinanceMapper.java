@@ -1,7 +1,6 @@
 package org.bytesync.hotelmanagement.util.mapper;
 
 import org.bytesync.hotelmanagement.dto.finance.*;
-import org.bytesync.hotelmanagement.enums.PaymentMethod;
 import org.bytesync.hotelmanagement.enums.RefundType;
 import org.bytesync.hotelmanagement.model.Expense;
 import org.bytesync.hotelmanagement.model.Payment;
@@ -16,14 +15,10 @@ public class FinanceMapper {
     private FinanceMapper() {
     }
 
-    public static PaymentListDto toPaymentDto(Payment payment) {
+    public static PaymentListDto toPaymentListDto(Payment payment) {
         var reservation = payment.getReservation();
 
-        List<String> amountAndMethods = new ArrayList<>();
-
-        payment.getPaymentAmountMap().forEach(
-                ((paymentMethod, amount) ->
-                        amountAndMethods.add("%d (%s)".formatted(amount, paymentMethod))));
+        var amountAndMethods = convertPaymentMapToListString(payment);
 
         return PaymentListDto.builder()
                 .id(payment.getId())
@@ -40,10 +35,11 @@ public class FinanceMapper {
     public static PaymentDetailsDto toPaymentDetailsDto(Payment payment) {
         var reservation = payment.getReservation();
         var vouchers = payment.getVouchers().stream().map(FinanceMapper::toVoucherDto).toList();
+        var amountAndMethods = convertPaymentMapToListString(payment);
         return PaymentDetailsDto.builder()
                 .id(payment.getId())
                 .paymentDate(payment.getDate())
-                .paymentAmountMap(payment.getPaymentAmountMap())
+                .amountAndMethods(amountAndMethods)
                 .incomeType(payment.getType())
                 .notes(payment.getNotes())
                 .reservationId(reservation.getId())
@@ -51,6 +47,16 @@ public class FinanceMapper {
                 .roomNo(reservation.getRoom().getRoomNo())
                 .vouchers(vouchers)
                 .build();
+    }
+
+
+    private static List<String> convertPaymentMapToListString(Payment payment) {
+        List<String> amountAndMethods = new ArrayList<>();
+        payment.getPaymentAmountMap().forEach(
+                ((paymentMethod, amount) ->
+                        amountAndMethods.add("%d (%s)".formatted(amount, paymentMethod))));
+
+        return amountAndMethods;
     }
 
     public static Expense toExpense(ExpenseDto form) {

@@ -14,7 +14,7 @@ import java.util.Map;
 public class PaymentDetailsDto {
     private Long id;
     private LocalDate paymentDate;
-    private Map<PaymentMethod, Integer> paymentAmountMap;
+    private List<String> amountAndMethods;
     private IncomeType incomeType;
     private String notes;
     private Long reservationId;

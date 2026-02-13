@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 import static org.bytesync.hotelmanagement.enums.IncomeType.ROOM_RENT;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
@@ -72,8 +71,6 @@ public class PaymentService implements IPaymentService {
             }
         });
 
-
-
         updatePaidVouchers(form, payment);
 
         var id = paymentRepository.save(payment).getId();
@@ -110,7 +107,7 @@ public class PaymentService implements IPaymentService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
         Specification<Payment> spec = FinanceSpecification.financeFilter(filterDto);
         Page<Payment> all = paymentRepository.findAll(spec, pageable);
-        var dtos = all.getContent().stream().map(FinanceMapper::toPaymentDto).toList();
+        var dtos = all.getContent().stream().map(FinanceMapper::toPaymentListDto).toList();
         return new  PageResult<>(dtos, all.getTotalElements(), page, size);
     }
 
@@ -141,7 +138,7 @@ public class PaymentService implements IPaymentService {
         Specification<Payment> spec = FinanceSpecification.paymentFilterByReservation(id);
         Page<Payment> paymentPage = paymentRepository.findAll(spec, pageable);
 
-        List<PaymentListDto> dtoList = paymentPage.getContent().stream().map(FinanceMapper::toPaymentDto).toList();
+        List<PaymentListDto> dtoList = paymentPage.getContent().stream().map(FinanceMapper::toPaymentListDto).toList();
         return new PageResult<>(dtoList, paymentPage.getTotalElements(), page, size);
     }
 
@@ -157,7 +154,6 @@ public class PaymentService implements IPaymentService {
         var payments = paymentRepository.findByDateAndIncomeType(today, ROOM_RENT);
         return payments.stream()
                 .map(payment -> payment.getAmountByPaymentMethod(paymentMethod))
-                .filter(Objects::nonNull)
                 .reduce(Integer::sum).orElse(0);
     }
 
