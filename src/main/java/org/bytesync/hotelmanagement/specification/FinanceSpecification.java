@@ -1,10 +1,9 @@
 package org.bytesync.hotelmanagement.specification;
 
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
-import org.bytesync.hotelmanagement.dto.finance.ExpenseFilterDto;
-import org.bytesync.hotelmanagement.dto.finance.PaymentFilterDto;
 import org.bytesync.hotelmanagement.dto.finance.FinanceFilterDto;
 import org.bytesync.hotelmanagement.enums.ExpenseType;
 import org.bytesync.hotelmanagement.enums.IncomeType;
@@ -12,11 +11,12 @@ import org.bytesync.hotelmanagement.enums.RefundType;
 import org.bytesync.hotelmanagement.model.*;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getCurrentYangonZoneLocalDateTime;
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.convertInstantToYangonZoneLocalDateTime;
 
 public class FinanceSpecification {
 
@@ -58,7 +58,7 @@ public class FinanceSpecification {
             } else if (dto.to() != null) {
                 predicates.add(cb.equal(root.get("date"), dto.to()));
             } else {
-                LocalDate today = getCurrentYangonZoneLocalDateTime().toLocalDate();
+                LocalDate today = convertInstantToYangonZoneLocalDateTime(Instant.now()).toLocalDate();
                 predicates.add(cb.equal(root.get("date"), today));
             }
 

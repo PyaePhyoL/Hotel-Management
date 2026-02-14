@@ -25,6 +25,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 import static org.bytesync.hotelmanagement.enums.GuestStatus.BLACKLIST;
@@ -80,7 +81,7 @@ public class ReservationService implements IReservationService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         if(reservation.getStatus() == Status.BOOKING) {
-            var checkinDateTime = getCurrentYangonZoneLocalDateTime();
+            var checkinDateTime = convertInstantToYangonZoneLocalDateTime(Instant.now());
             reservation.setCheckInDateTime(checkinDateTime);
             reservation.setStatus(Status.ACTIVE);
             reservation.setCheckInStaff(checkInStaff);
@@ -107,7 +108,7 @@ public class ReservationService implements IReservationService {
     public String checkoutReservation(Long reservationId) {
 //        1st change the status in Reservation
         var reservation = safeCall(reservationRepository.findById(reservationId), "Reservation", reservationId);
-        var checkoutDateTime = getCurrentYangonZoneLocalDateTime();
+        var checkoutDateTime = convertInstantToYangonZoneLocalDateTime(Instant.now());
         String checkoutStaff = auditAware.getCurrentAuditor()
                 .flatMap(staffRepository::findUsernameByEmail)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));

@@ -20,4 +20,6 @@ public interface IPaymentService {
 
     Integer getDailyIncomeAmountByPaymentMethod(PaymentMethod type);
 
+    DashboardIncomeDto getDashboardIncomeDto();
+
 }

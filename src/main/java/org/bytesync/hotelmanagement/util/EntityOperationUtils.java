@@ -1,7 +1,6 @@
 package org.bytesync.hotelmanagement.util;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -33,8 +32,7 @@ public class EntityOperationUtils {
         return (int) ChronoUnit.DAYS.between(startDate, endDate);
     }
 
-    public static LocalDateTime getCurrentYangonZoneLocalDateTime() {
-        Instant instant = Instant.now();
+    public static LocalDateTime convertInstantToYangonZoneLocalDateTime(Instant instant) {
         ZoneId yangonZone = ZoneId.of("Asia/Yangon");
 
         return instant.atZone(yangonZone).toLocalDateTime();

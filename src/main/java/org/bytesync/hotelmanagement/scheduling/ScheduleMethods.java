@@ -8,12 +8,11 @@ import org.bytesync.hotelmanagement.repository.ReservationRepository;
 import org.bytesync.hotelmanagement.repository.RoomRepository;
 import org.bytesync.hotelmanagement.service.interfaces.finance.IVoucherService;
 import org.bytesync.hotelmanagement.util.EntityOperationUtils;
-import org.bytesync.hotelmanagement.util.mapper.RoomMapper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Slf4j
 @Service
@@ -61,7 +60,7 @@ public class ScheduleMethods {
 
 
     public static Status checkDateTimeAndGetStatus(LocalDateTime checkIn, LocalDateTime checkOut) {
-        var now = EntityOperationUtils.getCurrentYangonZoneLocalDateTime();
+        var now = EntityOperationUtils.convertInstantToYangonZoneLocalDateTime(Instant.now());
 
         if(now.isBefore(checkIn)) {
             return Status.BOOKING;

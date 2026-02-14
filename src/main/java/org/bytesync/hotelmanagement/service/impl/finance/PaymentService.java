@@ -21,9 +21,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static org.bytesync.hotelmanagement.enums.IncomeType.ROOM_RENT;
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.convertInstantToYangonZoneLocalDateTime;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Service
@@ -33,6 +36,8 @@ public class PaymentService implements IPaymentService {
     private final ReservationRepository reservationRepository;
     private final PaymentRepository paymentRepository;
     private final VoucherService voucherService;
+    private static final LocalTime MORNING_START = LocalTime.of(6, 0);   // 06:00
+    private static final LocalTime NIGHT_START = LocalTime.of(18, 0);  // 18:00
 
     @Override
     public String createPayment(PaymentCreateForm form) {
@@ -155,6 +160,57 @@ public class PaymentService implements IPaymentService {
         return payments.stream()
                 .map(payment -> payment.getAmountByPaymentMethod(paymentMethod))
                 .reduce(Integer::sum).orElse(0);
+    }
+
+    @Override
+    public DashboardIncomeDto getDashboardIncomeDto() {
+        var today = LocalDate.now();
+        var payments = paymentRepository.findByDateAndIncomeType(today, ROOM_RENT);
+
+        var dailyIncome = payments.stream()
+                .map(Payment::getPaidAmount)
+                .reduce(Integer::sum).orElse(0);
+
+        var dayShiftPayments = payments.stream().filter(dayShiftFilter()).toList();
+        var nightShiftPayments = payments.stream().filter(nightShiftFilter()).toList();
+
+        var dayShiftIncome = dayShiftPayments.stream().map(Payment::getPaidAmount).reduce(Integer::sum).orElse(0);
+        var dayShiftKpay = dayShiftPayments.stream().map(payment -> payment.getAmountByPaymentMethod(PaymentMethod.KPAY))
+                .reduce(Integer::sum).orElse(0);
+        var dayShiftCash = dayShiftPayments.stream().map(payment -> payment.getAmountByPaymentMethod(PaymentMethod.CASH))
+                .reduce(Integer::sum).orElse(0);
+
+        var nightShiftIncome = nightShiftPayments.stream().map(Payment::getPaidAmount).reduce(Integer::sum).orElse(0);
+        var nightShiftKpay = nightShiftPayments.stream().map(payment -> payment.getAmountByPaymentMethod(PaymentMethod.KPAY))
+                .reduce(Integer::sum).orElse(0);
+        var nightShiftCash = nightShiftPayments.stream().map(payment -> payment.getAmountByPaymentMethod(PaymentMethod.CASH))
+                .reduce(Integer::sum).orElse(0);
+
+        return DashboardIncomeDto.builder()
+                .dailyIncome(dailyIncome)
+                .dayShiftIncome(dayShiftIncome)
+                .nightShiftIncome(nightShiftIncome)
+                .dayShiftKpay(dayShiftKpay)
+                .dayShiftCash(dayShiftCash)
+                .nightShiftKpay(nightShiftKpay)
+                .nightShiftCash(nightShiftCash)
+                .build();
+    }
+
+    private Predicate<Payment> dayShiftFilter() {
+        return payment -> {
+            var localTime = convertInstantToYangonZoneLocalDateTime(payment.getCreatedAt()).toLocalTime();
+            return !localTime.isBefore(MORNING_START)
+                    && localTime.isBefore(NIGHT_START);
+        };
+    }
+
+    private Predicate<Payment> nightShiftFilter() {
+        return payment -> {
+            var localTime = convertInstantToYangonZoneLocalDateTime(payment.getCreatedAt()).toLocalTime();
+            return localTime.isBefore(MORNING_START)
+                    || !localTime.isBefore(NIGHT_START);
+        };
     }
 
 

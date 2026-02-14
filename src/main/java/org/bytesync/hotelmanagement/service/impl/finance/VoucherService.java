@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.bytesync.hotelmanagement.enums.IncomeType.ROOM_RENT;
-import static org.bytesync.hotelmanagement.util.EntityOperationUtils.getCurrentYangonZoneLocalDateTime;
+import static org.bytesync.hotelmanagement.util.EntityOperationUtils.convertInstantToYangonZoneLocalDateTime;
 import static org.bytesync.hotelmanagement.util.EntityOperationUtils.safeCall;
 
 @Slf4j
@@ -130,7 +131,7 @@ public class VoucherService implements IVoucherService {
     }
 
     private Voucher getVoucherFromReservation(Reservation reservation) {
-        var now = getCurrentYangonZoneLocalDateTime();
+        var now = convertInstantToYangonZoneLocalDateTime(Instant.now());
         return Voucher.builder()
                 .reservation(reservation)
                 .date(now.toLocalDate())

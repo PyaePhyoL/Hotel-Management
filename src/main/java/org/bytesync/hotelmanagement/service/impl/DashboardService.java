@@ -23,9 +23,7 @@ public class DashboardService implements IDashboardService {
         var dashboard = new MainDashboard();
 
         var rooms = roomService.getAllRoomsInGridView(status);
-        var dailyIncome = paymentService.getDailyIncomeAmount();
-        var cashIncome = paymentService.getDailyIncomeAmountByPaymentMethod(PaymentMethod.CASH);
-        var kpayIncome = paymentService.getDailyIncomeAmountByPaymentMethod(PaymentMethod.KPAY);
+        var dashboardIncomeDto = paymentService.getDashboardIncomeDto();
 
         var checkIns = reservationService.getActiveReservationCount();
         var dayShiftCheckins = reservationService.getDayShiftCheckInCount();
@@ -33,9 +31,7 @@ public class DashboardService implements IDashboardService {
 
         dashboard.setRooms(rooms);
         dashboard.setNoOfCheckins(checkIns);
-        dashboard.setDailyIncome(dailyIncome);
-        dashboard.setCashIncome(cashIncome);
-        dashboard.setKpayIncome(kpayIncome);
+        dashboard.setDashboardIncomeDto(dashboardIncomeDto);
         dashboard.setDayShiftCheckins(dayShiftCheckins);
         dashboard.setNightShiftCheckins(nightShiftCheckins);
         return dashboard;
